@@ -1,0 +1,132 @@
+export const columns = [
+  { key: 'title', label: 'Title', align: 'center' },
+  { key: 'organization', label: 'Organization', align: 'center' },
+  { key: 'location', label: 'Location', align: 'center' },
+  { key: 'stage', label: 'Stage', align: 'center' },
+]
+
+export const products = [
+  {
+    title: 'Working Capital Credit 1',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+  },
+  {
+    title: 'Working Capital Credit 2',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+  },
+  {
+    title: 'Working Capital Credit 3',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+  },
+  {
+    title: 'Working Capital Credit 4',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+  },
+  {
+    title: 'Working Capital Credit 5',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+  },
+]
+
+
+export const columnsVariant3 = [
+  { key: 'title', label: 'Title', align: 'center' },
+  { key: 'organization', label: 'Organization', align: 'center' },
+  { key: 'location', label: 'Location', align: 'center' },
+  { key: 'stage', label: 'Stage', align: 'center' },
+  { key: 'view', label: 'View', align: 'center' },
+  { key: 'action', label: 'Action', align: 'center' },
+]
+
+export const productsVariant3 = [
+  {
+    title: 'Working Capital Credit 1',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+    action: "true",
+    view: "true",
+  },
+  {
+    title: 'Working Capital Credit 2',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+    action: "true",
+    view: "true",
+  },
+  {
+    title: 'Working Capital Credit 3',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+    action: "true",
+    view: "true",
+  },
+  {
+    title: 'Working Capital Credit 4',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+    action: "true",
+    view: "true",
+  },
+  {
+    title: 'Working Capital Credit 5',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+    action: "true",
+    view: "true",
+  },
+  {
+    title: 'Working Capital Credit 5',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+    action: "true",
+    view: "true",
+  },
+  {
+    title: 'Working Capital Credit 5',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+    action: "true",
+    view: "true",
+  },
+  {
+    title: 'Working Capital Credit 5',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+    action: "true",
+    view: "true",
+  },
+  {
+    title: 'Working Capital Credit 5',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+    action: "true",
+    view: "true",
+  },
+  {
+    title: 'Working Capital Credit 5',
+    organization: 'BANTRAB',
+    location: 'Zacapa',
+    stage: 'Growth',
+    action: "true",
+    view: "true",
+  },
+]
