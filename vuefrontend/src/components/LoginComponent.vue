@@ -2,11 +2,13 @@
 import { loginSchema } from '@/schemas'
 import type { LoginFormTypes } from '@/types'
 import { useForm, useField } from 'vee-validate'
+import { useRouter } from 'vue-router'
 // import { watch } from 'vue'
 
+const router = useRouter()
 
 // Use the form with the schema
-const { handleSubmit, resetForm } = useForm<LoginFormTypes>({
+const { handleSubmit, resetForm, validate } = useForm<LoginFormTypes>({
   validationSchema: loginSchema,
 })
 
@@ -14,16 +16,22 @@ const { handleSubmit, resetForm } = useForm<LoginFormTypes>({
 const { value: email, errorMessage: emailError } = useField<string>('email')
 const { value: password, errorMessage: passwordError } = useField<string>('password')
 
-// Define the actual submit function
-const onSubmit = (values: LoginFormTypes) => {
-  console.log('Form Submitted Successfully!', values)
+const onSubmit = async (values: LoginFormTypes) => {
+  const { valid } = await validate()
+  if (!valid) {
+    console.error('Form is invalid')
+    return
+  }
+
+  console.log('✅ Form Submitted Successfully!', values)
+
+  // Redirect to dashboard
+  router.push('/dashboard')
+
+  // Reset the form
   resetForm()
 }
 
-// Watch for validation errors (optional debugging)
-// watch(errors, (newErrors) => {
-//   console.log('Validation Errors:', newErrors)
-// })
 </script>
 
 <template>
