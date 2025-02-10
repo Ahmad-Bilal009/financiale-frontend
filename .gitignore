@@ -1,0 +1,4 @@
+vuebackend/.env
+vuefrontend/.env
+vuebackend/node_modules
+vuefrontend/node_modules
