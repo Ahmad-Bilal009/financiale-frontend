@@ -13,18 +13,21 @@ async function seedUsers() {
         email: "admin@example.com",
         password: await bcrypt.hash("admin123", 10),
         role: "admin",
+        isDisabled: false,
       },
       {
         name: "Super Admin",
         email: "superadmin@example.com",
         password: await bcrypt.hash("superadmin123", 10),
         role: "superadmin",
+        isDisabled: false,
       },
       {
         name: "Regular User",
         email: "user@example.com",
         password: await bcrypt.hash("users123", 10),
         role: "user",
+        isDisabled: false,
       },
     ];
 

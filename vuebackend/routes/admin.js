@@ -10,10 +10,14 @@ router.get(
   verifyToken,
   checkRole(['admin', 'superadmin']),
   (req, res) => {
-    db.query('SELECT id, name, email, role FROM users', (err, results) => {
-      if (err) return res.status(500).send(err)
-      res.json(results)
-    })
+    db.query(
+      'SELECT id, name, email, role, isDisabled FROM users',
+      (err, results) => {
+        if (err)
+          return res.status(500).json({ message: 'Database error', error: err })
+        res.json(results)
+      }
+    )
   }
 )
 
@@ -23,7 +27,12 @@ router.post(
   verifyToken,
   checkRole(['admin', 'superadmin']),
   async (req, res) => {
-    const { name, email, password, role } = req.body
+    let { name, email, password, role, isDisabled = false } = req.body
+
+    // ✅ Ensure role is not null (Default to "user" if not provided)
+    if (!role) {
+      role = 'user'
+    }
 
     // ✅ Admin can only create "user", Superadmin can create any role
     if (req.user.role === 'admin' && role !== 'user') {
@@ -33,10 +42,15 @@ router.post(
     try {
       const hashedPassword = await bcrypt.hash(password, 10)
       db.query(
-        'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
-        [name, email, hashedPassword, role],
+        'INSERT INTO users (name, email, password, role, isDisabled) VALUES (?, ?, ?, ?, ?)',
+        [name, email, hashedPassword, role, isDisabled],
         (err, result) => {
-          if (err) return res.status(500).send(err)
+          if (err) {
+            console.error('❌ Database error:', err.message)
+            return res
+              .status(500)
+              .json({ message: 'Database error', error: err.message })
+          }
           res.json({
             message: 'User added successfully!',
             userId: result.insertId
@@ -49,28 +63,52 @@ router.post(
   }
 )
 
-// ✅ Update a user
 router.put(
   '/users/:id',
   verifyToken,
   checkRole(['admin', 'superadmin']),
   (req, res) => {
     const { id } = req.params
-    const { name, email, role } = req.body
+    const { name, email, role, isDisabled } = req.body
 
-    // ✅ Admin cannot update roles except "user"
-    if (req.user.role === 'admin' && role !== 'user') {
-      return res.status(403).json({ message: 'Admins can only update users!' })
+    // ✅ Ensure ID is a number
+    if (isNaN(id)) {
+      return res.status(400).json({ message: 'Invalid user ID' })
     }
 
-    db.query(
-      'UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?',
-      [name, email, role, id],
-      (err, result) => {
-        if (err) return res.status(500).send(err)
-        res.json({ message: 'User updated successfully!' })
+    // ✅ Validate required fields
+    if (!name || !email) {
+      return res.status(400).json({ message: 'Name and email are required' })
+    }
+
+    // ✅ Admin cannot update roles except "user"
+    let query, values
+    if (req.user.role === 'admin') {
+      query =
+        'UPDATE users SET name = ?, email = ?, isDisabled = ? WHERE id = ?'
+      values = [name, email, isDisabled ?? 0, id] // Default `isDisabled` to `0`
+    } else {
+      query =
+        'UPDATE users SET name = ?, email = ?, role = ?, isDisabled = ? WHERE id = ?'
+      values = [name, email, role ?? 'user', isDisabled ?? 0, id] // Default role to "user"
+    }
+
+    // ✅ Execute SQL query
+    db.query(query, values, (err, result) => {
+      if (err) {
+        console.error('❌ Database error:', err.message)
+        return res
+          .status(500)
+          .json({ message: 'Database error', error: err.message })
       }
-    )
+
+      // ✅ Check if rows were updated
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'User not found' })
+      }
+
+      res.json({ message: 'User updated successfully!' })
+    })
   }
 )
 
@@ -82,10 +120,11 @@ router.delete(
   (req, res) => {
     const { id } = req.params
 
-    // ✅ Check if admin is trying to delete an admin or superadmin
+    // ✅ Admin can only delete "users" (not admins or superadmins)
     if (req.user.role === 'admin') {
       db.query('SELECT role FROM users WHERE id = ?', [id], (err, results) => {
-        if (err) return res.status(500).send(err)
+        if (err)
+          return res.status(500).json({ message: 'Database error', error: err })
         if (results.length === 0)
           return res.status(404).json({ message: 'User not found!' })
         if (results[0].role !== 'user') {
@@ -95,17 +134,68 @@ router.delete(
         }
 
         db.query('DELETE FROM users WHERE id = ?', [id], err => {
-          if (err) return res.status(500).send(err)
+          if (err)
+            return res
+              .status(500)
+              .json({ message: 'Database error', error: err })
           res.json({ message: 'User deleted successfully!' })
         })
       })
     } else {
       // ✅ Superadmin can delete anyone
       db.query('DELETE FROM users WHERE id = ?', [id], err => {
-        if (err) return res.status(500).send(err)
+        if (err)
+          return res.status(500).json({ message: 'Database error', error: err })
         res.json({ message: 'User deleted successfully!' })
       })
     }
+  }
+)
+
+// ✅ Toggle user enable/disable status
+router.put(
+  '/users/:id/toggle-disable',
+  verifyToken,
+  checkRole(['admin', 'superadmin']),
+  (req, res) => {
+    const { id } = req.params
+
+    db.query(
+      'SELECT role, isDisabled FROM users WHERE id = ?',
+      [id],
+      (err, results) => {
+        if (err)
+          return res.status(500).json({ message: 'Database error', error: err })
+        if (results.length === 0)
+          return res.status(404).json({ message: 'User not found!' })
+
+        const user = results[0]
+
+        // ✅ Admins can only enable/disable "user" accounts
+        if (req.user.role === 'admin' && user.role !== 'user') {
+          return res
+            .status(403)
+            .json({ message: 'Admins can only enable/disable users!' })
+        }
+
+        const newStatus = !user.isDisabled
+        db.query(
+          'UPDATE users SET isDisabled = ? WHERE id = ?',
+          [newStatus, id],
+          err => {
+            if (err)
+              return res
+                .status(500)
+                .json({ message: 'Database error', error: err })
+            res.json({
+              message: `User ${
+                newStatus ? 'disabled' : 'enabled'
+              } successfully!`
+            })
+          }
+        )
+      }
+    )
   }
 )
 

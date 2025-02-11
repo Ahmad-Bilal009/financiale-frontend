@@ -1,6 +1,5 @@
 require('dotenv').config()
 const express = require('express')
-const cors = require('cors')
 const db = require('./db') // Import db.js instead of redefining db
 
 const app = express()

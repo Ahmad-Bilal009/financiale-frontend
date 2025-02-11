@@ -5,6 +5,8 @@ import axios from 'axios'
 import { ref } from 'vue'
 import { loginSchema } from '@/schemas'
 import type { LoginFormTypes } from '@/types'
+import { useToast } from 'vue-toastification'
+const toast = useToast()
 
 const router = useRouter()
 const errorMessage = ref<string | null>(null)
@@ -19,22 +21,33 @@ const { value: password, errorMessage: passwordError } = useField<string>('passw
 
 const onSubmit = handleSubmit(async (values) => {
   if (!(await validate()).valid) return
+  console.log(values)
 
   try {
     const { data } = await axios.post('http://localhost:5001/api/auth/login', values)
+
+    if (data.user.isDisabled) {
+      toast.error('🚫 Your account is disabled. Contact admin to regain access.')
+      return
+    }
+
+    // ✅ Store token & user details
     localStorage.setItem('token', data.token)
     localStorage.setItem('user', JSON.stringify(data.user))
 
-    if (data.user.role==='superadmin') {
+    // ✅ Redirect based on role
+    if (data.user.role === 'superadmin') {
       router.push('/super-admin-manage-users')
     } else {
-      router.push('/dashboard') // Redirect after successful login
+      router.push('/dashboard')
     }
+
     resetForm()
   } catch (error: any) {
     errorMessage.value = error.response?.data?.message || 'Login failed'
   }
 })
+
 </script>
 
 <template>
