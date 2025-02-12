@@ -3,7 +3,7 @@ const db = require('../db')
 
 const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key'
 
-// ✅ Middleware to Verify Token
+//  Middleware to Verify Token
 const verifyToken = (req, res, next) => {
   const token = req.headers.authorization
 
@@ -16,7 +16,7 @@ const verifyToken = (req, res, next) => {
   try {
     const decoded = jwt.verify(token.split(' ')[1], SECRET_KEY)
 
-    // ✅ Check if user is disabled before proceeding
+    //  Check if user is disabled before proceeding
     db.query(
       'SELECT isDisabled FROM users WHERE id = ?',
       [decoded.id],
@@ -43,7 +43,7 @@ const verifyToken = (req, res, next) => {
   }
 }
 
-// ✅ Middleware for Role-Based Access Control
+//  Middleware for Role-Based Access Control
 const checkRole = roles => (req, res, next) => {
   if (!roles.includes(req.user.role)) {
     return res

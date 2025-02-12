@@ -5,94 +5,65 @@ import AddUserButton from '@/components/UI/Button/AddUserbutton.vue'
 import UserToggle from '@/components/UI/Toggle-Switch/UserToggle.vue'
 import AddUserModel from '@/components/UI/AddUser-Modal/AddUser.vue'
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import userService from '@/services/userService'
+import { useToast } from 'vue-toastification'
 
 const isModalOpen = ref(false)
 const modalMode = ref<'add' | 'edit'>('add') // Track add or edit mode
 const selectedUser = ref(null) // Store selected user for editing
 const users = ref([]) // Store fetched users
+const toast = useToast()
 
-// ✅ Fetch users from API
 const fetchUsers = async () => {
   try {
-    console.log("Fetching users...") // Debugging
-    const response = await axios.get('http://localhost:5001/api/admin/users', {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    })
+    users.value = await userService.getUsers();
 
-    if (response.data) {
-      console.log("✅ Users Fetched:", response.data) // Debugging
-      users.value = response.data.map(user => ({
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        isDisabled: user.isDisabled === 1 || user.isDisabled === true, // Ensure Boolean value
-      }))
-    }
   } catch (error) {
-    console.error('❌ Failed to fetch users:', error)
+    toast.error(error.response?.data?.message || 'Error fetching users');
   }
-}
+};
+
 
 onMounted(fetchUsers)
 
-// ✅ Open Add User Modal
+//  Open Add User Modal
 const openAddUserModal = () => {
   selectedUser.value = null // Reset selected user
   modalMode.value = 'add'
   isModalOpen.value = true
 }
 
-// ✅ Open Edit User Modal
+//  Open Edit User Modal
 const openEditUserModal = (user) => {
   selectedUser.value = user
   modalMode.value = 'edit'
   isModalOpen.value = true
 }
 
-// ✅ Close Modal
+//  Close Modal
 const closeModal = () => (isModalOpen.value = false)
 
-// ✅ Add / Update User Action
-const handleUserSave = async (userData) => {
+const handleUserSave = async (userData, userId) => {
   try {
-    const token = localStorage.getItem('token')
-    const headers = { Authorization: `Bearer ${token}` }
-
-    if (modalMode.value === 'add') {
-      // ✅ Create User (POST)
-      await axios.post('http://localhost:5001/api/admin/users', userData, { headers })
-    } else {
-      // ✅ Update User (PUT)
-      await axios.put(`http://localhost:5001/api/admin/users/${selectedUser.value.id}`, userData, { headers })
-    }
-
-    fetchUsers() // Refresh users after action
-    closeModal()
+    await userService.saveUser(userData, userId);
+    toast.success(' User saved successfully!');
+    fetchUsers(); // Refresh users after action
   } catch (error) {
-    console.error('❌ Failed to save user:', error)
+    toast.error(error.response?.data?.message || 'Failed to save user');
   }
-}
+};
 
-// ✅ Toggle user enable/disable
-const toggleUserStatus = async (user) => {
-  try {
-    await axios.put(`http://localhost:5001/api/admin/users/${user.id}/toggle-disable`, {}, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    })
-    user.isDisabled = !user.isDisabled
-  } catch (error) {
-    console.error('❌ Failed to update user status:', error)
-  }
-}
 
-// ✅ Search functionality (Future use)
+onMounted(fetchUsers)
+
+
+
+//  Search functionality (Future use)
 const search = (value: string) => {
   console.log('🔎 Searching:', value)
 }
 
-// ✅ Sorting handler (Future use)
+//  Sorting handler (Future use)
 const handleSort = (key: string) => {
   console.log(`Sorting by: ${key}`)
 }

@@ -21,10 +21,10 @@ const props = defineProps({
 // Emit events
 const emit = defineEmits(['close', 'userSaved'])
 
-// ✅ Get logged-in user role from localStorage (reactive)
+//  Get logged-in user role from localStorage (reactive)
 const UserRole = computed(() => localStorage.getItem('role') || 'superadmin')
 
-// ✅ Reactive Form Data
+//  Reactive Form Data
 const form = ref({
   name: '',
   email: '',
@@ -32,20 +32,20 @@ const form = ref({
   role: 'user', // Default role
 })
 
-// ✅ Reset Form When Modal Opens
+//  Reset Form When Modal Opens
 watch(
   () => props.isOpen,
   (isOpen) => {
     if (isOpen) {
-      // ✅ Reset the form when opening
+      //  Reset the form when opening
       form.value = { name: '', email: '', password: '', role: 'user' }
 
-      // ✅ Load existing user data in edit mode
+      //  Load existing user data in edit mode
       if (props.mode === 'edit' && props.userData) {
         form.value = {
           ...props.userData,
           password: '',  // Do not pre-fill password
-          role: props.userData.role || 'user', // ✅ Ensure role is set correctly
+          role: props.userData.role || 'user', //  Ensure role is set correctly
         }
       }
     }
@@ -53,7 +53,7 @@ watch(
   { immediate: true }
 )
 
-// ✅ Handle Form Submission (Add / Edit User)
+//  Handle Form Submission (Add / Edit User)
 const handleSubmit = async () => {
   if (!form.value.name || !form.value.email || (props.mode === 'add' && !form.value.password)) {
     alert('Please fill all required fields.')
@@ -73,21 +73,21 @@ const handleSubmit = async () => {
       requestBody.password = form.value.password // Password only in Add Mode
     }
 
-    // ✅ Ensure role is sent only for Superadmin
+    //  Ensure role is sent only for Superadmin
     if (UserRole.value === 'superadmin') {
       requestBody.role = form.value.role
     }
 
     let response
     if (props.mode === 'add') {
-      // ✅ Create New User (POST request)
+      //  Create New User (POST request)
       response = await axios.post(
         'http://localhost:5001/api/admin/users',
         requestBody,
         { headers: { Authorization: `Bearer ${token}` } }
       )
     } else {
-      // ✅ Update Existing User (PUT request)
+      //  Update Existing User (PUT request)
       response = await axios.put(
         `http://localhost:5001/api/admin/users/${props.userData.id}`,
         requestBody,
@@ -95,7 +95,7 @@ const handleSubmit = async () => {
       )
     }
 
-    console.log('✅ User Saved:', response.data)
+    console.log(' User Saved:', response.data)
     emit('userSaved') // Notify parent to refresh user list
     handleClose()
   } catch (error) {
@@ -104,16 +104,13 @@ const handleSubmit = async () => {
   }
 }
 
-// ✅ Close Modal
+//  Close Modal
 const handleClose = () => {
   emit('close') // Notify parent to close modal
 }
 </script>
 
----
 
-### **📌 Updated Template**
-```vue
 <template>
   <div
     v-if="isOpen"

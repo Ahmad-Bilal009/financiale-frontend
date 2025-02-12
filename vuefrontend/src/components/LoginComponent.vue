@@ -23,7 +23,7 @@ const onSubmit = async (values: LoginFormTypes) => {
     return
   }
 
-  console.log('✅ Form Submitted Successfully!', values)
+  console.log(' Form Submitted Successfully!', values)
 
   // Redirect to dashboard
   router.push('/dashboard')

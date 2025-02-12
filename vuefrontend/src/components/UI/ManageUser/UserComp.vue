@@ -3,9 +3,12 @@ import ArrowDownIcon from '@/assets/svg/arrow-down.svg'
 import { RouterLink } from 'vue-router'
 import ViewEyeIcon from '@/assets/svg/view-eye.svg'
 import EditIcon from '@/assets/svg/edit-icon.svg'
-import { ref, defineProps, computed } from 'vue'
-import axios from 'axios'
+import { defineProps, computed } from 'vue'
+import userService from '@/services/userService'
 import AddUserModel from '@/components/UI/AddUser-Modal/AddUser.vue'
+import { useToast } from 'vue-toastification'
+
+const toast = useToast()
 
 interface UserData {
   id: number
@@ -16,57 +19,50 @@ interface UserData {
   isDisabled: boolean
 }
 
-const isModalOpen = ref(false)
-const modalMode = ref<'add' | 'edit'>('add')
-const selectedUser = ref<UserData | null>(null)
-
 const props = defineProps<{
   columns: { key: string; label: string; align: string }[]
   rowData: UserData[]
   onSort: (key: string) => void
+  onToggleStatus?: (userId: number) => void  //  Make it optional to prevent errors
   link: string
   variant?: 'default' | 'action'
 }>()
 
+
 const computedVariant = computed(() => props.variant || 'default')
 
-// ✅ Handle sorting
+//  Handle sorting
 const handleSort = (key: string) => {
   props.onSort(key)
 }
 
-// ✅ Open modal for editing a user
-const openEditUserModal = (user: UserData) => {
-  modalMode.value = 'edit'
-  selectedUser.value = user
-  isModalOpen.value = true
-}
+const toggleUserStatus = async (user: UserData) => {
+  if (!user.id) {
+    toast.error("⚠️ Error: User ID is missing!");
+    return;
+  }
 
-// ✅ Close modal
-const closeModal = () => {
-  isModalOpen.value = false
-}
-
-// ✅ Save user (Add or Edit)
-const saveUser = (userData: UserData) => {
-  console.log('Saving user:', userData)
-  closeModal()
-}
-
-// ✅ Toggle user enable/disable
-const handleDisableUser = async (user: UserData) => {
   try {
-    await axios.put(`http://localhost:5001/api/admin/users/${user.id}/toggle-disable`, {}, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    })
+    console.log(`🔄 Toggling status for user ID: ${user.id}`);
 
-    user.isDisabled = !user.isDisabled
+    //  Call API to toggle status
+    const response = await userService.toggleUserStatus(user.id);
+    toast.success(' User status updated!');
+
+    //  Check if function exists before calling it
+    if (props.onToggleStatus) {
+      props.onToggleStatus(user.id);
+    } else {
+      console.warn("⚠️ onToggleStatus is not provided by parent.");
+    }
+
   } catch (error) {
-    console.error('❌ Failed to update user status:', error)
+    toast.error(`❌ Failed to update user status: ${error}`);
   }
 }
 
-// ✅ Render table cell data
+
+//  Render table cell data
 const renderCell = (row: UserData, columnKey: string) => {
   switch (columnKey) {
     case 'name': return row.name
@@ -108,41 +104,30 @@ const renderCell = (row: UserData, columnKey: string) => {
         >
           <td class="tw-px-4 tw-py-[27px] text-left">{{ index + 1 }}</td>
           <td v-for="column in props.columns" :key="column.key" class="tw-px-4 tw-py-[27px]">
-            <!-- ✅ Action Buttons -->
+            <!--  Action Buttons -->
             <div v-if="column.key === 'action'" class="tw-flex tw-items-center tw-gap-2">
               <ViewEyeIcon />
-              <button @click="openEditUserModal(rowData)" class="tw-text-white tw-px-4 tw-py-2 tw-rounded">
+              <button @click="$emit('editUser', rowData)" class="tw-text-white tw-px-4 tw-py-2 tw-rounded">
                 <EditIcon />
               </button>
             </div>
 
-            <!-- ✅ Enable/Disable Toggle -->
+            <!--  Enable/Disable Toggle -->
             <div v-else-if="column.key === 'isDisabled'" class="tw-flex tw-items-center tw-gap-2">
-
               <v-switch
-                  v-model="rowData.isDisabled"
-                  hide-details
-                  inset
-                  :color="rowData.isDisabled ? 'success' : 'error'"
-                  :checked="rowData.isDisabled"
-                  @change="handleDisableUser(rowData)"
-                />
+                :model-value="rowData.isDisabled"
+                hide-details
+                inset
+                :color="rowData.isDisabled ? 'error' : 'success'"
+                @change="toggleUserStatus(rowData)"
+              />
             </div>
 
-            <!-- ✅ Default Cell Rendering -->
+            <!--  Default Cell Rendering -->
             <div v-else>{{ renderCell(rowData, column.key) }}</div>
           </td>
         </tr>
       </tbody>
     </table>
-
-    <!-- ✅ User Add/Edit Modal -->
-    <AddUserModel
-      :isOpen="isModalOpen"
-      :mode="modalMode"
-      :userData="selectedUser || undefined"
-      @close="closeModal"
-      @saveUser="saveUser"
-    />
   </div>
 </template>

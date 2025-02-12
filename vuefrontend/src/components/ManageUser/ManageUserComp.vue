@@ -5,74 +5,56 @@ import AddUserButton from '@/components/UI/Button/AddUserbutton.vue'
 import UserToggle from '@/components/UI/Toggle-Switch/UserToggle.vue'
 import AddUserModel from '@/components/UI/AddUser-Modal/AddUser.vue'
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import userService from '@/services/userService'
+import { useToast } from 'vue-toastification'
 
+const toast = useToast()
 const isModalOpen = ref(false)
-const users = ref([]) // ✅ Store fetched users
+const users = ref([])
 
-// ✅ Fetch users from API
+// Fetch users from API
 const fetchUsers = async () => {
   try {
-    console.log("Fetching users..."); // Debugging
-    const response = await axios.get('http://localhost:5001/api/admin/users', {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    })
-
-    if (response.data) {
-      console.log("✅ Users Fetched:", response.data); // Debugging
-      // ✅ Filter: Admin can only see users with the "user" role
-      users.value = response.data
-        .filter(user => user.role === "user")
-        .map(user => ({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          isDisabled: user.isDisabled === 1 || user.isDisabled === true // Ensure Boolean value
-        }))
-    }
+    const data = await userService.getUsers()
+    users.value = data.filter(user => user.role === 'user').map(user => ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      password: user.password,
+      isDisabled: user.isDisabled === 1 || user.isDisabled === true,
+    }))
   } catch (error) {
-    console.error('❌ Failed to fetch users:', error)
+    toast.error('Failed to fetch users')
   }
 }
 
 onMounted(fetchUsers)
 
-// ✅ Open and close modal
+// Open and close modal
 const openModal = () => (isModalOpen.value = true)
 const closeModal = () => (isModalOpen.value = false)
 
-// ✅ Add User Action
+// Add User Action
 const handleAddUser = async (userData) => {
   try {
-    await axios.post('http://localhost:5001/api/admin/users', userData, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    })
-    fetchUsers() // Refresh users after adding
+    await userService.saveUser(userData)
+    toast.success('User added successfully')
+    fetchUsers()
     closeModal()
   } catch (error) {
-    console.error('❌ Failed to add user:', error)
+    toast.error('Failed to add user')
   }
 }
 
-// ✅ Toggle user enable/disable
-const toggleUserStatus = async (user) => {
-  try {
-    await axios.put(`http://localhost:5001/api/admin/users/${user.id}/toggle-disable`, {}, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    })
-    user.isDisabled = !user.isDisabled
-  } catch (error) {
-    console.error('❌ Failed to update user status:', error)
-  }
-}
 
-// ✅ Search functionality (Future use)
+
+// Search functionality
 const search = (value: string) => {
-  console.log('🔎 Searching:', value)
+  console.log('Searching:', value)
 }
 
-// ✅ Sorting handler (Future use)
+// Sorting handler
 const handleSort = (key: string) => {
   console.log(`Sorting by: ${key}`)
 }

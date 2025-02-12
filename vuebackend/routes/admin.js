@@ -4,7 +4,7 @@ const db = require('../db')
 const bcrypt = require('bcrypt')
 const { verifyToken, checkRole } = require('../middleware/authMiddleware')
 
-// ✅ Get all users (Admin & Superadmin)
+//  Get all users (Admin & Superadmin)
 router.get(
   '/users',
   verifyToken,
@@ -21,7 +21,7 @@ router.get(
   }
 )
 
-// ✅ Add a new user
+//  Add a new user
 router.post(
   '/users',
   verifyToken,
@@ -29,12 +29,12 @@ router.post(
   async (req, res) => {
     let { name, email, password, role, isDisabled = false } = req.body
 
-    // ✅ Ensure role is not null (Default to "user" if not provided)
+    //  Ensure role is not null (Default to "user" if not provided)
     if (!role) {
       role = 'user'
     }
 
-    // ✅ Admin can only create "user", Superadmin can create any role
+    //  Admin can only create "user", Superadmin can create any role
     if (req.user.role === 'admin' && role !== 'user') {
       return res.status(403).json({ message: 'Admins can only create users!' })
     }
@@ -71,17 +71,17 @@ router.put(
     const { id } = req.params
     const { name, email, role, isDisabled } = req.body
 
-    // ✅ Ensure ID is a number
+    //  Ensure ID is a number
     if (isNaN(id)) {
       return res.status(400).json({ message: 'Invalid user ID' })
     }
 
-    // ✅ Validate required fields
+    //  Validate required fields
     if (!name || !email) {
       return res.status(400).json({ message: 'Name and email are required' })
     }
 
-    // ✅ Admin cannot update roles except "user"
+    //  Admin cannot update roles except "user"
     let query, values
     if (req.user.role === 'admin') {
       query =
@@ -93,7 +93,7 @@ router.put(
       values = [name, email, role ?? 'user', isDisabled ?? 0, id] // Default role to "user"
     }
 
-    // ✅ Execute SQL query
+    //  Execute SQL query
     db.query(query, values, (err, result) => {
       if (err) {
         console.error('❌ Database error:', err.message)
@@ -102,7 +102,7 @@ router.put(
           .json({ message: 'Database error', error: err.message })
       }
 
-      // ✅ Check if rows were updated
+      //  Check if rows were updated
       if (result.affectedRows === 0) {
         return res.status(404).json({ message: 'User not found' })
       }
@@ -112,7 +112,7 @@ router.put(
   }
 )
 
-// ✅ Delete a user
+//  Delete a user
 router.delete(
   '/users/:id',
   verifyToken,
@@ -120,7 +120,7 @@ router.delete(
   (req, res) => {
     const { id } = req.params
 
-    // ✅ Admin can only delete "users" (not admins or superadmins)
+    //  Admin can only delete "users" (not admins or superadmins)
     if (req.user.role === 'admin') {
       db.query('SELECT role FROM users WHERE id = ?', [id], (err, results) => {
         if (err)
@@ -142,7 +142,7 @@ router.delete(
         })
       })
     } else {
-      // ✅ Superadmin can delete anyone
+      //  Superadmin can delete anyone
       db.query('DELETE FROM users WHERE id = ?', [id], err => {
         if (err)
           return res.status(500).json({ message: 'Database error', error: err })
@@ -152,7 +152,7 @@ router.delete(
   }
 )
 
-// ✅ Toggle user enable/disable status
+//  Toggle user enable/disable status
 router.put(
   '/users/:id/toggle-disable',
   verifyToken,
@@ -171,7 +171,7 @@ router.put(
 
         const user = results[0]
 
-        // ✅ Admins can only enable/disable "user" accounts
+        //  Admins can only enable/disable "user" accounts
         if (req.user.role === 'admin' && user.role !== 'user') {
           return res
             .status(403)

@@ -7,16 +7,16 @@ const jwt = require('jsonwebtoken')
 // Secret key for JWT (You should store this in .env)
 const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key'
 
-// ✅ Login API
+//  Login API
 router.post('/login', (req, res) => {
   const { email, password } = req.body
 
-  // ✅ Validate input
+  //  Validate input
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required!' })
   }
 
-  // ✅ Check if user exists
+  //  Check if user exists
   db.query(
     'SELECT * FROM users WHERE email = ?',
     [email],
@@ -32,7 +32,7 @@ router.post('/login', (req, res) => {
 
       const user = results[0]
 
-      // ✅ Ensure `isDisabled` is checked correctly (Fix for type inconsistency)
+      //  Ensure `isDisabled` is checked correctly (Fix for type inconsistency)
       const isUserDisabled =
         user.isDisabled === 1 ||
         user.isDisabled === true ||
@@ -45,13 +45,13 @@ router.post('/login', (req, res) => {
         })
       }
 
-      // ✅ Compare password using bcrypt
+      //  Compare password using bcrypt
       const isMatch = await bcrypt.compare(password, user.password)
       if (!isMatch) {
         return res.status(401).json({ message: 'Invalid email or password!' })
       }
 
-      // ✅ Generate JWT Token
+      //  Generate JWT Token
       const token = jwt.sign(
         {
           id: user.id,
