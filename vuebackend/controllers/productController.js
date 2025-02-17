@@ -2,7 +2,7 @@ const Product = require("../models/product");
 
 exports.createProduct = async (req, res) => {
   try {
-    const { title, description, productInformation, productType, creditGuarantees, stageOfEntrepreneurship, objectiveOfCredit, benefitsOfEntrepreneurship, geographicCoverage, requirement, contactDetail, image } = req.body;
+    const { title, description, productInformation, productType, creditGuarantees, stageOfEntrepreneurship, objectiveOfCredit, benefitsOfEntrepreneurship, geographicCoverage, requirement, contactDetail,} = req.body;
 
     const userId = req.user.id;
 
@@ -19,7 +19,6 @@ exports.createProduct = async (req, res) => {
       geographicCoverage,
       requirement,
       contactDetail,
-      image,
       status: "pending",
     });
 

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useForm, useField } from 'vee-validate'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
 import { ref } from 'vue'
 import { loginSchema } from '@/schemas'
 import type { LoginFormTypes } from '@/types'
 import { useToast } from 'vue-toastification'
-const toast = useToast()
+import authService from '@/services/authService'
 
+const toast = useToast()
 const router = useRouter()
 const errorMessage = ref<string | null>(null)
 
@@ -21,21 +21,20 @@ const { value: password, errorMessage: passwordError } = useField<string>('passw
 
 const onSubmit = handleSubmit(async (values) => {
   if (!(await validate()).valid) return
-  console.log(values)
 
   try {
-    const { data } = await axios.post('http://localhost:5001/api/auth/login', values)
+    const data = await authService.login(values)
 
     if (data.user.isDisabled) {
-      toast.error('🚫 Your account is disabled. Contact admin to regain access.')
+      toast.error('Your account is disabled. Contact admin to regain access.')
       return
     }
 
-    //  Store token & user details
+    // Store token & user details
     localStorage.setItem('token', data.token)
     localStorage.setItem('user', JSON.stringify(data.user))
 
-    //  Redirect based on role
+    // Redirect based on role
     if (data.user.role === 'superadmin') {
       router.push('/super-admin-manage-users')
     } else {
@@ -44,10 +43,10 @@ const onSubmit = handleSubmit(async (values) => {
 
     resetForm()
   } catch (error: any) {
-    errorMessage.value = error.response?.data?.message || 'Login failed'
+    errorMessage.value = error
+    toast.error(error)
   }
 })
-
 </script>
 
 <template>
@@ -58,14 +57,7 @@ const onSubmit = handleSubmit(async (values) => {
         <div class="tw-text-base tw-text-gray">Welcome back! Please enter your details.</div>
       </div>
       <!-- Attach handleSubmit to onSubmit -->
-      <form
-        @submit.prevent="
-          () => {
-            handleSubmit(onSubmit)()
-          }
-        "
-        class="tw-flex tw-flex-col tw-gap-6"
-      >
+      <form @submit.prevent="onSubmit" class="tw-flex tw-flex-col tw-gap-6">
         <div class="tw-flex tw-flex-col tw-gap-4">
           <div class="tw-flex tw-flex-col tw-gap-[10px]">
             <label for="email" class="tw-text-base tw-text-dark-gray">Email</label>

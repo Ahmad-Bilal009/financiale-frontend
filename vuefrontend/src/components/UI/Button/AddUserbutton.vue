@@ -12,7 +12,7 @@ const emit = defineEmits(['click'])
 const baseStyle = 'tw-text-base tw-font-medium tw-rounded-[13px] tw-capitalize'
 
 const variantStyles = {
-  blue: 'tw-bg-[#24B2E3] tw-text-white tw-px-7 tw-py-3',
+  blue: 'tw-bg-[#24B2E3] tw-text-white tw-px-3 md:tw-px-7 tw-py-3',
   darkBlue: 'tw-bg-primary tw-py-4 tw-px-2 tw-text-white',
 }
 

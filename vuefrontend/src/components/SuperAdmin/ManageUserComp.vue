@@ -72,12 +72,14 @@ const handleSort = (key: string) => {
 <template>
   <div class="tw-flex tw-flex-col tw-mb-12 tw-mt-12 tw-gap-12">
     <!-- Header -->
-    <div class="tw-flex tw-justify-between tw-items-center">
-      <div class="tw-text-3xl tw-font-medium">Manage Users</div>
-      <div class="tw-flex tw-gap-5 tw-items-center">
+    <div class="md:tw-flex tw-justify-between md:tw-items-center">
+      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Manage Users</div>
+      <div class="md:tw-flex tw-gap-5 tw-items-start md:tw-items-center">
         <SearchBar :onSearch="search" placeholder="Search here..." />
+        <div class="tw-flex tw-mt-2 md:tw-mt-0 tw-gap-4 tw-items-center">
         <UserToggle />
         <AddUserButton text="+ Add User" @click="openAddUserModal" />
+        </div>
       </div>
     </div>
 

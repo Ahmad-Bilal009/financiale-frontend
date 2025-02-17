@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch, computed } from 'vue'
-import axios from 'axios'
+import { useToast } from 'vue-toastification'
+import userService from '@/services/userService'
 import closeIcon from '@/assets/svg/cross-icon.svg'
+
+const toast = useToast() // Initialize toast notifications
 
 // Define Props
 const props = defineProps({
@@ -13,7 +16,8 @@ const props = defineProps({
       name: '',
       email: '',
       password: '',
-      role: 'user', // Default role
+      role: 'user',
+      image: null,
     }),
   },
 })
@@ -21,31 +25,39 @@ const props = defineProps({
 // Emit events
 const emit = defineEmits(['close', 'userSaved'])
 
-//  Get logged-in user role from localStorage (reactive)
+// Get logged-in user role from localStorage (reactive)
 const UserRole = computed(() => localStorage.getItem('role') || 'superadmin')
 
-//  Reactive Form Data
+// Reactive Form Data
 const form = ref({
   name: '',
   email: '',
   password: '',
-  role: 'user', // Default role
+  role: 'user',
+  image: null,
 })
 
-//  Reset Form When Modal Opens
+// Reactive image preview
+const imagePreview = ref<string | null>(null)
+
+// Reset Form When Modal Opens
 watch(
   () => props.isOpen,
   (isOpen) => {
     if (isOpen) {
-      //  Reset the form when opening
-      form.value = { name: '', email: '', password: '', role: 'user' }
+      form.value = { name: '', email: '', password: '', role: 'user', image: null }
+      imagePreview.value = null
 
-      //  Load existing user data in edit mode
+      // Load existing user data in edit mode
       if (props.mode === 'edit' && props.userData) {
         form.value = {
           ...props.userData,
-          password: '',  // Do not pre-fill password
-          role: props.userData.role || 'user', //  Ensure role is set correctly
+          password: '',
+          role: props.userData.role || 'user',
+          image: null,
+        }
+        if (props.userData.image) {
+          imagePreview.value = `http://localhost:5001${props.userData.image}`
         }
       }
     }
@@ -53,63 +65,52 @@ watch(
   { immediate: true }
 )
 
-//  Handle Form Submission (Add / Edit User)
+// Handle Image Selection
+const handleImageChange = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  if (target.files && target.files[0]) {
+    form.value.image = target.files[0] // Store the file
+    imagePreview.value = URL.createObjectURL(target.files[0]) // Generate preview
+  }
+}
+
+// Handle Form Submission (Add / Edit User)
 const handleSubmit = async () => {
   if (!form.value.name || !form.value.email || (props.mode === 'add' && !form.value.password)) {
-    alert('Please fill all required fields.')
+    toast.error('⚠️ Please fill all required fields.')
     return
   }
 
   try {
-    const token = localStorage.getItem('token')
-    if (!token) throw new Error('Unauthorized: No token found.')
-
-    let requestBody = {
+    const userData = {
       name: form.value.name,
       email: form.value.email,
+      password: props.mode === 'add' ? form.value.password : undefined,
+      role: UserRole.value === 'superadmin' ? form.value.role : props.userData.role, // Only superadmin can change role
+      image: form.value.image,
     }
 
     if (props.mode === 'add') {
-      requestBody.password = form.value.password // Password only in Add Mode
-    }
-
-    //  Ensure role is sent only for Superadmin
-    if (UserRole.value === 'superadmin') {
-      requestBody.role = form.value.role
-    }
-
-    let response
-    if (props.mode === 'add') {
-      //  Create New User (POST request)
-      response = await axios.post(
-        'http://localhost:5001/api/admin/users',
-        requestBody,
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
+      await userService.saveUser(userData)
+      toast.success(' User created successfully!')
     } else {
-      //  Update Existing User (PUT request)
-      response = await axios.put(
-        `http://localhost:5001/api/admin/users/${props.userData.id}`,
-        requestBody,
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
+      await userService.saveUser(userData, props.userData.id)
+      toast.success(' User updated successfully!')
     }
 
-    console.log(' User Saved:', response.data)
     emit('userSaved') // Notify parent to refresh user list
     handleClose()
   } catch (error) {
-    console.error('❌ Error Saving User:', error)
-    alert(error.response?.data?.message || 'An error occurred while saving the user.')
+    console.error(' Error Saving User:', error)
+    toast.error(' An error occurred while saving the user.')
   }
 }
 
-//  Close Modal
+// Close Modal
 const handleClose = () => {
   emit('close') // Notify parent to close modal
 }
 </script>
-
 
 <template>
   <div
@@ -129,9 +130,18 @@ const handleClose = () => {
 
       <!-- Form Fields -->
       <form @submit.prevent="handleSubmit" class="tw-flex tw-flex-col tw-gap-5">
+        <!-- Image Upload -->
+        <div class="tw-flex tw-flex-col tw-gap-2">
+          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Company Image</label>
+          <input type="file" @change="handleImageChange" accept="image/*"
+                 class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2"/>
+          <img v-if="imagePreview" :src="imagePreview" alt="Profile Preview"
+               class="tw-w-24 tw-h-24 tw-rounded-md tw-mt-2"/>
+        </div>
+
         <!-- Name -->
         <div class="tw-flex tw-flex-col tw-gap-2">
-          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Name</label>
+          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Organization Name</label>
           <input v-model="form.name" type="text" placeholder="Enter Name" required
                  class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2 focus:tw-outline-none focus:tw-ring-1 focus:tw-ring-blue-400"/>
         </div>
@@ -151,10 +161,11 @@ const handleClose = () => {
         </div>
 
         <!-- Role Selection (Only for Superadmin) -->
-        <div class="tw-flex tw-flex-col tw-gap-2" v-if="UserRole === 'superadmin'">
+        <div class="tw-flex tw-flex-col tw-gap-2">
           <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Role</label>
           <select v-model="form.role"
-                  class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2 focus:tw-outline-none focus:tw-ring-1 focus:tw-ring-blue-400">
+                  class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2 focus:tw-outline-none focus:tw-ring-1 focus:tw-ring-blue-400"
+                  :disabled="UserRole !== 'superadmin'"> <!-- Lock role field for admins -->
             <option value="user">User</option>
             <option value="admin">Admin</option>
             <option value="superadmin">Superadmin</option>

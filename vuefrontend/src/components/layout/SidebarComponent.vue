@@ -44,7 +44,7 @@ const isActiveRoute = (routePath: string) => currentRoute.path.startsWith(routeP
 </script>
 
 <template>
-  <nav class="tw-bg-primary tw-flex-col tw-h-[100vh] tw-text-white tw-w-64 tw-py-5 tw-hidden md:tw-flex tw-fixed">
+  <nav class="tw-bg-primary tw-z-[20] tw-flex-col tw-h-[100vh] tw-text-white tw-w-64 tw-py-5 tw-hidden md:tw-flex tw-fixed">
     <div class="tw-flex tw-items-center tw-gap-3 tw-px-6 tw-mb-[50px]">
       <RouterLink to="/" class="tw-flex tw-items-center tw-gap-3">
         <Logo />
@@ -121,7 +121,7 @@ const isActiveRoute = (routePath: string) => currentRoute.path.startsWith(routeP
   </div>
 
   <!-- Mobile Drawer Toggle -->
-  <div class="tw-flex md:tw-hidden tw-items-center tw-gap-2 tw-bg-primary tw-py-2.5 tw-px-4">
+  <div class="tw-flex md:tw-hidden  tw-items-center tw-gap-2 tw-bg-primary tw-py-2.5 tw-px-4">
     <button @click="toggleDrawer">
       <svg xmlns="http://www.w3.org/2000/svg" class="tw-h-8 tw-w-8 tw-text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />

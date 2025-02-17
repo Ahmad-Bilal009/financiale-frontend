@@ -69,7 +69,7 @@ const formData = ref({
         </div>
 
         <div
-          class="tw-bg-white tw-shadow-md tw-border-[1.5px] tw-rounded-[24px] tw-gap-[13px] tw-p-[24px]"
+          class="tw-bg-white tw-flex tw-flex-col tw-shadow-md tw-border-[1.5px] tw-rounded-[24px] tw-gap-[13px] tw-p-[24px]"
         >
           <div class="tw-flex tw-flex-col tw-gap-[13px]">
             <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Product Type</h4>

@@ -15,12 +15,12 @@ const handleInput = (event: Event) => {
 </script>
 
 <template>
-  <div class="tw-relative">
+  <div class="tw-z-[-20]  tw-relative">
     <input
       type="text"
       @input="handleInput"
       :placeholder="placeholder"
-      class="tw-border-[1px] tw-relative tw-bg-white tw-text-[#8D98AF] tw-text-base tw-rounded-[10px] tw-pl-10 tw-pr-4 tw-py-3 tw-border-[#EFF1F5]"
+      class="tw-border-[1px] tw-relative tw-bg-white tw-text-[#8D98AF] tw-text-base tw-rounded-[10px] tw-pl-14 tw-pr-20 md:tw-pr-4 tw-py-3 tw-border-[#EFF1F5]"
     />
     <SreachIcon class="tw-absolute tw-left-3 tw-top-1/2 tw--translate-y-1/2" />
   </div>

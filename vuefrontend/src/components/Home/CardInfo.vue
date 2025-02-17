@@ -1,8 +1,14 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import ConnectModal from '../UI/Connect-Model/ConnectModel.vue';
+
+// Modal State
+const isModalOpen = ref(false)
+
+// Open Modal on Click
 const handleMoreInfo = () => {
-  console.log('More information clicked');
-  // Add your logic here
-};
+  isModalOpen.value = true
+}
 </script>
 
 <template>
@@ -10,9 +16,9 @@ const handleMoreInfo = () => {
     <!-- Header Section -->
     <div class="tw-flex tw-flex-col tw-items-center tw-text-center tw-gap-5">
       <!-- Bank Logo -->
-      <div class="tw-border-[1.5px] tw-border-gray-200 tw-rounded-[12px] ">
-        <img class="tw-w-[120px] sm:tw-w-[140px] tw-h-auto tw-rounded-[12px] tw-object-contain"
-          src="https://s3-alpha-sig.figma.com/img/7ac6/d013/b26dda17eea47503e46673af8f39d5e9?Expires=1739750400&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=j42rJzes4gJvqq0JCciFm1PGC~aAnkVlsw7osgnBMo2g5nwVH7M1Yy8eR98xyXZjON~bKThmWzFzLskVhCgtcpgUriLKvDBdHA-Mo6IoEZLXtgor87pORnEvGsLtA5aKrWq9c~agFLBGF7kSUQU6DgXG43m8XhbN62aiDBh4P6BrGuO-HIaZavbPp2m5zE2lxKVEKNX67-IryERpSmfnKCTFh~i9KH5lseg7ERItBylNY2CwN2jDC9KrcPV51ZJOHobbOx1eMWCD6TUJDSt7a3gB56wEoYdumb8rZcMi4kfoTVuTfpxwK-regOArXDNpmWQsXlsPpygFZkCMWki7~A__"
+      <div class="tw-border-[1.5px] tw-border-gray-200 tw-rounded-[21px] ">
+        <img class="tw-w-[120px] sm:tw-w-[140px] tw-h-[140px] tw-rounded-[21px] tw-object-contain"
+          src="../../../public/bicomoney.png"
           alt="INV Bank Logo"
         />
       </div>
@@ -38,7 +44,7 @@ const handleMoreInfo = () => {
         >
           <span>Connect</span>
           <div class="tw-flex tw-items-center tw-justify-center tw-w-8 tw-h-8 tw-bg-white tw-text-[#24B2E3] tw-rounded-full">
-            <img class="tw-w-[20px] tw-h-[20px]" src="../../../public/Group 21.png" alt="arrow-right">
+            <img class="tw-w-[20px] tw-h-[20px] " src="../../../public/Group 21.png" alt="arrow-right">
           </div>
         </button>
       </div>
@@ -54,7 +60,7 @@ const handleMoreInfo = () => {
 
         </div>
 
-        <div class="tw-bg-white tw-shadow-md tw-border-[1.5px] tw-rounded-[24px] tw-gap-[13px] tw-p-[24px]">
+        <div class=" tw-flex tw-flex-col tw-bg-white tw-shadow-md tw-border-[1.5px] tw-rounded-[24px] tw-gap-[13px] tw-p-[24px]">
 
           <div class="tw-flex tw-flex-col tw-gap-[13px]">
             <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500] ">Product Type</h4>
@@ -156,5 +162,6 @@ const handleMoreInfo = () => {
         </div>
       </div>
     </div>
+    <ConnectModal :isOpen="isModalOpen" @close="isModalOpen = false" />
   </div>
 </template>

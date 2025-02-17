@@ -3,6 +3,7 @@ const router = express.Router()
 const db = require('../db')
 const bcrypt = require('bcrypt')
 const { verifyToken, checkRole } = require('../middleware/authMiddleware')
+const upload = require('../middleware/upload')
 
 //  Get all users (Admin & Superadmin)
 router.get(
@@ -26,34 +27,40 @@ router.post(
   '/users',
   verifyToken,
   checkRole(['admin', 'superadmin']),
+  upload.single('image'), // Middleware for handling image uploads
   async (req, res) => {
     let { name, email, password, role, isDisabled = false } = req.body
 
-    //  Ensure role is not null (Default to "user" if not provided)
+    // Ensure role is not null (Default to "user" if not provided)
     if (!role) {
       role = 'user'
     }
 
-    //  Admin can only create "user", Superadmin can create any role
+    // Admin can only create "user", Superadmin can create any role
     if (req.user.role === 'admin' && role !== 'user') {
       return res.status(403).json({ message: 'Admins can only create users!' })
     }
 
     try {
       const hashedPassword = await bcrypt.hash(password, 10)
+
+      // Store image path if uploaded
+      const imagePath = req.file ? `/upload/${req.file.filename}` : null
+
       db.query(
-        'INSERT INTO users (name, email, password, role, isDisabled) VALUES (?, ?, ?, ?, ?)',
-        [name, email, hashedPassword, role, isDisabled],
+        'INSERT INTO users (name, email, password, role, isDisabled, image) VALUES (?, ?, ?, ?, ?, ?)',
+        [name, email, hashedPassword, role, isDisabled, imagePath],
         (err, result) => {
           if (err) {
-            console.error('❌ Database error:', err.message)
+            console.error(' Database error:', err.message)
             return res
               .status(500)
               .json({ message: 'Database error', error: err.message })
           }
           res.json({
             message: 'User added successfully!',
-            userId: result.insertId
+            userId: result.insertId,
+            imageUrl: imagePath ? `http://localhost:5000${imagePath}` : null // Return full image URL
           })
         }
       )
@@ -96,7 +103,7 @@ router.put(
     //  Execute SQL query
     db.query(query, values, (err, result) => {
       if (err) {
-        console.error('❌ Database error:', err.message)
+        console.error(' Database error:', err.message)
         return res
           .status(500)
           .json({ message: 'Database error', error: err.message })

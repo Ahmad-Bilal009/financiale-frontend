@@ -7,7 +7,7 @@
         >
           <th class="tw-px-4 tw-py-6 tw-cursor-pointer" @click="handleSort('sr')">
             <div class="tw-flex tw-items-center tw-justify-start tw-gap-3.5">
-              Sr# <ArrowDownIcon />
+             ID <ArrowDownIcon />
             </div>
           </th>
           <th
@@ -49,33 +49,48 @@
               :key="column.key"
               :class="`tw-px-4 tw-py-[27px] text-${column.align}`"
             >
-              <div
-                v-if="column.key === 'action'"
-                class="tw-flex tw-items-center tw-justify-center tw-gap-2"
-              >
-                <RouterLink
-                  :to="`${props.link}/view/${index}`"
-                  class="tw-border-[1px] hover:tw-bg-gray-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
+
+              <template v-if="column.key === 'status'">
+                <span
+                  class="tw-p-[8px] tw-rounded-[8px] tw-font-semibold tw-text-[12px] tw-uppercase"
+                  :class="{
+                    'tw-bg-[#D1FCF3] tw-text-[#0C796B] tw-border tw-border-[#18B3A0]': rowData.status?.toLowerCase() === 'approved',
+                    'tw-bg-[#FFEDEA] tw-text-[#D21E1E] tw-border tw-border-[#F22424]': rowData.status?.toLowerCase() === 'rejected',
+                    'tw-bg-[#D1E5FC] tw-text-[#1849B3] tw-border tw-border-[#1849B3]': rowData.status?.toLowerCase() === 'pending',
+                  }"
                 >
-                  <ViewEyeIcon />
-                </RouterLink>
-                <RouterLink
-                  :to="`${props.link}/edit/${index}`"
-                  class="tw-border-[1px] hover:tw-bg-gray-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
-                >
-                  <EditIcon />
-                </RouterLink>
-                <button
-                  v-if="props.onDelete"
-                  @click="deleteItem(index)"
-                  class="tw-border-[1px] hover:tw-bg-red-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
-                >
-                  <DeleteIcon />
-                </button>
-              </div>
-              <div v-else>
-                {{ renderCell(rowData, column.key) }}
-              </div>
+                  {{ rowData.status ? rowData.status.toUpperCase() : 'N/A' }}
+                </span>
+              </template>
+
+
+              <template v-else-if="column.key === 'action'">
+                <div class="tw-flex tw-items-center tw-justify-center tw-gap-2">
+                  <RouterLink
+                    :to="`${props.link}/view/${index}`"
+                    class="tw-border-[1px] hover:tw-bg-gray-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
+                  >
+                    <ViewEyeIcon />
+                  </RouterLink>
+                  <RouterLink
+                    :to="`${props.link}/edit/${index}`"
+                    class="tw-border-[1px] hover:tw-bg-gray-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
+                  >
+                    <EditIcon />
+                  </RouterLink>
+                  <button
+                    v-if="props.onDelete"
+                    @click="deleteItem(index)"
+                    class="tw-border-[1px] hover:tw-bg-red-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
+                  >
+                    <DeleteIcon />
+                  </button>
+                </div>
+              </template>
+
+              <template v-else>
+                {{ rowData[column.key] || 'N/A' }}
+              </template>
             </td>
           </template>
         </tr>
@@ -112,6 +127,8 @@ const renderCell = (row: { [key: string]: string }, columnKey: string) => {
       return row.location
     case 'stage':
       return row.stage
+    case 'status':
+      return row.status
     default:
       return 'N/A'
   }
@@ -127,4 +144,3 @@ const deleteItem = (index: number) => {
   }
 }
 </script>
- 

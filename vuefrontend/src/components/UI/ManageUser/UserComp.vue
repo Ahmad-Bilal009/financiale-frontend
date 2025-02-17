@@ -57,7 +57,7 @@ const toggleUserStatus = async (user: UserData) => {
     }
 
   } catch (error) {
-    toast.error(`❌ Failed to update user status: ${error}`);
+    toast.error(` Failed to update user status: ${error}`);
   }
 }
 
@@ -68,6 +68,7 @@ const renderCell = (row: UserData, columnKey: string) => {
     case 'name': return row.name
     case 'email': return row.email
     case 'role': return row.role
+    case 'password': return row.password
     case 'isDisabled': return row.isDisabled ? 'Disabled' : 'Active'
     default: return ''
   }
@@ -79,15 +80,15 @@ const renderCell = (row: UserData, columnKey: string) => {
     <table class="tw-table-auto tw-w-full">
       <thead>
         <tr class="tw-border-b tw-text-base tw-font-medium tw-capitalize tw-text-[#8D98AF]">
-          <th class="tw-px-4 tw-py-6 tw-cursor-pointer" @click="handleSort('sr')">
+          <th class="tw-px-4 tw-py-4 tw-cursor-pointer" @click="handleSort('sr')">
             <div class="tw-flex tw-items-center tw-gap-3.5">
-              Sr# <ArrowDownIcon />
+             ID <ArrowDownIcon />
             </div>
           </th>
           <th
             v-for="column in props.columns"
             :key="column.key"
-            class="tw-px-4 tw-py-6 tw-cursor-pointer"
+            class="tw-px-4 tw-py-4 tw-cursor-pointer"
             @click="handleSort(column.key)"
           >
             <div class="tw-flex tw-items-center tw-gap-3.5">
@@ -102,12 +103,15 @@ const renderCell = (row: UserData, columnKey: string) => {
           :key="rowData.id"
           class="tw-border-b tw-text-sm tw-font-normal tw-text-[#0E0E0E]"
         >
-          <td class="tw-px-4 tw-py-[27px] text-left">{{ index + 1 }}</td>
-          <td v-for="column in props.columns" :key="column.key" class="tw-px-4 tw-py-[27px]">
+          <td class="tw-px-4 tw-py-[15px] text-left">{{ index + 1 }}</td>
+          <td v-for="column in props.columns" :key="column.key" class="tw-px-4 tw-py-[12px]">
             <!--  Action Buttons -->
             <div v-if="column.key === 'action'" class="tw-flex tw-items-center tw-gap-2">
-              <ViewEyeIcon />
-              <button @click="$emit('editUser', rowData)" class="tw-text-white tw-px-4 tw-py-2 tw-rounded">
+              <div class="tw-border-[1px] hover:tw-bg-gray-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer">
+                <ViewEyeIcon />
+              </div>
+
+              <button @click="$emit('editUser', rowData)" class="tw-border-[1px] hover:tw-bg-gray-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer">
                 <EditIcon />
               </button>
             </div>
@@ -118,9 +122,18 @@ const renderCell = (row: UserData, columnKey: string) => {
                 :model-value="rowData.isDisabled"
                 hide-details
                 inset
-                :color="rowData.isDisabled ? 'error' : 'success'"
+                :color="rowData.isDisabled ? 'success' : 'success'"
                 @change="toggleUserStatus(rowData)"
               />
+            </div>
+
+            <div v-else-if="column.key === 'delete' && computedVariant === 'action'">
+              <button
+                  class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium tw-ml-2"
+                  @click="openModal"
+                >
+                  Delete
+                </button>
             </div>
 
             <!--  Default Cell Rendering -->

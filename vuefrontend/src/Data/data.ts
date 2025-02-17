@@ -50,6 +50,7 @@ export const columnsVariant2 = [
   { key: 'location', label: 'Location', align: 'center' },
   { key: 'stage', label: 'Stage', align: 'center' },
   { key: 'action', label: 'Action', align: 'center' },
+  { key: 'status', label: 'Status', align: 'center'}
 ]
 
 export const productsVariant2 = [

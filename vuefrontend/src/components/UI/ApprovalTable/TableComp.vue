@@ -27,6 +27,8 @@ const renderCell = (row: { [key: string]: string }, columnKey: string) => {
       return row.location
     case 'stage':
       return row.stage
+    case 'createdAt':
+      return row.createdAt
     default:
       return ''
   }
@@ -60,7 +62,7 @@ const deleteItem = (index: number) => {
         >
           <th class="tw-px-4 tw-py-6 tw-cursor-pointer" @click="handleSort('sr')">
             <div class="tw-flex tw-items-center tw-justify-start tw-gap-3.5">
-              Sr# <ArrowDownIcon />
+             ID <ArrowDownIcon />
             </div>
           </th>
           <th

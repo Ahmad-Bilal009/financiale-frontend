@@ -1,3 +1,18 @@
+<script lang="ts">
+
+
+export default {
+  name: 'CardsComponent',
+  methods: {
+    handleMoreInfo() {
+      // Implement desired action when button is clicked
+      alert('More information clicked!');
+    },
+  },
+};
+</script>
+
+
 <template>
   <div class="tw-flex tw-justify-center tw-flex-wrap tw-gap-[20px] tw-mb-[40px]">
       <div class="tw-border tw-justify-between tw-flex tw-flex-col tw-p-4 tw-gap-[13px] tw-rounded-[24px] tw-border-[1.5px] tw-w-[400px]  tw-border-gray-200 hover:tw-border-[#1570EF] tw-shadow tw-bg-white tw-overflow-hidden">
@@ -6,7 +21,7 @@
           <div class="tw-flex tw-items-center tw-justify-between">
             <div class="tw-border-[1.5px] tw-border-gray-200 tw-rounded-[12px]">
               <img class="tw-w-[80px] tw-h-[80px] tw-rounded-[12px] tw-object-contain"
-                src="https://s3-alpha-sig.figma.com/img/d84d/1ca5/d666a529659dd0066b8b3aada52f452d?Expires=1739750400&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=TV0Wjso6~GhbDB6kZ~X5WAkPLEyd9rGf3JXnbV~Q~XGgGZtjByfotbFhrRNgWy9sKDP8w8oayMGmaKAVN9mxQG7Xx4t6VMsJTyeguchR4MywVjX~bCC-rjHJs7rIo7WJ6SzZHqBZbPymJUiMpE23Sdgfl9fNrDqvl0-AvtnDKUh9Lmd0TTxFBOGc22aDE5MNFDddLRKuotvTFdTKvzTxDUl~KpG0cnyPsdfsnbcoeNYQXe-9ln99zTNTz2Nb1q0DsJa8qgkEdHBQI5XzYnzdHaOLdmTc~SFS41cZajqIyqD3QxBBuaBBFNwAATamJsPyyKNcDqLIIeiPFG3USTkOXA__"
+                src="../../../public/Rectangle 1.png"
                 alt="INV Bank Logo"
 
               />
@@ -51,10 +66,10 @@
         <div class=" tw-border-gray-200 tw-p-4 tw-text-center">
           <router-link to="/cardInfo">
             <button
-              class="tw-bg-[#DBF0FA] hover:tw-bg-blue-700 tw-text-[#24B2E3] tw-text-sm tw-font-medium tw-py-2 tw-px-4 tw-rounded-md"
+              class="tw-bg-white border tw-border-[#24B2E3] hover:tw-bg-blue-[#24B2E3] tw-text-[#24B2E3] tw-text-sm tw-font-medium tw-py-2 tw-px-4 tw-rounded-md"
 
             >
-              More information
+              More informaton
 
             </button>
           </router-link>
@@ -72,7 +87,7 @@
           <div class="tw-flex tw-items-center tw-justify-between">
             <div class="tw-border-[1.5px] tw-border-gray-200 tw-rounded-[12px]">
             <img class="tw-w-[80px] tw-h-[80px] tw-rounded-[12px] tw-object-contain"
-              src="https://s3-alpha-sig.figma.com/img/bca7/58ed/940c9715ce6bfabc052d6a59e55c89a8?Expires=1739750400&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=bBVGQldankOk5Um-i2Per8DIEUTAzKPw8Wa0HDHyz6a3-ZS~0oyK5AIlAFlBaj2mKyewh1P0PutZN7aqS8lqowU8UYmptwDEuU5e6WR98GjEeJ94o1zYxCyuAvJJBueVv4kuoj04HxJgr0H-cVYDB~K6jBnGJytoaqpWneGXOc4puI6kgJVlChndqBNlUC8QnlhMtvK8Ecx90z~31uAZ9K0AwyEcmWr0Yvsnsxo5hypLCr6lgFjeuS8Qd0iUXL-~Ig~eQp7QaPfXC1rdl8J-SNZTLB1uIUW649nbhsMSxINj5jcMjx~PfBxJAo9V17MraWBro~l1wbUJxNozM5CXxg__"
+              src="../../../public/High-Rize.png"
               alt="INV Bank Logo"
 
             />
@@ -126,7 +141,7 @@
           <div class="tw-flex tw-items-center tw-justify-between">
             <div class="tw-border-[1.5px] tw-border-gray-200 tw-rounded-[12px]">
               <img class="tw-w-[80px] tw-h-[80px] tw-rounded-[12px] tw-border-[1px] tw-object-contain"
-                src="https://s3-alpha-sig.figma.com/img/7ac6/d013/b26dda17eea47503e46673af8f39d5e9?Expires=1739750400&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=j42rJzes4gJvqq0JCciFm1PGC~aAnkVlsw7osgnBMo2g5nwVH7M1Yy8eR98xyXZjON~bKThmWzFzLskVhCgtcpgUriLKvDBdHA-Mo6IoEZLXtgor87pORnEvGsLtA5aKrWq9c~agFLBGF7kSUQU6DgXG43m8XhbN62aiDBh4P6BrGuO-HIaZavbPp2m5zE2lxKVEKNX67-IryERpSmfnKCTFh~i9KH5lseg7ERItBylNY2CwN2jDC9KrcPV51ZJOHobbOx1eMWCD6TUJDSt7a3gB56wEoYdumb8rZcMi4kfoTVuTfpxwK-regOArXDNpmWQsXlsPpygFZkCMWki7~A__"
+                src="../../../public/bicomoney.png"
                 alt="INV Bank Logo"
 
               />
@@ -177,7 +192,7 @@
           <div class="tw-flex tw-items-center tw-justify-between">
             <div class="tw-border-[1.5px] tw-border-gray-200 tw-rounded-[12px]">
               <img class="tw-w-[80px] tw-h-[80px] tw-rounded-[12px] tw-border-[1px] tw-object-contain"
-                src="https://s3-alpha-sig.figma.com/img/ed86/947b/66069fe465d4ad780eb8f2a4ebbf9c2a?Expires=1739750400&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=KainttR~oZie0OrAS0SkcCXqeerpX0zEYY94PUoq-srxQ8mW5IFKVqRsoT5q9nrkQCzTSA8PMDNMMnb5mOxFnnsBq4mJIW0XKjeK8iGLwkDcSkVM0yPAK7nsdv363Hu49TvOuX8u4jzrjANnZDeLQJNqcZu9psUp~gXxCcX7uhsSmdfMAH-ziaXceGNdFqGZ~GyScFm5jvoo6ib-tJ4KPfMdoQbRA2crWsgB-Vjq9NoChYQf6FpwJEP2zlwVv0Gh0vpBLWWYwpLQgr4u~XSXrGeMVmK0APm77j1~wzVtT11xfk-tQ8AuTDFWU1bDvJq3EuQQiFl8FJhSIfoZSYax1w__"
+                src="../../../public/conoce.png"
                 alt="INV Bank Logo"
 
               />
@@ -238,7 +253,7 @@
           <div class="tw-flex tw-items-center tw-justify-between">
             <div class="tw-border-[1.5px] tw-border-gray-200 tw-rounded-[12px]">
               <img class="tw-w-[80px] tw-h-[80px] tw-rounded-[12px] tw-border-[1px] tw-object-contain"
-                src="https://s3-alpha-sig.figma.com/img/eecd/b7e6/eaaab2a696a7455584fea9666c08ace9?Expires=1739750400&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=jilDBtnCsKT0HN446rmYfWUlMToniiVN1GfFOMDsU0zjJe3KWMwDiCjCBC-zNTfs9L~m4yZz6NMXu4acHaRS-0NF5r-FgqR-dDXNTwgrNllYS11CHbqLqK2yiDKnpROkREEZfsLXvdUpj6y~tZFGnHwgg55n26G1D4Jn8IGddZ0Ge5F~WtFacKuePt8IU6bwhi0KtmbchKUNQDjYgY4aa9z~hmDoW9sl~sTp7S9CLC8d8QY-fh~7wPU8Ti~oFJniy6PsjQRg4ZzJvxqALSqnp2PGWb9gg5KbMQ97EsOpbKcoRVJhErPK-lGrvqlufl0wFkncphOpD2nJEiUSayiROQ__"
+                src="../../../public/bi-vertical.png"
                 alt="INV Bank Logo"
 
               />
@@ -289,7 +304,7 @@
           <div class="tw-flex tw-items-center tw-justify-between">
             <div class="tw-border-[1.5px] tw-border-gray-200 tw-rounded-[12px]">
               <img class="tw-w-[80px] tw-h-[80px] tw-rounded-[12px] tw-border-[1px] tw-object-contain"
-                src="https://s3-alpha-sig.figma.com/img/7ac6/d013/b26dda17eea47503e46673af8f39d5e9?Expires=1739750400&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=j42rJzes4gJvqq0JCciFm1PGC~aAnkVlsw7osgnBMo2g5nwVH7M1Yy8eR98xyXZjON~bKThmWzFzLskVhCgtcpgUriLKvDBdHA-Mo6IoEZLXtgor87pORnEvGsLtA5aKrWq9c~agFLBGF7kSUQU6DgXG43m8XhbN62aiDBh4P6BrGuO-HIaZavbPp2m5zE2lxKVEKNX67-IryERpSmfnKCTFh~i9KH5lseg7ERItBylNY2CwN2jDC9KrcPV51ZJOHobbOx1eMWCD6TUJDSt7a3gB56wEoYdumb8rZcMi4kfoTVuTfpxwK-regOArXDNpmWQsXlsPpygFZkCMWki7~A__"
+                src="../../../public/bicomoney.png"
                 alt="INV Bank Logo"
 
               />
@@ -490,14 +505,4 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  name: 'CardsComponent',
-  methods: {
-    handleMoreInfo() {
-      // Implement desired action when button is clicked
-      alert('More information clicked!');
-    },
-  },
-};
-</script>
+

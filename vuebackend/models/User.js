@@ -27,7 +27,22 @@ const User = sequelize.define("User", {
   isDisabled: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
-  }
+  },
+  image: {
+    type: DataTypes.STRING, // Store image path
+    allowNull: true,
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+},
+  {
+    timestamps: false
 });
 
 module.exports = User;

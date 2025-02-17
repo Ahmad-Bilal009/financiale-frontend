@@ -17,10 +17,6 @@ const Product = sequelize.define("Product", {
     },
     onDelete: "CASCADE",
   },
-  image: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   title: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -38,7 +34,7 @@ const Product = sequelize.define("Product", {
     allowNull: false,
   },
   creditGuarantees: {
-    type: DataTypes.JSON,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
   stageOfEntrepreneurship: {
@@ -50,7 +46,7 @@ const Product = sequelize.define("Product", {
     allowNull: false,
   },
   benefitsOfEntrepreneurship: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
   geographicCoverage: {
