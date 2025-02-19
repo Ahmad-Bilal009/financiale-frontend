@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, defineEmits } from 'vue'
 
-// State to track which button is active
+// **Emitir evento al padre**
+const emit = defineEmits(['filterChange'])
+
+// **Rastrear el filtro activo**
 const activeFilter = ref('all')
 
-// Function to toggle the selected filter
+// **Función para alternar el filtro seleccionado**
 const toggleFilter = (filter: string) => {
   activeFilter.value = filter
+  emit('filterChange', filter) // ✅ Emitir cambio al padre
 }
 </script>
 
 <template>
   <div class="tw-flex tw-gap-2 tw-justify-center tw-bg-white tw-rounded-[10px] tw-p-2">
-    <!-- All Button -->
+    <!-- Botón Todos -->
     <button
       :class="[
         'tw-text-base tw-font-medium tw-rounded-[6px] tw-capitalize tw-px-8 md:tw-px-5 tw-py-1',
@@ -20,10 +24,10 @@ const toggleFilter = (filter: string) => {
       ]"
       @click="toggleFilter('all')"
     >
-      All
+      Todos
     </button>
 
-    <!-- Approved Button -->
+    <!-- Botón Aprobados -->
     <button
       :class="[
         'tw-text-base tw-font-medium tw-rounded-[6px] tw-capitalize tw-px-8 md:tw-px-5 tw-py-1',
@@ -31,10 +35,10 @@ const toggleFilter = (filter: string) => {
       ]"
       @click="toggleFilter('approved')"
     >
-      Approved
+      Aprobados
     </button>
 
-    <!-- Rejected Button -->
+    <!-- Botón Rechazados -->
     <button
       :class="[
         'tw-text-base tw-font-medium tw-rounded-[6px] tw-capitalize tw-px-8 md:tw-px-5 tw-py-1',
@@ -42,7 +46,7 @@ const toggleFilter = (filter: string) => {
       ]"
       @click="toggleFilter('rejected')"
     >
-      Rejected
+      Rechazados
     </button>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, defineProps } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import Logo from '@/assets/svg/Logo.svg'
+import Logo from '@/assets/svg/Logogo.svg'
 import Dashboard from '@/assets/svg/dashboard.svg'
 import Products from '@/assets/svg/product.svg'
 import Settings from '@/assets/svg/setting.svg'
@@ -23,13 +23,13 @@ const isDrawerOpen = ref(false)
 
 // 📌 Define routes with role-based access control
 const routes = [
-  { path: '/dashboard', name: 'Dashboard', icon: Dashboard, roles: ['admin', 'user'] },
-  { path: '/products', name: 'Products', icon: Products, roles: ['user'] },
-  { path: '/settings', name: 'Settings', icon: Settings, roles: ['user'] },
-  { path: '/product-approval', name: 'Product Approvals', icon: Approval, roles: ['admin'] },
-  { path: '/manage-users', name: 'Manage Users', icon: User, roles: ['admin'] },
-  { path: '/super-admin-manage-users', name: 'Manage Users', icon: User, roles: ['superadmin'] },
-  { path: '/product-handling', name: 'Product Handling', icon: Tag, roles: ['admin'] },
+  { path: '/dashboard', name: 'Panel de Control', icon: Dashboard, roles: ['admin', 'user'] },
+  { path: '/products', name: 'Productos', icon: Products, roles: ['user'] },
+  { path: '/settings', name: 'Configuraciones', icon: Settings, roles: ['user'] },
+  { path: '/product-approval', name: 'Aprobaciones de Productos', icon: Approval, roles: ['admin'] },
+  { path: '/manage-users', name: 'Gestionar Usuarios', icon: User, roles: ['admin'] },
+  { path: '/super-admin-manage-users', name: 'Gestionar Usuarios', icon: User, roles: ['superadmin'] },
+  { path: '/product-handling', name: 'Manejo de Productos', icon: Tag, roles: ['admin'] },
 ]
 
 // 🔥 Filter routes dynamically based on user role
@@ -47,8 +47,7 @@ const isActiveRoute = (routePath: string) => currentRoute.path.startsWith(routeP
   <nav class="tw-bg-primary tw-z-[20] tw-flex-col tw-h-[100vh] tw-text-white tw-w-64 tw-py-5 tw-hidden md:tw-flex tw-fixed">
     <div class="tw-flex tw-items-center tw-gap-3 tw-px-6 tw-mb-[50px]">
       <RouterLink to="/" class="tw-flex tw-items-center tw-gap-3">
-        <Logo />
-        <span class="tw-text-xl tw-font-bold">Ministerio de</span>
+        <Logo class="tw-w-40 tw-h-20" />
       </RouterLink>
     </div>
 
@@ -68,13 +67,13 @@ const isActiveRoute = (routePath: string) => currentRoute.path.startsWith(routeP
           ></div>
         </div>
       </template>
-      <div v-else class="tw-text-center tw-text-gray-300 tw-py-4">No accessible routes</div>
+      <div v-else class="tw-text-center tw-text-gray-300 tw-py-4">No hay rutas accesibles</div>
     </div>
 
     <div class="tw-mt-auto tw-px-6">
       <RouterLink to="/login" class="tw-flex tw-items-center tw-text-glow tw-font-normal tw-text-base tw-gap-2 tw-p-2">
         <Logout />
-        <span>Logout</span>
+        <span>Cerrar sesión</span>
       </RouterLink>
     </div>
   </nav>
@@ -109,13 +108,13 @@ const isActiveRoute = (routePath: string) => currentRoute.path.startsWith(routeP
           </RouterLink>
         </div>
       </template>
-      <div v-else class="tw-text-center tw-text-gray-300 tw-py-4">No accessible routes</div>
+      <div v-else class="tw-text-center tw-text-gray-300 tw-py-4">No hay rutas accesibles</div>
     </div>
 
     <div class="tw-mt-auto tw-px-6">
       <RouterLink to="/login" class="tw-flex tw-items-center tw-text-glow tw-font-normal tw-text-base tw-gap-2 tw-p-2" @click="closeDrawer">
         <Logout />
-        <span>Logout</span>
+        <span>Cerrar sesión</span>
       </RouterLink>
     </div>
   </div>

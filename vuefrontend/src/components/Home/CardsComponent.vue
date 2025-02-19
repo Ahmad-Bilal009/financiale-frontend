@@ -6,7 +6,7 @@ export default {
   methods: {
     handleMoreInfo() {
       // Implement desired action when button is clicked
-      alert('More information clicked!');
+      alert('Más información clicked!');
     },
   },
 };
@@ -62,14 +62,14 @@ export default {
 
         </div>
 
-        <!-- Footer with "More information" button -->
+        <!-- Footer with "Más información" button -->
         <div class=" tw-border-gray-200 tw-p-4 tw-text-center">
           <router-link to="/cardInfo">
             <button
               class="tw-bg-white border tw-border-[#24B2E3] hover:tw-bg-blue-[#24B2E3] tw-text-[#24B2E3] tw-text-sm tw-font-medium tw-py-2 tw-px-4 tw-rounded-md"
 
             >
-              More informaton
+              Más información
 
             </button>
           </router-link>
@@ -119,14 +119,14 @@ export default {
 
         </div>
 
-        <!-- Footer with "More information" button -->
+        <!-- Footer with "Más información" button -->
         <div class=" tw-border-gray-200 tw-p-4 tw-text-center">
           <router-link to="/cardInfo">
             <button
               class="tw-bg-[#DBF0FA] hover:tw-bg-blue-700 tw-text-[#24B2E3] tw-text-sm tw-font-medium tw-py-2 tw-px-4 tw-rounded-md"
 
             >
-              More information
+              Más información
 
             </button>
           </router-link>
@@ -170,14 +170,14 @@ export default {
 
         </div>
 
-        <!-- Footer with "More information" button -->
+        <!-- Footer with "Más información" button -->
         <div class=" tw-border-gray-200 tw-p-4 tw-text-center">
           <router-link to="/cardInfo">
             <button
               class="tw-bg-[#DBF0FA] hover:tw-bg-blue-700 tw-text-[#24B2E3] tw-text-sm tw-font-medium tw-py-2 tw-px-4 tw-rounded-md"
 
             >
-              More information
+              Más información
 
             </button>
           </router-link>
@@ -233,13 +233,13 @@ export default {
 
         </div>
 
-        <!-- Footer with "More information" button -->
+        <!-- Footer with "Más información" button -->
         <div class=" tw-border-gray-200 tw-p-4 tw-text-center">
           <button
             class="tw-bg-[#DBF0FA] hover:tw-bg-blue-700 tw-text-[#24B2E3] tw-text-sm tw-font-medium tw-py-2 tw-px-4 tw-rounded-md"
             @click="handleMoreInfo"
           >
-            More information
+            Más información
 
           </button>
         </div>
@@ -284,13 +284,13 @@ export default {
 
         </div>
 
-        <!-- Footer with "More information" button -->
+        <!-- Footer with "Más información" button -->
         <div class=" tw-border-gray-200 tw-p-4 tw-text-center">
           <button
             class="tw-bg-[#DBF0FA] hover:tw-bg-blue-700 tw-text-[#24B2E3] tw-text-sm tw-font-medium tw-py-2 tw-px-4 tw-rounded-md"
             @click="handleMoreInfo"
           >
-            More information
+            Más información
 
           </button>
         </div>
@@ -331,13 +331,13 @@ export default {
 
         </div>
 
-        <!-- Footer with "More information" button -->
+        <!-- Footer with "Más información" button -->
         <div class=" tw-border-gray-200 tw-p-4 tw-text-center">
           <button
             class="tw-bg-[#DBF0FA] hover:tw-bg-blue-700 tw-text-[#24B2E3] tw-text-sm tw-font-medium tw-py-2 tw-px-4 tw-rounded-md"
             @click="handleMoreInfo"
           >
-            More information
+            Más información
 
           </button>
         </div>
@@ -392,13 +392,13 @@ export default {
 
         </div>
 
-        <!-- Footer with "More information" button -->
+        <!-- Footer with "Más información" button -->
         <div class=" tw-border-gray-200 tw-p-4 tw-text-center">
           <button
             class="tw-bg-[#DBF0FA] hover:tw-bg-blue-700 tw-text-[#24B2E3] tw-text-sm tw-font-medium tw-py-2 tw-px-4 tw-rounded-md"
             @click="handleMoreInfo"
           >
-            More information
+            Más información
 
           </button>
         </div>
@@ -443,13 +443,13 @@ export default {
 
         </div>
 
-        <!-- Footer with "More information" button -->
+        <!-- Footer with "Más información" button -->
         <div class=" tw-border-gray-200 tw-p-4 tw-text-center">
           <button
             class="tw-bg-[#DBF0FA] hover:tw-bg-blue-700 tw-text-[#24B2E3] tw-text-sm tw-font-medium tw-py-2 tw-px-4 tw-rounded-md"
             @click="handleMoreInfo"
           >
-            More information
+            Más información
 
           </button>
         </div>
@@ -490,13 +490,13 @@ export default {
 
         </div>
 
-        <!-- Footer with "More information" button -->
+        <!-- Footer with "Más información" button -->
         <div class=" tw-border-gray-200 tw-p-4 tw-text-center">
           <button
             class="tw-bg-[#DBF0FA] hover:tw-bg-blue-700 tw-text-[#24B2E3] tw-text-sm tw-font-medium tw-py-2 tw-px-4 tw-rounded-md"
             @click="handleMoreInfo"
           >
-            More information
+            Más información
 
           </button>
         </div>

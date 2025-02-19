@@ -168,28 +168,28 @@ const limitedUsers = computed(() => users.value.slice(0, 5))
 
 // Dashboard Summary Items
 const items = computed(() => [
-  { title: 'Total Products', number: stats.value.totalProducts },
-  { title: 'Created Today', number: stats.value.createdToday },
-  { title: 'Created this Week', number: stats.value.createdThisWeek },
-  { title: 'Created this Month', number: stats.value.createdThisMonth },
+  { title: 'Total de Productos', number: stats.value.totalProducts },
+  { title: 'Creados Hoy', number: stats.value.createdToday },
+  { title: 'Creados esta Semana', number: stats.value.createdThisWeek },
+  { title: 'Creados este Mes', number: stats.value.createdThisMonth },
 ])
 
 const visitorsAndProduct = computed(() => [
-  { title: 'Total Products', number: stats.value.totalProducts },
-  { title: 'Total Organizations', number: stats.value.totalUsers },
-  { title: 'Total Visitors', number: stats.value.totalVisitors },
+  { title: 'Total de Productos', number: stats.value.totalProducts },
+  { title: 'Total de Organizaciones', number: stats.value.totalUsers },
+  { title: 'Total de Visitantes', number: stats.value.totalVisitors },
 
 ])
 
 const tableheading = computed(() => {
   const baseColumns = [
-    { key: "title", label: "Title", align: "center" },
-    { key: "organization", label: "Organization", align: "center" },
-    { key: "location", label: "Location", align: "center" },
-    { key: "stage", label: "Stage", align: "center" },
+    { key: "title", label: "Título", align: "center" },
+    { key: "organization", label: "Organización", align: "center" },
+    { key: "location", label: "Ubicación", align: "center" },
+    { key: "stage", label: "Etapa", align: "center" },
   ];
   if (isAdmin) {
-    baseColumns.push({ key: "action", label: "Action", align: "center" });
+    baseColumns.push({ key: "action", label: "Acción", align: "center" });
   }
   return baseColumns;
 });
@@ -214,9 +214,9 @@ const handleSort = (key: string) => {
       <!-- Products Table (Only Show if User Has Products) -->
       <div v-if="hasProducts" class="tw-flex tw-flex-col tw-gap-6 tw-p-5 tw-bg-white tw-rounded-[20px]">
         <div class="tw-flex tw-justify-between tw-items-center">
-          <div class="tw-text-xl tw-font-medium">Your Products</div>
+          <div class="tw-text-xl tw-font-medium">Tus Productos</div>
           <RouterLink to="/products" class="tw-text-base tw-font-medium hover:tw-underline tw-text-[#0171EA]">
-            View all
+            Ver todos
           </RouterLink>
         </div>
         <TableComp :columns="tableheading" :rowData="limitedProducts" @sort="handleSort" link="/products" />
@@ -224,7 +224,7 @@ const handleSort = (key: string) => {
 
       <!-- No Products Message -->
       <div v-else class="tw-text-center tw-text-gray-500 tw-font-medium">
-        You haven't added any products yet.
+        Aún no has agregado ningún producto.
       </div>
     </template>
 
@@ -240,9 +240,9 @@ const handleSort = (key: string) => {
       <!-- Product Approval Table -->
       <div class="tw-flex tw-flex-col tw-mb-8 tw-gap-6 tw-p-5 tw-bg-white tw-rounded-[20px]">
         <div class="tw-flex tw-justify-between tw-items-center">
-          <div class="tw-text-xl tw-font-medium">Product Approval</div>
+          <div class="tw-text-xl tw-font-medium">Aprobación de Productos</div>
           <RouterLink to="/product-approval" class="tw-text-base tw-font-medium hover:tw-underline tw-text-[#0171EA]">
-            View all
+            Ver todos
           </RouterLink>
         </div>
         <ApprovalTableComp :columns="tableheading" :rowData="limitedProducts" @sort="handleSort" link="/products" variant="action" />
@@ -251,18 +251,18 @@ const handleSort = (key: string) => {
       <!-- Manage Users (Only for Admin) -->
       <div class="tw-flex tw-flex-col tw-mb-8 tw-gap-6 tw-p-5 tw-bg-white tw-rounded-[20px]">
         <div class="tw-flex tw-justify-between tw-items-center">
-          <div class="tw-text-xl tw-font-medium">Manage Users</div>
+          <div class="tw-text-xl tw-font-medium">Gestionar Usuarios</div>
           <RouterLink to="/manage-users" class="tw-text-base tw-font-medium hover:tw-underline tw-text-[#0171EA]">
-            View all
+            Ver todos
           </RouterLink>
         </div>
         <UserTableComp
           :columns="[
-            { key: 'name', label: 'Name', align: 'left' },
-            { key: 'email', label: 'Email', align: 'left' },
-            { key: 'password', label: 'Password', align: 'center' },
-            { key: 'action' , label: 'Action' , align: 'center'},
-            { key: 'isDisabled', label: 'Status', align: 'center' },
+            { key: 'name', label: 'Nombre', align: 'left' },
+            { key: 'email', label: 'Correo Electrónico', align: 'left' },
+            { key: 'password', label: 'Contraseña', align: 'center' },
+            { key: 'action' , label: 'Acción' , align: 'center'},
+            { key: 'isDisabled', label: 'Estado', align: 'center' },
           ]"
           :rowData="limitedUsers"
           @sort="handleSort"

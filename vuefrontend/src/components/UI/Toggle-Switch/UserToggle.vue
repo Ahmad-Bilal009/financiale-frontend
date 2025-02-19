@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, defineEmits } from 'vue'
 
-// State to manage which button is active
+// **Emitir evento al padre**
+const emit = defineEmits(['toggleStatus'])
+
+// **Rastrear el estado activo**
 const isApproved = ref(true)
 
-// Function to toggle the state
+// **Función para alternar el estado y emitir el evento**
 const toggleApproval = (state: boolean) => {
   isApproved.value = state
+  emit('toggleStatus', state) // ✅ Emitir evento con estado (true = Todos, false = Deshabilitados)
 }
 </script>
 
 <template>
   <div class="tw-flex tw-gap-2 tw-bg-white tw-rounded-[10px] tw-p-2">
-    <!-- Approved Button -->
+    <!-- Botón Todos -->
     <button
       :class="[
         'tw-text-base tw-font-medium tw-rounded-[6px] tw-capitalize tw-px-5 tw-py-1',
@@ -20,10 +24,10 @@ const toggleApproval = (state: boolean) => {
       ]"
       @click="toggleApproval(true)"
     >
-      All
+      Todos
     </button>
 
-    <!-- Rejected Button -->
+    <!-- Botón Deshabilitados -->
     <button
       :class="[
         'tw-text-base tw-font-medium tw-rounded-[6px] tw-capitalize tw-px-5 tw-py-1',
@@ -31,7 +35,7 @@ const toggleApproval = (state: boolean) => {
       ]"
       @click="toggleApproval(false)"
     >
-      Disabled
+      Deshabilitados
     </button>
   </div>
 </template>

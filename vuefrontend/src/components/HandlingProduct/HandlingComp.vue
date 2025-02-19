@@ -10,16 +10,14 @@ const toast = useToast();
 const products = ref([]);
 const usersMap = ref<Record<number, string>>({});
 
-
 const tableheading = ref([
-  { key: 'title', label: 'Title', align: 'center' },
-  { key: 'organization', label: 'Organization', align: 'center' },
-  { key: 'location', label: 'Location', align: 'center' },
-  { key: 'stage', label: 'Stage', align: 'center' },
-  { key: 'view', label: 'View', align: 'center' },
-  { key: 'action', label: 'Action', align: 'center' },
+  { key: 'title', label: 'Título', align: 'center' },
+  { key: 'organization', label: 'Organización', align: 'center' },
+  { key: 'location', label: 'Ubicación', align: 'center' },
+  { key: 'stage', label: 'Etapa', align: 'center' },
+  { key: 'view', label: 'Ver', align: 'center' },
+  { key: 'action', label: 'Acción', align: 'center' },
 ]);
-
 
 const fetchUsers = async () => {
   try {
@@ -29,17 +27,14 @@ const fetchUsers = async () => {
       return map;
     }, {});
   } catch (error) {
-    toast.error("Failed to fetch users");
+    toast.error("No se pudieron obtener los usuarios");
   }
 };
-
 
 const fetchProducts = async () => {
   try {
     await fetchUsers();
-
     const response = await productService.getProducts();
-
     products.value = response.map((product: any) => ({
       id: product.id,
       title: product.title,
@@ -50,7 +45,7 @@ const fetchProducts = async () => {
       createdAt: product.createdAt ? new Date(product.createdAt).toISOString().split("T")[0] : "N/A",
     }));
   } catch (error) {
-    toast.error("Failed to fetch products");
+    toast.error("No se pudieron obtener los productos");
   }
 };
 
@@ -61,12 +56,12 @@ const rejectedProducts = computed(() => {
 
 // **Search functionality**
 const search = (value: string) => {
-  console.log("Search query:", value);
+  console.log("Consulta de búsqueda:", value);
 };
 
 // **Sorting functionality**
 const handleSort = (key: string) => {
-  console.log(`Sorting by: ${key}`);
+  console.log(`Ordenando por: ${key}`);
 };
 
 onMounted(fetchProducts);
@@ -74,16 +69,15 @@ onMounted(fetchProducts);
 
 <template>
   <div class="tw-flex tw-flex-col tw-mb-12 tw-mt-12 tw-gap-12">
-    <!-- header -->
+    <!-- Encabezado -->
     <div class="md:tw-flex tw-justify-between md:tw-items-center">
-      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Rejected Products</div>
+      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Productos Rechazados</div>
       <div class="md:tw-flex tw-gap-5 tw-items-start md:tw-items-center">
-        <SearchBar :onSearch="search" placeholder="Search here..." />
+        <SearchBar :onSearch="search" placeholder="Buscar aquí..." />
       </div>
     </div>
-    <!-- header -->
 
-    <!-- Content -->
+    <!-- Contenido -->
     <div class="tw-flex tw-flex-col tw-gap-6 tw-p-5 tw-bg-white tw-rounded-[20px]">
       <HandlingTableComp
         :columns="tableheading"

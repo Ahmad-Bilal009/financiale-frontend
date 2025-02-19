@@ -50,10 +50,10 @@ const handleDropdownSelect = (option: Option, type: string) => {
   <div class="tw-mt-12 tw-flex tw-flex-col tw-gap-4">
     <!-- Header -->
     <div class="tw-text-[25px] tw-font-medium tw-leading-[48px] tw-text-primary md:tw-text-[40px]">
-      Financial Navigator
+      Navegador Financiero
     </div>
     <div class="tw-text-[16px] tw-font-normal tw-leading-[32px] tw-text-black">
-      Find financing options for your business.
+      Encuentra opciones de financiamiento para tu negocio.
     </div>
 
     <!-- Dropdown Filters -->
@@ -63,7 +63,7 @@ const handleDropdownSelect = (option: Option, type: string) => {
         <!-- Product Type Dropdown -->
         <div class="tw-flex tw-flex-col tw-gap-2 tw-w-full md:tw-w-auto">
           <label class="tw-text-[12px] md:tw-text-[14px] tw-font-medium tw-leading-[20px] tw-text-dark-gray">
-            Product Type
+            Tipo de Producto
           </label>
           <select v-model="selectedProductType" class="tw-w-full md:tw-min-w-[150px] lg:tw-min-w-[180px] tw-bg-white tw-shadow tw-rounded-[8px] tw-p-2">
             <option v-for="option in productTypeOptions" :key="option.key" :value="option">
@@ -75,7 +75,7 @@ const handleDropdownSelect = (option: Option, type: string) => {
         <!-- Stage Dropdown -->
         <div class="tw-flex tw-flex-col tw-gap-2 tw-w-full md:tw-w-auto">
           <label class="tw-text-[12px] md:tw-text-[14px] tw-font-medium tw-leading-[20px] tw-text-dark-gray">
-            Stage
+            Etapa
           </label>
           <select v-model="selectedStage" class="tw-w-full md:tw-min-w-[150px] lg:tw-min-w-[180px] tw-bg-white tw-shadow tw-rounded-[8px] tw-p-2">
             <option v-for="option in stageOptions" :key="option.key" :value="option">
@@ -87,7 +87,7 @@ const handleDropdownSelect = (option: Option, type: string) => {
         <!-- Organization Dropdown -->
         <div class="tw-flex tw-flex-col tw-gap-2 tw-w-full md:tw-w-auto">
           <label class="tw-text-[12px] md:tw-text-[14px] tw-font-medium tw-leading-[20px] tw-text-dark-gray">
-            Organization
+            Organización
           </label>
           <select v-model="selectedOrganization" class="tw-w-full md:tw-min-w-[150px] lg:tw-min-w-[180px] tw-bg-white tw-shadow tw-rounded-[8px] tw-p-2">
             <option v-for="option in organizationOptions" :key="option.key" :value="option">
@@ -99,7 +99,7 @@ const handleDropdownSelect = (option: Option, type: string) => {
         <!-- Location Dropdown -->
         <div class="tw-flex tw-flex-col tw-gap-2 tw-w-full md:tw-w-auto">
           <label class="tw-text-[12px] md:tw-text-[14px] tw-font-medium tw-leading-[20px] tw-text-dark-gray">
-            Location
+            Ubicación
           </label>
           <select v-model="selectedLocation" class="tw-w-full md:tw-min-w-[150px] lg:tw-min-w-[180px] tw-bg-white tw-shadow tw-rounded-[8px] tw-p-2">
             <option v-for="option in locationOptions" :key="option.key" :value="option">

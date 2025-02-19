@@ -4,12 +4,12 @@ import { useToast } from 'vue-toastification'
 import userService from '@/services/userService'
 import closeIcon from '@/assets/svg/cross-icon.svg'
 
-const toast = useToast() // Initialize toast notifications
+const toast = useToast()
 
-// Define Props
+// **Define Props**
 const props = defineProps({
   isOpen: Boolean,
-  mode: String, // "add" or "edit"
+  mode: String, // "add", "edit", or "view"
   userData: {
     type: Object,
     default: () => ({
@@ -22,13 +22,13 @@ const props = defineProps({
   },
 })
 
-// Emit events
+// **Emit Events**
 const emit = defineEmits(['close', 'userSaved'])
 
-// Get logged-in user role from localStorage (reactive)
+// **Get User Role from Local Storage**
 const UserRole = computed(() => localStorage.getItem('role') || 'superadmin')
 
-// Reactive Form Data
+// **Reactive Form Data**
 const form = ref({
   name: '',
   email: '',
@@ -37,10 +37,10 @@ const form = ref({
   image: null,
 })
 
-// Reactive image preview
+// **Reactive Image Preview**
 const imagePreview = ref<string | null>(null)
 
-// Reset Form When Modal Opens
+// **Watch for Modal Open/Close & Load Data**
 watch(
   () => props.isOpen,
   (isOpen) => {
@@ -48,8 +48,7 @@ watch(
       form.value = { name: '', email: '', password: '', role: 'user', image: null }
       imagePreview.value = null
 
-      // Load existing user data in edit mode
-      if (props.mode === 'edit' && props.userData) {
+      if ((props.mode === 'edit' || props.mode === 'view') && props.userData) {
         form.value = {
           ...props.userData,
           password: '',
@@ -65,7 +64,7 @@ watch(
   { immediate: true }
 )
 
-// Handle Image Selection
+// **Handle Image Change**
 const handleImageChange = (event: Event) => {
   const target = event.target as HTMLInputElement
   if (target.files && target.files[0]) {
@@ -74,8 +73,13 @@ const handleImageChange = (event: Event) => {
   }
 }
 
-// Handle Form Submission (Add / Edit User)
+// **Handle Form Submission (Add/Edit User)**
 const handleSubmit = async () => {
+  if (props.mode === 'view') {
+    handleClose()
+    return
+  }
+
   if (!form.value.name || !form.value.email || (props.mode === 'add' && !form.value.password)) {
     toast.error('⚠️ Please fill all required fields.')
     return
@@ -86,7 +90,7 @@ const handleSubmit = async () => {
       name: form.value.name,
       email: form.value.email,
       password: props.mode === 'add' ? form.value.password : undefined,
-      role: UserRole.value === 'superadmin' ? form.value.role : props.userData.role, // Only superadmin can change role
+      role: UserRole.value === 'superadmin' ? form.value.role : props.userData.role,
       image: form.value.image,
     }
 
@@ -98,7 +102,7 @@ const handleSubmit = async () => {
       toast.success(' User updated successfully!')
     }
 
-    emit('userSaved') // Notify parent to refresh user list
+    emit('userSaved')
     handleClose()
   } catch (error) {
     console.error(' Error Saving User:', error)
@@ -106,11 +110,12 @@ const handleSubmit = async () => {
   }
 }
 
-// Close Modal
+// **Close Modal**
 const handleClose = () => {
-  emit('close') // Notify parent to close modal
+  emit('close')
 }
 </script>
+
 
 <template>
   <div
@@ -118,65 +123,71 @@ const handleClose = () => {
     class="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-50 tw-flex tw-items-center tw-justify-center md:tw-ml-[256px]"
   >
     <div class="tw-bg-white tw-gap-[24px] tw-flex tw-flex-col tw-p-[20px] tw-rounded-[16px] tw-w-[562px]">
-      <!-- Modal Header -->
+      <!-- ✅ Modal Header -->
       <div class="tw-flex tw-justify-between tw-items-center">
         <h2 class="tw-text-xl tw-font-medium tw-text-[#171725]">
-          {{ mode === 'add' ? 'Add User' : 'Edit User' }}
+          {{ mode === 'add' ? 'Add User' : mode === 'view' ? 'View User' : 'Edit User' }}
         </h2>
         <div @click="handleClose" class="tw-cursor-pointer">
           <closeIcon />
         </div>
       </div>
 
-      <!-- Form Fields -->
+      <!-- ✅ Form Fields -->
       <form @submit.prevent="handleSubmit" class="tw-flex tw-flex-col tw-gap-5">
-        <!-- Image Upload -->
+        <!-- ✅ Image Upload -->
         <div class="tw-flex tw-flex-col tw-gap-2">
           <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Company Image</label>
           <input type="file" @change="handleImageChange" accept="image/*"
-                 class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2"/>
+                 class="tw-w-full border tw-border-gray-300 tw-rounded-[8px]" :disabled="mode === 'view'"/>
           <img v-if="imagePreview" :src="imagePreview" alt="Profile Preview"
                class="tw-w-24 tw-h-24 tw-rounded-md tw-mt-2"/>
         </div>
 
-        <!-- Name -->
+        <!-- ✅ Name -->
         <div class="tw-flex tw-flex-col tw-gap-2">
           <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Organization Name</label>
           <input v-model="form.name" type="text" placeholder="Enter Name" required
-                 class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2 focus:tw-outline-none focus:tw-ring-1 focus:tw-ring-blue-400"/>
+                 class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2"
+                 :disabled="mode === 'view'"/>
         </div>
 
-        <!-- Email -->
+        <!-- ✅ Email -->
         <div class="tw-flex tw-flex-col tw-gap-2">
           <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Email</label>
           <input v-model="form.email" type="email" placeholder="Enter Email" required
-                 class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2 focus:tw-outline-none focus:tw-ring-1 focus:tw-ring-blue-400"/>
+                 class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2"
+                 :disabled="mode === 'view'"/>
         </div>
 
-        <!-- Password (Only in Add Mode) -->
+        <!-- ✅ Password (Only in Add Mode) -->
         <div class="tw-flex tw-flex-col tw-gap-2" v-if="mode === 'add'">
           <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Password</label>
           <input v-model="form.password" type="password" placeholder="Enter Password" required
-                 class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2 focus:tw-outline-none focus:tw-ring-1 focus:tw-ring-blue-400"/>
+                 class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2"/>
         </div>
 
-        <!-- Role Selection (Only for Superadmin) -->
+        <!-- ✅ Role Selection (Only for Superadmin) -->
         <div class="tw-flex tw-flex-col tw-gap-2">
           <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Role</label>
           <select v-model="form.role"
-                  class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2 focus:tw-outline-none focus:tw-ring-1 focus:tw-ring-blue-400"
-                  :disabled="UserRole !== 'superadmin'"> <!-- Lock role field for admins -->
+                  class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2"
+                  :disabled="mode === 'view' || UserRole !== 'superadmin'">
             <option value="user">User</option>
             <option value="admin">Admin</option>
             <option value="superadmin">Superadmin</option>
           </select>
         </div>
 
-        <!-- Submit Button -->
+        <!-- ✅ Submit Button (or Close for View Mode) -->
         <div class="tw-flex tw-justify-end">
-          <button type="submit"
-                  class="tw-bg-[#24B2E3] tw-text-[16px] tw-flex tw-justify-center tw-items-center text-white tw-px-[28px] tw-py-[12px] tw-rounded-[13px] tw-font-medium">
+          <button v-if="mode !== 'view'" type="submit"
+                  class="tw-bg-[#24B2E3] tw-text-[16px] text-white tw-px-[28px] tw-py-[12px] tw-rounded-[13px] tw-font-medium">
             {{ mode === 'add' ? '+ Create User' : 'Update' }}
+          </button>
+          <button v-else @click="handleClose"
+                  class="tw-bg-[#24B2E3] tw-text-[16px] tw-text-white tw-px-[28px] tw-py-[12px] tw-rounded-[13px] tw-font-medium">
+            Close
           </button>
         </div>
       </form>

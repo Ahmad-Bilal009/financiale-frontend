@@ -3,20 +3,21 @@ import ArrowDownIcon from '@/assets/svg/arrow-down.svg'
 import { RouterLink } from 'vue-router'
 import ViewEyeIcon from '@/assets/svg/view-eye.svg'
 
-// 1) Add optional onApprove and onReject props
+// **Define Props**
 const props = defineProps<{
   columns: { key: string; label: string; align: string }[]
   rowData: { [key: string]: string }[]
+  activeFilter: string
   onSort: (key: string) => void
   onDelete?: (index: number) => void
-  onApprove?: (index: number) => void // <-- new
+  onApprove?: (index: number) => void
   link: string
   variant?: 'default' | 'action'
 }>()
 
 const computedVariant = props.variant || 'default'
 
-// Renders cell content for "title", "organization", etc.
+// **Render Cell Content**
 const renderCell = (row: { [key: string]: string }, columnKey: string) => {
   switch (columnKey) {
     case 'title':
@@ -29,23 +30,26 @@ const renderCell = (row: { [key: string]: string }, columnKey: string) => {
       return row.stage
     case 'createdAt':
       return row.createdAt
+    case 'status': // ✅ Ensure the status column is used
+      return row.status
     default:
       return ''
   }
 }
 
-// Sorting handler
+// **Sorting Handler**
 const handleSort = (key: string) => {
   props.onSort(key)
 }
 
-// 2) Methods to handle approve/reject:
-function approveItem(index: number) {
+// **Approve Handler**
+const approveItem = (index: number) => {
   if (props.onApprove) {
     props.onApprove(index)
   }
 }
 
+// **Reject (Delete) Handler**
 const deleteItem = (index: number) => {
   if (props.onDelete) {
     props.onDelete(index)
@@ -53,16 +57,18 @@ const deleteItem = (index: number) => {
 }
 </script>
 
+---
+
+### **✅ Fixed Template**
+```vue
 <template>
   <div class="tw-overflow-x-auto">
     <table class="tw-table-auto tw-w-full">
-      <thead class="">
-        <tr
-          class="tw-border-b tw-border-[#F1F1F5] tw-text-base tw-font-medium tw-capitalize tw-text-[#8D98AF]"
-        >
+      <thead>
+        <tr class="tw-border-b tw-text-base tw-font-medium tw-capitalize tw-text-[#8D98AF]">
           <th class="tw-px-4 tw-py-6 tw-cursor-pointer" @click="handleSort('sr')">
             <div class="tw-flex tw-items-center tw-justify-start tw-gap-3.5">
-             ID <ArrowDownIcon />
+              ID <ArrowDownIcon />
             </div>
           </th>
           <th
@@ -81,7 +87,7 @@ const deleteItem = (index: number) => {
         <tr
           v-for="(rowData, index) in props.rowData"
           :key="index"
-          class="tw-whitespace-nowrap hover:tw-bg-gray-100 tw-border-b tw-border-[#F1F1F5] tw-text-sm tw-font-normal tw-capitalize tw-text-[#0E0E0E]"
+          class="tw-whitespace-nowrap hover:tw-bg-gray-100 tw-border-b tw-text-sm tw-font-normal tw-text-[#0E0E0E]"
         >
           <RouterLink
             v-if="computedVariant === 'default'"
@@ -104,6 +110,7 @@ const deleteItem = (index: number) => {
               :key="column.key"
               :class="`tw-px-1 tw-py-[27px] text-${column.align}`"
             >
+              <!-- ✅ View Button -->
               <div
                 v-if="column.key === 'view'"
                 class="tw-flex tw-items-center tw-justify-center tw-gap-2"
@@ -116,22 +123,59 @@ const deleteItem = (index: number) => {
                 </RouterLink>
               </div>
 
+              <!-- ✅ Approve & Reject Buttons (Dynamic) -->
               <div
                 v-if="column.key === 'action'"
                 class="tw-flex tw-items-center tw-justify-center tw-gap-2"
               >
+                <!-- ✅ "All" Filter: Show Correct Buttons Based on Status -->
+                <template v-if="props.activeFilter === 'all'">
+                  <button
+                    v-if="rowData.status === 'approved'"
+                    class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
+                    @click="deleteItem(index)"
+                  >
+                    RECHAZAR
+                  </button>
+                  <button
+                    v-if="rowData.status === 'rejected'"
+                    class="tw-bg-[#0BA5EC] hover:tw-bg-[#0990cc] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
+                    @click="approveItem(index)"
+                  >
+                    APROBAR
+                  </button>
+                  <template v-if="rowData.status !== 'approved' && rowData.status !== 'rejected'">
+                    <button
+                      class="tw-bg-[#0BA5EC] hover:tw-bg-[#0990cc] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
+                      @click="approveItem(index)"
+                    >
+                      APROBAR
+                    </button>
+                    <button
+                      class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium tw-ml-2"
+                      @click="deleteItem(index)"
+                    >
+                      RECHAZAR
+                    </button>
+                  </template>
+                </template>
+
+                <!-- ✅ "Approved" Filter: Show ONLY "Reject" -->
                 <button
+                  v-if="props.activeFilter === 'approved'"
+                  class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
+                  @click="deleteItem(index)"
+                >
+                  RECHAZAR
+                </button>
+
+                <!-- ✅ "Rejected" Filter: Show ONLY "Approve" -->
+                <button
+                  v-if="props.activeFilter === 'rejected'"
                   class="tw-bg-[#0BA5EC] hover:tw-bg-[#0990cc] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
                   @click="approveItem(index)"
                 >
-                  APPROVE
-                </button>
-
-                <button
-                  class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium tw-ml-2"
-                  @click="deleteItem(index)"
-                >
-                  REJECT
+                  APROBAR
                 </button>
               </div>
               <div v-else>

@@ -3,9 +3,9 @@ import ArrowDownIcon from '@/assets/svg/arrow-down.svg'
 import { RouterLink } from 'vue-router'
 import ViewEyeIcon from '@/assets/svg/view-eye.svg'
 import EditIcon from '@/assets/svg/edit-icon.svg'
+import DeleteIcon from '@/assets/svg/delete-icon.svg' // ✅ Ensure correct import
 import { defineProps, computed } from 'vue'
 import userService from '@/services/userService'
-import AddUserModel from '@/components/UI/AddUser-Modal/AddUser.vue'
 import { useToast } from 'vue-toastification'
 
 const toast = useToast()
@@ -23,54 +23,59 @@ const props = defineProps<{
   columns: { key: string; label: string; align: string }[]
   rowData: UserData[]
   onSort: (key: string) => void
-  onToggleStatus?: (userId: number) => void  //  Make it optional to prevent errors
+  onDelete?: (index: number) => void
+  onToggleStatus?: (userId: number) => void
   link: string
   variant?: 'default' | 'action'
 }>()
 
-
 const computedVariant = computed(() => props.variant || 'default')
 
-//  Handle sorting
+// Handle Sorting
 const handleSort = (key: string) => {
   props.onSort(key)
 }
 
+// Toggle User Status
 const toggleUserStatus = async (user: UserData) => {
   if (!user.id) {
-    toast.error("⚠️ Error: User ID is missing!");
-    return;
+    toast.error("⚠️ Error: ¡Falta el ID de usuario!")
+    return
   }
 
   try {
-    console.log(`🔄 Toggling status for user ID: ${user.id}`);
+    console.log(`🔄 Cambiando estado para el usuario ID: ${user.id}`)
+    await userService.toggleUserStatus(user.id)
+    toast.success('✅ ¡Estado del usuario actualizado!')
 
-    //  Call API to toggle status
-    const response = await userService.toggleUserStatus(user.id);
-    toast.success(' User status updated!');
-
-    //  Check if function exists before calling it
     if (props.onToggleStatus) {
-      props.onToggleStatus(user.id);
+      props.onToggleStatus(user.id)
     } else {
-      console.warn("⚠️ onToggleStatus is not provided by parent.");
+      console.warn("⚠️ onToggleStatus no fue proporcionado por el padre.")
     }
-
   } catch (error) {
-    toast.error(` Failed to update user status: ${error}`);
+    toast.error(`❌ No se pudo actualizar el estado del usuario: ${error}`)
   }
 }
 
-
-//  Render table cell data
+// Render Cell Data
 const renderCell = (row: UserData, columnKey: string) => {
   switch (columnKey) {
     case 'name': return row.name
     case 'email': return row.email
     case 'role': return row.role
     case 'password': return row.password
-    case 'isDisabled': return row.isDisabled ? 'Disabled' : 'Active'
+    case 'isDisabled': return row.isDisabled ? 'Deshabilitado' : 'Activo'
     default: return ''
+  }
+}
+
+// Delete Item
+const deleteItem = (index: number) => {
+  if (props.onDelete) {
+    props.onDelete(index)
+  } else {
+    console.warn("⚠️ La función onDelete falta en el componente padre.")
   }
 }
 </script>
@@ -82,7 +87,7 @@ const renderCell = (row: UserData, columnKey: string) => {
         <tr class="tw-border-b tw-text-base tw-font-medium tw-capitalize tw-text-[#8D98AF]">
           <th class="tw-px-4 tw-py-4 tw-cursor-pointer" @click="handleSort('sr')">
             <div class="tw-flex tw-items-center tw-gap-3.5">
-             ID <ArrowDownIcon />
+              ID <ArrowDownIcon />
             </div>
           </th>
           <th
@@ -105,14 +110,22 @@ const renderCell = (row: UserData, columnKey: string) => {
         >
           <td class="tw-px-4 tw-py-[15px] text-left">{{ index + 1 }}</td>
           <td v-for="column in props.columns" :key="column.key" class="tw-px-4 tw-py-[12px]">
+
             <!--  Action Buttons -->
             <div v-if="column.key === 'action'" class="tw-flex tw-items-center tw-gap-2">
-              <div class="tw-border-[1px] hover:tw-bg-gray-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer">
+              <button @click="$emit('viewUser', rowData)" class="border hover:tw-bg-gray-200 border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer">
                 <ViewEyeIcon />
-              </div>
+              </button>
 
-              <button @click="$emit('editUser', rowData)" class="tw-border-[1px] hover:tw-bg-gray-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer">
+              <button @click="$emit('editUser', rowData)" class="border hover:tw-bg-gray-200  tw-rounded-[10px] tw-p-2 tw-cursor-pointer"  style="border: 5px solid red">
                 <EditIcon />
+              </button>
+
+              <button
+                @click="deleteItem(index)"
+                class="border tw-justify-center hover:tw-bg-red-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
+              >
+                <DeleteIcon />
               </button>
             </div>
 
@@ -127,12 +140,13 @@ const renderCell = (row: UserData, columnKey: string) => {
               />
             </div>
 
-            <div v-else-if="column.key === 'delete' && computedVariant === 'action'">
+            <!--  Enable/Disable Toggle -->
+            <div v-else-if="column.key === 'deleteProduct'" class="tw-flex tw-items-center tw-gap-2 ">
               <button
-                  class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium tw-ml-2"
-                  @click="openModal"
+                  class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
+                  @click="deleteItem(index)"
                 >
-                  Delete
+                  Eliminar
                 </button>
             </div>
 
