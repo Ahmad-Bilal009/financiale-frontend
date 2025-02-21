@@ -3,6 +3,7 @@ import { defineProps, defineEmits, ref, watch, computed } from 'vue'
 import { useToast } from 'vue-toastification'
 import userService from '@/services/userService'
 import closeIcon from '@/assets/svg/cross-icon.svg'
+import defaultUserImage from '@/assets/img/no-user-image.png' // Placeholder image
 
 const toast = useToast()
 
@@ -46,7 +47,7 @@ watch(
   (isOpen) => {
     if (isOpen) {
       form.value = { name: '', email: '', password: '', role: 'user', image: null }
-      imagePreview.value = null
+      imagePreview.value = defaultUserImage // Default placeholder
 
       if ((props.mode === 'edit' || props.mode === 'view') && props.userData) {
         form.value = {
@@ -55,17 +56,18 @@ watch(
           role: props.userData.role || 'user',
           image: null,
         }
-        if (props.userData.image) {
-          imagePreview.value = `http://localhost:5001${props.userData.image}`
-        }
+        imagePreview.value = props.userData.image
+          ? `http://localhost:5001${props.userData.image}`
+          : defaultUserImage
       }
     }
   },
   { immediate: true }
 )
 
-// **Handle Image Change**
+// **Handle Image Change (Only in Add/Edit Mode)**
 const handleImageChange = (event: Event) => {
+  if (props.mode === 'view') return
   const target = event.target as HTMLInputElement
   if (target.files && target.files[0]) {
     form.value.image = target.files[0] // Store the file
@@ -96,17 +98,17 @@ const handleSubmit = async () => {
 
     if (props.mode === 'add') {
       await userService.saveUser(userData)
-      toast.success(' User created successfully!')
+      toast.success('User created successfully!')
     } else {
       await userService.saveUser(userData, props.userData.id)
-      toast.success(' User updated successfully!')
+      toast.success('User updated successfully!')
     }
 
     emit('userSaved')
     handleClose()
   } catch (error) {
-    console.error(' Error Saving User:', error)
-    toast.error(' An error occurred while saving the user.')
+    console.error('Error Saving User:', error)
+    toast.error('An error occurred while saving the user.')
   }
 }
 
@@ -133,15 +135,20 @@ const handleClose = () => {
         </div>
       </div>
 
+      <!-- ✅ User Image Display (Top Center) -->
+      <div class="tw-flex tw-justify-center tw-items-center tw-mb-4">
+        <img :src="imagePreview || defaultUserImage" alt="User Image"
+             class="tw-w-32 tw-h-32 tw-rounded-full tw-border tw-border-gray-300"/>
+      </div>
+
       <!-- ✅ Form Fields -->
       <form @submit.prevent="handleSubmit" class="tw-flex tw-flex-col tw-gap-5">
-        <!-- ✅ Image Upload -->
-        <div class="tw-flex tw-flex-col tw-gap-2">
-          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Company Image</label>
+
+        <!-- ✅ Image Upload (ONLY in Add/Edit Mode) -->
+        <div class="tw-flex tw-flex-col tw-gap-2" v-if="mode !== 'view'">
+          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Upload Image</label>
           <input type="file" @change="handleImageChange" accept="image/*"
-                 class="tw-w-full border tw-border-gray-300 tw-rounded-[8px]" :disabled="mode === 'view'"/>
-          <img v-if="imagePreview" :src="imagePreview" alt="Profile Preview"
-               class="tw-w-24 tw-h-24 tw-rounded-md tw-mt-2"/>
+                 class="tw-w-full border tw-border-gray-300 tw-rounded-[8px]"/>
         </div>
 
         <!-- ✅ Name -->
@@ -161,10 +168,10 @@ const handleClose = () => {
         </div>
 
         <!-- ✅ Password (Only in Add Mode) -->
-        <div class="tw-flex tw-flex-col tw-gap-2" v-if="mode === 'add'">
+        <div class="tw-flex tw-flex-col tw-gap-2" >
           <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Password</label>
           <input v-model="form.password" type="password" placeholder="Enter Password" required
-                 class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2"/>
+                 class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2" :disabled="mode === 'view'"/>
         </div>
 
         <!-- ✅ Role Selection (Only for Superadmin) -->
@@ -179,7 +186,7 @@ const handleClose = () => {
           </select>
         </div>
 
-        <!-- ✅ Submit Button (or Close for View Mode) -->
+        <!-- ✅ Submit Button -->
         <div class="tw-flex tw-justify-end">
           <button v-if="mode !== 'view'" type="submit"
                   class="tw-bg-[#24B2E3] tw-text-[16px] text-white tw-px-[28px] tw-py-[12px] tw-rounded-[13px] tw-font-medium">

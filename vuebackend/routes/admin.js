@@ -12,7 +12,7 @@ router.get(
   checkRole(['admin', 'superadmin']),
   (req, res) => {
     db.query(
-      'SELECT id, name, email, role, isDisabled FROM users',
+      'SELECT id, name, email, role,image, isDisabled FROM users',
       (err, results) => {
         if (err)
           return res.status(500).json({ message: 'Database error', error: err })
@@ -60,7 +60,7 @@ router.post(
           res.json({
             message: 'User added successfully!',
             userId: result.insertId,
-            imageUrl: imagePath ? `http://localhost:5000${imagePath}` : null // Return full image URL
+            imageUrl: imagePath ? `http://localhost:5001${imagePath}` : null // Return full image URL
           })
         }
       )

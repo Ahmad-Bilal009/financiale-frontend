@@ -3,6 +3,7 @@ import ArrowDownIcon from '@/assets/svg/arrow-down.svg'
 import { RouterLink } from 'vue-router'
 import ViewEyeIcon from '@/assets/svg/view-eye.svg'
 import EditIcon from '@/assets/svg/edit-icon.svg'
+import circle from '@/assets/svg/Circle.png'
 import DeleteIcon from '@/assets/svg/delete-icon.svg' // ✅ Ensure correct import
 import { defineProps, computed } from 'vue'
 import userService from '@/services/userService'
@@ -110,6 +111,18 @@ const deleteItem = (index: number) => {
         >
           <td class="tw-px-4 tw-py-[15px] text-left">{{ index + 1 }}</td>
           <td v-for="column in props.columns" :key="column.key" class="tw-px-4 tw-py-[12px]">
+
+
+            <div v-if="column.key === 'password'" class="tw-flex tw-items-center tw-gap-1">
+              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+            </div>
 
             <!--  Action Buttons -->
             <div v-if="column.key === 'action'" class="tw-flex tw-items-center tw-gap-2">

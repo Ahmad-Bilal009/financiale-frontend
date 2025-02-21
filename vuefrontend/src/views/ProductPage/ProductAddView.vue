@@ -30,17 +30,18 @@ const productForm = ref({
 const geoInput = ref("");
 
 // Function to add tags dynamically
-const addTag = (list: string[], inputRef: Ref<string>) => {
-  if (inputRef.value.trim() && !list.includes(inputRef.value.trim())) {
-    list.push(inputRef.value.trim());
-    inputRef.value = ""; // Clear input after adding tag
+const addTag = () => {
+  if (geoInput.value.trim() && !productForm.value.geographicCoverage.includes(geoInput.value.trim())) {
+    productForm.value.geographicCoverage = [...productForm.value.geographicCoverage, geoInput.value.trim()];
+    geoInput.value = ""; // Clear input after adding tag
   }
 };
 
 // Function to remove a tag
-const removeTag = (list: string[], index: number) => {
-  list.splice(index, 1);
+const removeTag = (index: number) => {
+  productForm.value.geographicCoverage = productForm.value.geographicCoverage.filter((_, i) => i !== index);
 };
+
 
 
 
@@ -164,7 +165,7 @@ const submitProduct = async () => {
 
           <div class="tw-flex tw-flex-col tw-gap-[10px]">
             <label class="tw-block tw-font-medium tw-text-[#515151]">Benefits for Entrepreneurs and MSMEs</label>
-            <input v-modal="productForm.benefitsOfEntrepreneurship" type="text" placeholder="Enter Benefits" class="tw-w-full tw-p-3 border border-[#D2D2D2] border-2 tw-rounded-[8px]" />
+            <input v-model="productForm.benefitsOfEntrepreneurship" type="text" placeholder="Enter Title" class="tw-w-full tw-p-3 border border-[#D2D2D2] tw-rounded-[8px]" />
           </div>
 
           <div class="tw-flex tw-flex-col tw-gap-[10px] tw-mt-4">
@@ -176,17 +177,18 @@ const submitProduct = async () => {
                 class="tw-bg-gray-200 tw-text-sm tw-px-2 tw-py-1 tw-rounded-[8px] tw-flex tw-items-center"
               >
                 {{ tag }}
-                <button @click="removeTag(productForm.geographicCoverage, index)" class="tw-ml-2 tw-text-gray-600 tw-font-bold">×</button>
+                <button @click="removeTag(index)" class="tw-ml-2 tw-text-gray-600 tw-font-bold">×</button>
               </span>
               <input
                 v-model="geoInput"
                 type="text"
                 placeholder="Enter Keyword"
                 class="tw-outline-none border-none tw-w-full"
-                @keyup.enter="addTag(productForm.geographicCoverage, geoInput)"
+                @keyup.enter="addTag()"
               />
             </div>
           </div>
+
 
 
         </div>

@@ -20,7 +20,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/cardInfo',
+      path: "/CardInfo/:id",
       name: 'info',
       component: () => import('../views/CompanyInfo.vue'),
       meta: {

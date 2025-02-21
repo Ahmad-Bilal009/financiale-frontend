@@ -28,7 +28,7 @@ const Product = sequelize.define("Product", {
   productInformation: {
     type: DataTypes.TEXT,
     allowNull: false,
-  },
+  }, 
   productType: {
     type: DataTypes.ENUM("Type1", "Type2", "Type3"),
     allowNull: false,
