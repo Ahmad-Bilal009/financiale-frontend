@@ -63,7 +63,15 @@ const fetchProducts = async () => {
 
 // **Computed property to filter only rejected products**
 const rejectedProducts = computed(() => {
-  return products.value.filter(product => product.status === "rejected");
+  return products.value.filter(product => product.status === "rejected").map(product => ({
+    id: product.id.toString(),
+    title: product.title,
+    organization: product.organization,
+    location: product.location,
+    stage: product.stage,
+    status: product.status,
+    createdAt: product.createdAt || "N/A",
+  }));
 });
 
 // **Search functionality**

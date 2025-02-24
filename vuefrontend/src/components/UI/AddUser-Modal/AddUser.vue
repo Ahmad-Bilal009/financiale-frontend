@@ -35,7 +35,7 @@ const form = ref({
   email: '',
   password: '',
   role: 'user',
-  image: null,
+  image: null as File | null,
 })
 
 // **Reactive Image Preview**
@@ -51,7 +51,8 @@ watch(
 
       if ((props.mode === 'edit' || props.mode === 'view') && props.userData) {
         form.value = {
-          ...props.userData,
+          name: props.userData.name || '',
+          email: props.userData.email || '',
           password: '',
           role: props.userData.role || 'user',
           image: null,

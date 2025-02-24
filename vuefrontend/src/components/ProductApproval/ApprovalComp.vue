@@ -155,9 +155,9 @@ const openDeleteModal = (productId: number) => {
 }
 
 // **Handle Sort Function**
-const handleSort = (sortKey: string, sortOrder: 'asc' | 'desc') => {
-  console.log(`Sorting by ${sortKey} in ${sortOrder} order`);
-  // Implement the sorting logic here, e.g., sort the products array
+const handleSort = (key: string) => {
+  console.log(`Sorting by ${key}`);
+  // Implement the sorting logic here
 }
 
 // **Close Delete Modal Function**
@@ -181,6 +181,19 @@ const deleteProduct = () => {
 
 // **On Component Mount**
 onMounted(fetchProducts)
+
+const formattedProducts = computed(() => {
+  return products.value.map(product => ({
+    id: product.id.toString(),
+    title: product.title,
+    userId: product.userId?.toString() || "N/A",
+    contactDetail: product.contactDetail?.address || "N/A",
+    stageOfEntrepreneurship: product.stageOfEntrepreneurship || "N/A",
+    status: product.status,
+    createdAt: product.createdAt || "N/A",
+    organization: product.organization || "N/A",
+  }));
+});
 </script>
 
 
