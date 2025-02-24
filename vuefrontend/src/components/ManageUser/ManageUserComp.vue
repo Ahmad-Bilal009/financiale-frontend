@@ -21,6 +21,18 @@ interface User {
   email: string;
   password: string;
   isDisabled: boolean;
+  role: string;
+  // Add other relevant properties as needed
+}
+
+interface Product {
+  id: number;
+  title: string;
+  userId?: number;
+  contactDetail?: { address: string };
+  stageOfEntrepreneurship?: string;
+  status: string;
+  createdAt?: string;
   // Add other relevant properties as needed
 }
 
@@ -33,7 +45,7 @@ const fetchUsers = async () => {
       name: user.name,
       email: user.email,
       password: user.password,
-      isDisabled: user.isDisabled === 1 || user.isDisabled === true,
+      isDisabled: user.isDisabled,
     }))
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'No se pudieron obtener los usuarios'
@@ -149,6 +161,7 @@ onMounted(fetchUsers)
         @delete="handleDeleteUser"
         link="/manage-users"
         variant="action"
+        :activeFilter="activeFilter"
       />
     </div>
 
@@ -156,7 +169,7 @@ onMounted(fetchUsers)
     <AddUserModel
       :isOpen="isModalOpen"
       :mode="modalMode"
-      :userData="selectedUser"
+      :userData="selectedUser || {}"
       @close="closeModal"
       @saveUser="handleUserSave"
     />

@@ -61,8 +61,12 @@ interface User {
 interface Product {
   id: number;
   title: string;
-  userId: number; // Include other relevant properties
-  // Add other properties as needed
+  userId?: number;
+  contactDetail?: { address: string };
+  stageOfEntrepreneurship?: string;
+  status: string;
+  createdAt?: string;
+  // Add other relevant properties as needed
 }
 
 const fetchProducts = async () => {
@@ -227,6 +231,11 @@ const tableheading = computed(() => {
 const handleSort = (key: string) => {
   console.log(`Sorting by: ${key}`)
 }
+
+// Example function with typed parameters
+const someFunction = (user: User) => {
+  // Function logic
+};
 </script>
 
 
@@ -249,7 +258,15 @@ const handleSort = (key: string) => {
             Ver todos
           </RouterLink>
         </div>
-        <TableComp :columns="tableheading" :rowData="limitedProducts" @sort="handleSort" link="/products" />
+        <TableComp
+          :columns="tableheading"
+          :rowData="limitedProducts"
+          link="/products"
+          variant="action"
+          :activeFilter="activeFilter"
+          @sort="handleSort"
+          @delete="handleDelete"
+        />
       </div>
 
       <!-- No Products Message -->
@@ -275,7 +292,15 @@ const handleSort = (key: string) => {
             Ver todos
           </RouterLink>
         </div>
-        <ApprovalTableComp :columns="tableheading" :rowData="limitedProducts" @sort="handleSort" link="/products" variant="action" />
+        <ApprovalTableComp
+          :columns="tableheading"
+          :rowData="limitedProducts"
+          link="/products"
+          variant="action"
+          :activeFilter="activeFilter"
+          @sort="handleSort"
+          @delete="handleDelete"
+        />
       </div>
 
       <!-- Manage Users (Only for Admin) -->
