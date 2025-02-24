@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5001/api/visitorstats";
+const API_URL = "https://2f91-39-44-7-51.ngrok-free.app/api/visitorstats";
 
 export default {
   async getVisitors() {

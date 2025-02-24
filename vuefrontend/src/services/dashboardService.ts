@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5001/api/dashboard";
+const API_URL = "https://heavy-cows-reply.loca.lt/api/dashboard";
 
 export default {
   async getStats() {

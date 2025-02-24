@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:5001/api/auth'
+const API_URL = 'https://heavy-cows-reply.loca.lt/api/auth'
 
 export default {
   async login(credentials: { email: string; password: string }) {

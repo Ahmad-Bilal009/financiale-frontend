@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import lockscreen from "../../public/lockscreen.png";
+import passwordcheck from "../../public/password-check.png";
 
 // Reactive state to manage screens
 const currentScreen = ref("resetPassword"); // Possible values: resetPassword, enterCode, createPassword, passwordReset
@@ -67,7 +69,7 @@ const handleContinue = () => {
       <!-- Icon -->
       <div class="tw-mb-6">
         <div class="tw-flex tw-items-center tw-justify-center tw-w-12 tw-h-12 tw-rounded tw-bg-blue-100">
-          <img src="../../../public/lockscreen.png" alt="Lock Icon" class="tw-w-6 tw-h-6" />
+          <lockscreen class="tw-w-6 tw-h-6" />
         </div>
       </div>
 
@@ -105,7 +107,8 @@ const handleContinue = () => {
       <!-- Icon -->
       <div class="tw-mb-6">
         <div class="tw-flex tw-items-center tw-justify-center tw-w-12 tw-h-12 tw-rounded-full tw-bg-blue-100">
-          <img src="../../../public/password-check.png" alt="Code Icon" class="tw-w-6 tw-h-6" />
+
+          <passwordcheck  class="tw-w-6 tw-h-6"/>
         </div>
       </div>
 
@@ -151,7 +154,7 @@ const handleContinue = () => {
       <!-- Icon -->
       <div class="tw-mb-6">
         <div class="tw-flex tw-items-center tw-justify-center tw-w-12 tw-h-12 tw-rounded-lg tw-bg-blue-100">
-          <img src="../../../public/lock.png" alt="Lock Icon" class="tw-w-6 tw-h-6" />
+          <img src="../../public/lock.png" alt="Lock Icon" class="tw-w-6 tw-h-6" />
         </div>
       </div>
 
@@ -199,7 +202,7 @@ const handleContinue = () => {
       <!-- Icon -->
       <div class="tw-mb-6">
         <div class="tw-flex tw-items-center tw-justify-center tw-w-12 tw-h-12 tw-rounded-lg tw-bg-blue-100">
-          <img src="../../../public/tick-circle.png" alt="Success Icon" class="tw-w-6 tw-h-6" />
+          <img src="../../public/tick-circle.png" alt="Success Icon" class="tw-w-6 tw-h-6" />
         </div>
       </div>
 

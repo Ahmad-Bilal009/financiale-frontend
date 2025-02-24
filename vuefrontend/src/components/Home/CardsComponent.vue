@@ -9,44 +9,39 @@ const router = useRouter();
 const products = ref([]); // Store products
 const usersMap = ref<Record<number, { name: string; image: string | null }>>({}); // Map user ID to name & image
 
-// **Fetch Users & Create a Mapping**
-const fetchUsers = async () => {
-  try {
-    const users = await userService.getUsers(); // Fetch users
-    usersMap.value = users.reduce((map: any, user: any) => {
-      map[user.id] = {
-        name: user.name,
-        image: user.image , // Full image path if exists
-      };
-      return map;
-    }, {});
-  } catch (error) {
-    console.error("Failed to fetch users:", error);
-  }
-};
+
 
 // **Fetch Products & Attach User Data**
 const fetchProducts = async () => {
   try {
-    const response = await productService.getProducts(); // Fetch products
+    // Fetch only approved products from the backend
+    const response = await productService.getProducts();
 
-    // Filter only approved products
+    if (!Array.isArray(response)) {
+      console.error("Invalid response format:", response);
+      return;
+    }
+
+    // Filter only approved products from the response
     const approvedProducts = response.filter((product: any) => product.status === "approved");
 
+    // Map response to include organization name & user image
     products.value = approvedProducts.map((product: any) => ({
       ...product,
-      organization: usersMap.value[product.userId]?.name || "Unknown Organization",
-      userImage: usersMap.value[product.userId]?.image || defaultuser, // Use imported default image
+      organization: product.User?.name || "Unknown Organization",
+      userImage: product.User?.image ? `${BASE_URL}${product.User.image}` : defaultuser, // Ensure full URL
     }));
+
   } catch (error) {
     console.error("Failed to fetch products:", error);
   }
 };
 
 
+
 // **Fetch Data on Component Mount**
 onMounted(async () => {
-  await fetchUsers(); // Fetch user data first
+
   await fetchProducts(); // Then fetch products
 });
 
