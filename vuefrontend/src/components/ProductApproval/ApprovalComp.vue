@@ -15,7 +15,7 @@ const selectedProductId = ref<number | null>(null)
 // ** State Management **
 const selectVisitors = ref({ key: 'all', label: 'Todos' })
 const selectedOrganization = ref({ key: 'all', label: 'Todas' })
-const products = ref([])
+const products = ref<Product[]>([])
 const activeFilter = ref('all') // ✅ Default: show all products
 
 // **Visitors & Organization Options**
@@ -35,7 +35,7 @@ const Organization = ref([
 
 // **Table Headers (Dynamic)**
 const tableheading = computed(() => {
-  let columns = [
+  const columns = [
     { key: 'title', label: 'Título', align: 'center' },
     { key: 'location', label: 'Ubicación', align: 'center' },
     { key: 'organization', label: 'Organización', align: 'center' },
@@ -52,6 +52,23 @@ const tableheading = computed(() => {
   return columns
 })
 
+// Define types for user and product
+interface User {
+  id: number;
+  name: string;
+}
+
+interface Product {
+  id: number;
+  title: string;
+  userId?: number;
+  contactDetail?: { address: string };
+  stageOfEntrepreneurship?: string;
+  status: string;
+  createdAt?: string;
+  organization?: string;
+}
+
 // **Fetch Products**
 const fetchProducts = async () => {
   try {
@@ -60,7 +77,7 @@ const fetchProducts = async () => {
       throw new Error(`Respuesta de usuario inválida: ${JSON.stringify(userResponse)}`)
     }
 
-    const usersMap = userResponse.reduce((map: Record<number, string>, user: any) => {
+    const usersMap = userResponse.reduce((map: Record<number, string>, user: User) => {
       if (user?.id) map[user.id] = user.name
       return map
     }, {})
@@ -70,7 +87,7 @@ const fetchProducts = async () => {
       throw new Error(`Respuesta de productos inválida: ${JSON.stringify(response)}`)
     }
 
-    products.value = response.map((product: any) => ({
+    products.value = response.map((product: Product) => ({
       id: product.id,
       title: product.title,
       organization: product.userId ? usersMap[product.userId] || "N/A" : "N/A",
@@ -80,7 +97,9 @@ const fetchProducts = async () => {
       createdAt: product.createdAt ? new Date(product.createdAt).toISOString().split("T")[0] : "N/A",
     }))
   } catch (error) {
-    toast.error(`Error al obtener productos: ${error.message}`)
+    // Type assertion to ensure error is an instance of Error
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    toast.error(`Error al obtener productos: ${errorMessage}`);
   }
 }
 
@@ -108,6 +127,56 @@ const filteredProducts = computed(() => {
 const handleFilterChange = (filter: string) => {
   console.log("Filtro cambiado a:", filter)
   activeFilter.value = filter
+}
+
+// **Search Function**
+const search = (query: string) => {
+  console.log("Searching for:", query);
+  // Implement search logic here, e.g., filter products based on the query
+}
+
+// **Approve Product Function**
+const approveProduct = (productId: number) => {
+  console.log("Approving product with ID:", productId);
+  // Implement the logic to approve the product here
+}
+
+// **Reject Product Function**
+const rejectProduct = (productId: number) => {
+  console.log("Rejecting product with ID:", productId);
+  // Implement the logic to reject the product here
+}
+
+// **Open Delete Modal Function**
+const openDeleteModal = (productId: number) => {
+  console.log("Opening delete modal for product with ID:", productId);
+  selectedProductId.value = productId;
+  isDeleteModalOpen.value = true;
+}
+
+// **Handle Sort Function**
+const handleSort = (sortKey: string, sortOrder: 'asc' | 'desc') => {
+  console.log(`Sorting by ${sortKey} in ${sortOrder} order`);
+  // Implement the sorting logic here, e.g., sort the products array
+}
+
+// **Close Delete Modal Function**
+const closeDeleteModal = () => {
+  console.log("Closing delete modal");
+  isDeleteModalOpen.value = false;
+  selectedProductId.value = null;
+}
+
+// **Delete Product Function**
+const deleteProduct = () => {
+  if (selectedProductId.value !== null) {
+    console.log("Deleting product with ID:", selectedProductId.value);
+    // Implement the logic to delete the product here, e.g., make an API call
+    isDeleteModalOpen.value = false;
+    selectedProductId.value = null;
+  } else {
+    console.error("No product selected for deletion");
+  }
 }
 
 // **On Component Mount**
