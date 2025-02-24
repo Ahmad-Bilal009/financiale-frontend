@@ -54,6 +54,9 @@ const stats = ref<Stats>({
 interface User {
   id: number;
   name: string;
+  role: string;
+  email: string;
+  isDisabled: boolean;
   // Add other relevant properties if needed
 }
 
@@ -120,9 +123,9 @@ const fetchUsers = async () => {
         name: user.name,
         email: user.email,
         role: user.role,
-        isDisabled: user.isDisabled === 1 || user.isDisabled === true,
+        isDisabled: Boolean(user.isDisabled),
       }));
-    } catch (error) {
+    } catch {
       toast.error('Failed to fetch users');
     }
   }
@@ -233,8 +236,9 @@ const handleSort = (key: string) => {
 }
 
 // Example function with typed parameters
-const someFunction = (user: User) => {
-  // Function logic
+const someFunction = (arg: string | string[]) => {
+  const numberArg = Array.isArray(arg) ? parseInt(arg[0], 10) : parseInt(arg, 10);
+  // Use numberArg
 };
 
 // Define activeFilter
@@ -244,6 +248,11 @@ const activeFilter = ref('all');
 const handleDelete = (productId: number) => {
   console.log(`Deleting product with ID: ${productId}`);
   // Implement delete logic here
+};
+
+// Define handleMoreInfo
+const handleMoreInfo = (id: number) => {
+  console.log(`More info for product ID: ${id}`);
 };
 </script>
 

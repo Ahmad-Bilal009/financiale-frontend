@@ -7,8 +7,20 @@ import { ref, onMounted, computed } from 'vue'
 import { useToast } from "vue-toastification"
 
 const toast = useToast();
-const products = ref([]);
+const products = ref<Product[]>([]);
 const usersMap = ref<Record<number, string>>({});
+
+// Define the Product interface
+interface Product {
+  id: number;
+  title: string;
+  userId?: number;
+  contactDetail?: { address: string };
+  stageOfEntrepreneurship?: string;
+  status: string; // Ensure this is included
+  createdAt?: string;
+  // Add other relevant properties as needed
+}
 
 const tableheading = ref([
   { key: 'title', label: 'Título', align: 'center' },
@@ -62,6 +74,18 @@ const search = (value: string) => {
 // **Sorting functionality**
 const handleSort = (key: string) => {
   console.log(`Ordenando por: ${key}`);
+};
+
+// Define rejectProduct
+const rejectProduct = (productId: number) => {
+  console.log(`Rejecting product with ID: ${productId}`);
+  // Implement the logic to reject the product here, e.g., make an API call
+};
+
+// Define approveProduct
+const approveProduct = (productId: number) => {
+  console.log(`Approving product with ID: ${productId}`);
+  // Implement the logic to approve the product here, e.g., make an API call
 };
 
 onMounted(fetchProducts);
