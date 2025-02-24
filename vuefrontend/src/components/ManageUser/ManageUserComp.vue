@@ -10,16 +10,25 @@ import { useToast } from 'vue-toastification'
 
 const isModalOpen = ref(false)
 const modalMode = ref<'add' | 'edit' | 'view'>('add')
-const selectedUser = ref(null) // Store selected user for editing
-const users = ref([]) // Store fetched users
+const selectedUser = ref<User | null>(null) // Allow selectedUser to be either User or null
+const users = ref<User[]>([]) // Store fetched users with correct typing
 const activeFilter = ref(true) // ✅ Default: Show all users
 const toast = useToast()
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  isDisabled: boolean;
+  // Add other relevant properties as needed
+}
 
 // **Fetch Users**
 const fetchUsers = async () => {
   try {
     const data = await userService.getUsers()
-    users.value = data.filter(user => user.role === 'user').map(user => ({
+    users.value = data.filter((user: User) => user.role === 'user').map((user: User) => ({
       id: user.id,
       name: user.name,
       email: user.email,
@@ -27,7 +36,8 @@ const fetchUsers = async () => {
       isDisabled: user.isDisabled === 1 || user.isDisabled === true,
     }))
   } catch (error) {
-    toast.error('No se pudieron obtener los usuarios')
+    const errorMessage = error instanceof Error ? error.message : 'No se pudieron obtener los usuarios'
+    toast.error(errorMessage)
   }
 }
 
@@ -50,30 +60,31 @@ const openAddUserModal = () => {
 }
 
 // **Open Edit User Modal**
-const openEditUserModal = (user) => {
+const openEditUserModal = (user: User) => {
   selectedUser.value = user
   modalMode.value = 'edit'
   isModalOpen.value = true
 }
 
-
 // **Open View User Modal** (NEW FUNCTIONALITY 🚀)
-const openViewUserModal = (user) => {
+const openViewUserModal = (user: User) => {
   selectedUser.value = user
   modalMode.value = 'view'
   isModalOpen.value = true
 }
+
 // **Close Modal**
 const closeModal = () => (isModalOpen.value = false)
 
 // **Handle User Save**
-const handleUserSave = async (userData, userId) => {
+const handleUserSave = async (userData: User, userId: number) => {
   try {
     await userService.saveUser(userData, userId)
     toast.success('¡Usuario guardado con éxito!')
     fetchUsers() // Refresh users after action
   } catch (error) {
-    toast.error(error.response?.data?.message || 'No se pudo guardar el usuario')
+    const errorMessage = error instanceof Error ? error.message : 'No se pudo guardar el usuario'
+    toast.error(errorMessage)
   }
 }
 
@@ -85,6 +96,20 @@ const search = (value: string) => {
 // **Sorting handler**
 const handleSort = (key: string) => {
   console.log(`Ordenando por: ${key}`)
+}
+
+// **Handle Delete User**
+const handleDeleteUser = async (userId: number) => {
+  try {
+    console.log("Deleting user with ID:", userId);
+    // Implement the logic to delete the user here, e.g., make an API call
+    await userService.deleteUser(userId);
+    toast.success('¡Usuario eliminado con éxito!');
+    fetchUsers(); // Refresh users after deletion
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'No se pudo eliminar el usuario';
+    toast.error(errorMessage);
+  }
 }
 
 onMounted(fetchUsers)
