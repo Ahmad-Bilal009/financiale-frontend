@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, defineProps } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import Logo from '@/assets/svg/Logogo.svg'
+import Logo from '@/assets/svg/logogo.svg'
 import Dashboard from '@/assets/svg/dashboard.svg'
 import Products from '@/assets/svg/product.svg'
 import Settings from '@/assets/svg/setting.svg'
