@@ -4,12 +4,29 @@ import productService from "@/services/productServices"; // Product API
 import userService from "@/services/userService"; // User API
 import { useRouter } from "vue-router";
 import defaultuser from "../../assets/img/no-user-image.png"
+import { BASE_URL } from '@/config'; // Adjust the path as necessary
 
 const router = useRouter();
-const products = ref([]); // Store products
-const usersMap = ref<Record<number, { name: string; image: string | null }>>({}); // Map user ID to name & image
+const products = ref<Product[]>([]); // Store products
+const usersMap = ref<Record<number, { name: string; image: string | null }>>({});
 
+interface User {
+  id: number;
+  name: string;
+  image: string | null; // Define the structure of the User object
+}
 
+interface Product {
+  id: number;
+  title: string;
+  userImage: string;
+  productType?: string; // Optional property
+  organization?: string; // Optional property
+  description?: string; // Optional property
+  geographicCoverage?: string[]; // Optional property
+  User?: User; // Add User as an optional property
+  status: string; // Add status property
+}
 
 // **Fetch Products & Attach User Data**
 const fetchProducts = async () => {
@@ -23,10 +40,10 @@ const fetchProducts = async () => {
     }
 
     // Filter only approved products from the response
-    const approvedProducts = response.filter((product: any) => product.status === "approved");
+    const approvedProducts = response.filter((product: Product) => product.status === "approved");
 
     // Map response to include organization name & user image
-    products.value = approvedProducts.map((product: any) => ({
+    products.value = approvedProducts.map((product: Product) => ({
       ...product,
       organization: product.User?.name || "Unknown Organization",
       userImage: product.User?.image ? `${BASE_URL}${product.User.image}` : defaultuser, // Ensure full URL
@@ -37,12 +54,10 @@ const fetchProducts = async () => {
   }
 };
 
-
-
 // **Fetch Data on Component Mount**
 onMounted(async () => {
-
   await fetchProducts(); // Then fetch products
+  await fetchUsers(); // Then fetch users
 });
 
 // **Handle More Info Click**
@@ -53,6 +68,20 @@ const handleMoreInfo = (productId: number | undefined) => {
   }
   router.push(`/CardInfo/${productId}`);
 };
+
+// After fetching users, populate usersMap
+const fetchUsers = async () => {
+  const userResponse = await userService.getUsers();
+
+  // Populate usersMap with userResponse
+  usersMap.value = userResponse.reduce((map: Record<number, { name: string; image: string | null }>, user: { id: number; name: string; image: string | null }) => {
+    map[user.id] = { name: user.name, image: user.image };
+    return map;
+  }, {});
+};
+
+// Call fetchUsers to populate usersMap
+onMounted(fetchUsers);
 
 </script>
 

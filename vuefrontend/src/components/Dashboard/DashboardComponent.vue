@@ -20,33 +20,62 @@ const isAdmin = user?.role === 'admin'
 const props = defineProps({
   userRole: {
     type: String,
-    default: 'user',
+    required: true, // Make it required if necessary
   },
 })
 
-
+// Example usage of userRole
+const isAdminComputed = computed(() => props.userRole === 'admin');
 
 const products = ref([])
 const users = ref([])
-const stats = ref({
+
+// Define the Stats interface
+interface Stats {
+  totalProducts: number;
+  createdToday: number;
+  createdThisWeek: number;
+  createdThisMonth: number;
+  totalUsers: number;
+  totalVisitors: number;
+}
+
+// Update the stats object to use the new interface
+const stats = ref<Stats>({
   totalProducts: 0,
   createdToday: 0,
   createdThisWeek: 0,
   createdThisMonth: 0,
   totalUsers: 0,
-})
+  totalVisitors: 0,
+});
+
+// Define the User interface
+interface User {
+  id: number;
+  name: string;
+  // Add other relevant properties if needed
+}
+
+// Define the Product interface
+interface Product {
+  id: number;
+  title: string;
+  userId: number; // Include other relevant properties
+  // Add other properties as needed
+}
 
 const fetchProducts = async () => {
   try {
     let usersMap: Record<number, string> = {}; // Store userId → Organization Name
 
     // **Only fetch users if Admin (To get Organization names)**
-    if (isAdmin) {
+    if (isAdminComputed) {
       const userResponse = await userService.getUsers();
-      usersMap = userResponse.reduce((map: any, user: any) => {
+      usersMap = userResponse.reduce((map: Record<number, string>, user: User) => {
         map[user.id] = user.name; // Map user ID to Organization Name
         return map;
-      }, {});
+      }, {} as Record<number, string>);
       console.log("✅ Users Fetched:", usersMap);
     }
 
@@ -55,11 +84,11 @@ const fetchProducts = async () => {
     console.log("✅ API Response (Products):", response);
 
     products.value = response
-      .filter((product: any) => isAdmin || String(product.userId) === String(userId)) // ✅ Admin gets all, User gets their own
-      .map((product: any) => ({
+      .filter((product: Product) => isAdminComputed || String(product.userId) === String(userId)) // Use the Product interface
+      .map((product: Product) => ({
         id: product.id,
         title: product.title,
-        organization: usersMap[product.userId] || (isAdmin ? "N/A" : user.name), // ✅ Ensure organization is correct
+        organization: usersMap[product.userId] || (isAdminComputed ? "N/A" : user.name), // ✅ Ensure organization is correct
         location: product.contactDetail?.address || "N/A",
         stage: product.stageOfEntrepreneurship || "N/A",
         userId: product.userId || null,
@@ -79,7 +108,7 @@ const fetchProducts = async () => {
 
 //Fetch Users (Only for Admin)
 const fetchUsers = async () => {
-  if (isAdmin) {
+  if (isAdminComputed) {
     try {
       const data = await userService.getUsers()
       users.value = data.filter(user => user.role === 'user').map(user => ({
@@ -99,17 +128,18 @@ const fetchUsers = async () => {
 const fetchDashboardStats = async () => {
   try {
 
-    const response = await dashboardService.getStats(userId, isAdmin);
+    const response = await dashboardService.getStats(userId, isAdminComputed);
     stats.value = response || {
       totalProducts: 0,
       createdToday: 0,
       createdThisWeek: 0,
       createdThisMonth: 0,
       totalUsers: 0,
+      totalVisitors: 0,
     };
 
     // If the user is NOT an admin, filter stats to only show their products
-    if (!isAdmin) {
+    if (!isAdminComputed) {
       const userProducts = products.value.filter((product: any) => {
         return String(product.userId) === String(userId);
       });
@@ -148,7 +178,7 @@ const getWeekNumber = (date: Date) => {
 const fetchVisitorStats = async () => {
   try {
     const response = await visitorsService.getVisitors()
-    stats.value.totalVisitors = response?.totalVisitors || 0
+    stats.value.totalVisitors = response.totalVisitors || 0
   } catch (error) {
     toast.error("Failed to load dashboard Visitors")
   }
@@ -188,7 +218,7 @@ const tableheading = computed(() => {
     { key: "location", label: "Ubicación", align: "center" },
     { key: "stage", label: "Etapa", align: "center" },
   ];
-  if (isAdmin) {
+  if (isAdminComputed) {
     baseColumns.push({ key: "action", label: "Acción", align: "center" });
   }
   return baseColumns;
