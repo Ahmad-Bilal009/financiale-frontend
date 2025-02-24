@@ -105,23 +105,17 @@ const fetchProducts = async () => {
 
 // **Computed: Filtered Products**
 const filteredProducts = computed(() => {
-  let filtered = products.value
-
-  if (activeFilter.value !== 'all') {
-    filtered = filtered.filter(product => product.status === activeFilter.value)
-  }
-
-  if (activeFilter.value === 'approved') {
-    if (selectedOrganization.value.key !== 'all') {
-      filtered = filtered.filter(product => product.organization === selectedOrganization.value.label)
-    }
-    if (selectVisitors.value.key !== 'all') {
-      // Agregar lógica de filtrado de visitantes si es necesario
-    }
-  }
-
-  return filtered
-})
+  return products.value.map(product => ({
+    id: product.id.toString(),
+    title: product.title,
+    userId: product.userId?.toString() || "N/A",
+    contactDetail: product.contactDetail?.address || "N/A",
+    stageOfEntrepreneurship: product.stageOfEntrepreneurship || "N/A",
+    status: product.status,
+    createdAt: product.createdAt || "N/A",
+    organization: product.organization || "N/A",
+  }));
+});
 
 // **Handle Filter Change (Triggered from Toggle Component)**
 const handleFilterChange = (filter: string) => {
@@ -181,19 +175,6 @@ const deleteProduct = () => {
 
 // **On Component Mount**
 onMounted(fetchProducts)
-
-const formattedProducts = computed(() => {
-  return products.value.map(product => ({
-    id: product.id.toString(),
-    title: product.title,
-    userId: product.userId?.toString() || "N/A",
-    contactDetail: product.contactDetail?.address || "N/A",
-    stageOfEntrepreneurship: product.stageOfEntrepreneurship || "N/A",
-    status: product.status,
-    createdAt: product.createdAt || "N/A",
-    organization: product.organization || "N/A",
-  }));
-});
 </script>
 
 

@@ -19,6 +19,9 @@ interface Product {
   stageOfEntrepreneurship?: string;
   status: string; // Ensure this is included
   createdAt?: string;
+  organization?: string;
+  location?: string;
+  stage?: string;
   // Add other relevant properties as needed
 }
 
@@ -66,9 +69,9 @@ const rejectedProducts = computed(() => {
   return products.value.filter(product => product.status === "rejected").map(product => ({
     id: product.id.toString(),
     title: product.title,
-    organization: product.organization,
-    location: product.location,
-    stage: product.stage,
+    organization: product.organization || "N/A",
+    location: product.location || "N/A",
+    stage: product.stage || "N/A",
     status: product.status,
     createdAt: product.createdAt || "N/A",
   }));

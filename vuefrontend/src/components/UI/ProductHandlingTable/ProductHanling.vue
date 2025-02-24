@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { HandlingColumns, HandlingProducts } from '@/Data/data'
 import TableComp from '@/components/UI/ApprovalTable/TableComp.vue'
+import { ref } from 'vue'
 
-
+const activeFilter = ref<string>('default')
 
 const handleSort = (key: string) => {
   console.log(`Sorting by: ${key}`)
@@ -20,6 +21,7 @@ function rejectProduct(index: number) {
       <TableComp
         :columns="HandlingColumns"
         :rowData="HandlingProducts"
+        :activeFilter="activeFilter"
         @sort="handleSort"
         link="/products"
         variant="action"

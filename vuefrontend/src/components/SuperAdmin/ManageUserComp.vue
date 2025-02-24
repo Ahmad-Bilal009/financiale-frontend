@@ -19,7 +19,7 @@ interface User {
 
 const isModalOpen = ref(false);
 const modalMode = ref<'add' | 'edit'>('add'); // Track add or edit mode
-const selectedUser = ref<User | null>(null); // Store selected user for editing
+const selectedUser = ref<Record<string, any> | undefined>(undefined); // Store selected user for editing
 const users = ref<User[]>([]); // Store fetched users
 const toast = useToast();
 
@@ -41,7 +41,7 @@ onMounted(fetchUsers);
 
 // **Open Add User Modal**
 const openAddUserModal = () => {
-  selectedUser.value = null; // Reset selected user
+  selectedUser.value = undefined; // Reset selected user
   modalMode.value = 'add';
   isModalOpen.value = true;
 };

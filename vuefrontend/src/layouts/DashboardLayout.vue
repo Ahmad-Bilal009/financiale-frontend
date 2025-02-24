@@ -4,7 +4,9 @@ import { RouterView } from 'vue-router'
 import { ref } from 'vue'
 
 //  Fetch user role from localStorage (fallback to 'user' if not logged in)
-const currentUserRole = ref(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).role : 'user')
+const user = localStorage.getItem('user');
+const currentUserRole = ref(user ? JSON.parse(user).role : 'user');
+const userRole = currentUserRole.value || 'user';
 </script>
 
 <template>
