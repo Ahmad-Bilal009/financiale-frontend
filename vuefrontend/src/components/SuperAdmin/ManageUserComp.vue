@@ -1,72 +1,102 @@
 <script setup lang="ts">
-import SearchBar from '@/components/UI/SearchBar/SearchBar.vue'
-import TableComp from '@/components/UI/ManageUser/UserComp.vue'
-import AddUserButton from '@/components/UI/Button/AddUserbutton.vue'
-import UserToggle from '@/components/UI/Toggle-Switch/UserToggle.vue'
-import AddUserModel from '@/components/UI/AddUser-Modal/AddUser.vue'
-import { ref, onMounted } from 'vue'
-import userService from '@/services/userService'
-import { useToast } from 'vue-toastification'
+import SearchBar from '@/components/UI/SearchBar/SearchBar.vue';
+import TableComp from '@/components/UI/ManageUser/UserComp.vue';
+import AddUserButton from '@/components/UI/Button/AddUserbutton.vue';
+import UserToggle from '@/components/UI/Toggle-Switch/UserToggle.vue';
+import AddUserModel from '@/components/UI/AddUser-Modal/AddUser.vue';
+import { ref, onMounted } from 'vue';
+import userService from '@/services/userService';
+import { useToast } from 'vue-toastification';
 
-const isModalOpen = ref(false)
-const modalMode = ref<'add' | 'edit'>('add') // Track add or edit mode
-const selectedUser = ref(null) // Store selected user for editing
-const users = ref([]) // Store fetched users
-const toast = useToast()
+// **Types**
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  isDisabled: boolean;
+}
 
+const isModalOpen = ref(false);
+const modalMode = ref<'add' | 'edit'>('add'); // Track add or edit mode
+const selectedUser = ref<User | null>(null); // Store selected user for editing
+const users = ref<User[]>([]); // Store fetched users
+const toast = useToast();
+
+// **Fetch Users**
 const fetchUsers = async () => {
   try {
-    users.value = await userService.getUsers();
-
-  } catch (error) {
-    toast.error(error.response?.data?.message || 'Error fetching users');
+    const response = await userService.getUsers();
+    users.value = response;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      toast.error(error.message || 'Error fetching users');
+    } else {
+      toast.error('Error fetching users');
+    }
   }
 };
 
+onMounted(fetchUsers);
 
-onMounted(fetchUsers)
-
-//  Open Add User Modal
+// **Open Add User Modal**
 const openAddUserModal = () => {
-  selectedUser.value = null // Reset selected user
-  modalMode.value = 'add'
-  isModalOpen.value = true
-}
+  selectedUser.value = null; // Reset selected user
+  modalMode.value = 'add';
+  isModalOpen.value = true;
+};
 
-//  Open Edit User Modal
-const openEditUserModal = (user) => {
-  selectedUser.value = user
-  modalMode.value = 'edit'
-  isModalOpen.value = true
-}
+// **Open Edit User Modal**
+const openEditUserModal = (user: User) => { // ✅ Fix implicit `any` type
+  selectedUser.value = user;
+  modalMode.value = 'edit';
+  isModalOpen.value = true;
+};
 
-//  Close Modal
-const closeModal = () => (isModalOpen.value = false)
+// **Close Modal**
+const closeModal = () => {
+  isModalOpen.value = false;
+};
 
-const handleUserSave = async (userData, userId) => {
+// **Handle Save User**
+const handleUserSave = async (userData: User, userId?: number) => { // ✅ Fix implicit `any` types
   try {
     await userService.saveUser(userData, userId);
-    toast.success(' User saved successfully!');
+    toast.success('User saved successfully!');
     fetchUsers(); // Refresh users after action
-  } catch (error) {
-    toast.error(error.response?.data?.message || 'Failed to save user');
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      toast.error(error.message || 'Failed to save user');
+    } else {
+      toast.error('Failed to save user');
+    }
   }
 };
 
+// **Toggle User Status**
+const toggleUserStatus = async (userId: number) => {
+  try {
+    await userService.toggleUserStatus(userId);
+    toast.success('User status updated!');
+    fetchUsers(); // Refresh user list
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      toast.error(error.message || 'Failed to update user status');
+    } else {
+      toast.error('Failed to update user status');
+    }
+  }
+};
 
-onMounted(fetchUsers)
-
-
-
-//  Search functionality (Future use)
+// **Search functionality (Future use)**
 const search = (value: string) => {
-  console.log('🔎 Searching:', value)
-}
+  console.log('🔎 Searching:', value);
+};
 
-//  Sorting handler (Future use)
+// **Sorting handler (Future use)**
 const handleSort = (key: string) => {
-  console.log(`Sorting by: ${key}`)
-}
+  console.log(`Sorting by: ${key}`);
+};
 </script>
 
 <template>
@@ -77,8 +107,8 @@ const handleSort = (key: string) => {
       <div class="md:tw-flex tw-gap-5 tw-items-start md:tw-items-center">
         <SearchBar :onSearch="search" placeholder="Search here..." />
         <div class="tw-flex tw-mt-2 md:tw-mt-0 tw-gap-4 tw-items-center">
-        <UserToggle />
-        <AddUserButton text="+ Add User" @click="openAddUserModal" />
+          <UserToggle />
+          <AddUserButton text="+ Add User" @click="openAddUserModal" />
         </div>
       </div>
     </div>
@@ -91,7 +121,7 @@ const handleSort = (key: string) => {
           { key: 'email', label: 'Email', align: 'left' },
           { key: 'role', label: 'Role', align: 'center' },
           { key: 'action', label: 'Actions', align: 'center' },
-          { key: 'isDisabled', label: 'Status', align: 'center' },
+          { key: 'isDisabled', label: 'Status', align: 'center' }
         ]"
         :rowData="users"
         @sort="handleSort"
