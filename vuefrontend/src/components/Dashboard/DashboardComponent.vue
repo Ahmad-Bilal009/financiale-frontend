@@ -92,7 +92,7 @@ const fetchProducts = async () => {
       .map((product: Product) => ({
         id: product.id,
         title: product.title,
-        organization: usersMap[product.userId] || (isAdminComputed ? "N/A" : user.name), // ✅ Ensure organization is correct
+        organization: product.userId ? usersMap[product.userId] || (isAdminComputed ? "N/A" : user.name) : "N/A",
         location: product.contactDetail?.address || "N/A",
         stage: product.stageOfEntrepreneurship || "N/A",
         userId: product.userId || null,
@@ -114,16 +114,16 @@ const fetchProducts = async () => {
 const fetchUsers = async () => {
   if (isAdminComputed) {
     try {
-      const data = await userService.getUsers()
-      users.value = data.filter(user => user.role === 'user').map(user => ({
+      const data = await userService.getUsers();
+      users.value = data.filter((user: User) => user.role === 'user').map((user: User) => ({
         id: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
         isDisabled: user.isDisabled === 1 || user.isDisabled === true,
-      }))
+      }));
     } catch (error) {
-      toast.error('Failed to fetch users')
+      toast.error('Failed to fetch users');
     }
   }
 }
@@ -132,7 +132,7 @@ const fetchUsers = async () => {
 const fetchDashboardStats = async () => {
   try {
 
-    const response = await dashboardService.getStats(userId, isAdminComputed);
+    const response = await dashboardService.getStats();
     stats.value = response || {
       totalProducts: 0,
       createdToday: 0,
@@ -144,20 +144,20 @@ const fetchDashboardStats = async () => {
 
     // If the user is NOT an admin, filter stats to only show their products
     if (!isAdminComputed) {
-      const userProducts = products.value.filter((product: any) => {
+      const userProducts = products.value.filter((product: Product) => {
         return String(product.userId) === String(userId);
       });
-      stats.value.createdToday = userProducts.filter((product: any) => {
+      stats.value.createdToday = userProducts.filter((product: Product) => {
         if (!product.createdAt) return false;
         return new Date(product.createdAt).toDateString() === new Date().toDateString();
       }).length;
 
-      stats.value.createdThisWeek = userProducts.filter((product: any) => {
+      stats.value.createdThisWeek = userProducts.filter((product: Product) => {
         if (!product.createdAt) return false;
         return getWeekNumber(new Date(product.createdAt)) === getWeekNumber(new Date());
       }).length;
 
-      stats.value.createdThisMonth = userProducts.filter((product: any) => {
+      stats.value.createdThisMonth = userProducts.filter((product: Product) => {
         if (!product.createdAt) return false;
         const productDate = new Date(product.createdAt);
         const currentDate = new Date();
@@ -235,6 +235,15 @@ const handleSort = (key: string) => {
 // Example function with typed parameters
 const someFunction = (user: User) => {
   // Function logic
+};
+
+// Define activeFilter
+const activeFilter = ref('all');
+
+// Define handleDelete
+const handleDelete = (productId: number) => {
+  console.log(`Deleting product with ID: ${productId}`);
+  // Implement delete logic here
 };
 </script>
 
