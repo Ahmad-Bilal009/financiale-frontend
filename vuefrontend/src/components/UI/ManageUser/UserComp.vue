@@ -4,7 +4,7 @@ import { RouterLink } from 'vue-router'
 import ViewEyeIcon from '@/assets/svg/view-eye.svg'
 import EditIcon from '@/assets/svg/edit-icon.svg'
 import circle from '@/assets/svg/Circle.png'
-import DeleteIcon from '@/assets/svg/delete-icon.svg' // ✅ Ensure correct import
+import DeleteIcon from '@/assets/svg/delete-icon.svg' // Ensure correct import
 import { defineProps, computed } from 'vue'
 import userService from '@/services/userService'
 import { useToast } from 'vue-toastification'
@@ -47,7 +47,7 @@ const toggleUserStatus = async (user: UserData) => {
   try {
     console.log(`🔄 Cambiando estado para el usuario ID: ${user.id}`)
     await userService.toggleUserStatus(user.id)
-    toast.success('✅ ¡Estado del usuario actualizado!')
+    toast.success('¡Estado del usuario actualizado!')
 
     if (props.onToggleStatus) {
       props.onToggleStatus(user.id)

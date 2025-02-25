@@ -1,10 +1,18 @@
 import axios from 'axios'
 
-const API_URL = 'https://heavy-cows-reply.loca.lt/api/admin/users'
+const API_URL = 'https://574e-39-44-2-66.ngrok-free.app/api/admin/users'
 
-const getAuthHeaders = () => ({
-  headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-})
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token') // Retrieve the token from localStorage
+  return {
+    headers: {
+      'ngrok-skip-browser-warning': 'true', // Bypass Ngrok warning
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+  }
+}
 
 export default {
   //  Fetch all users

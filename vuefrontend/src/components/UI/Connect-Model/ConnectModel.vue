@@ -52,10 +52,10 @@ const handleSubmit = async () => {
   }
 
   try {
-    // ✅ Track Click in Database for Dashboard Statistics
+    // Track Click in Database for Dashboard Statistics
     await dashboardService.trackClick(selectedAction.value);
 
-    // ✅ Perform Action (Redirect, Open Email, etc.)
+    // Perform Action (Redirect, Open Email, etc.)
     if (selectedAction.value === "email") {
       window.location.href = `mailto:${inputValue.value}`;
     } else if (selectedAction.value === "website") {

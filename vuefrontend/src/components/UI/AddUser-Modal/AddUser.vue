@@ -126,7 +126,7 @@ const handleClose = () => {
     class="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-50 tw-flex tw-items-center tw-justify-center md:tw-ml-[256px]"
   >
     <div class="tw-bg-white tw-gap-[24px] tw-flex tw-flex-col tw-p-[20px] tw-rounded-[16px] tw-w-[562px]">
-      <!-- ✅ Modal Header -->
+      <!-- Modal Header -->
       <div class="tw-flex tw-justify-between tw-items-center">
         <h2 class="tw-text-xl tw-font-medium tw-text-[#171725]">
           {{ mode === 'add' ? 'Add User' : mode === 'view' ? 'View User' : 'Edit User' }}
@@ -136,23 +136,23 @@ const handleClose = () => {
         </div>
       </div>
 
-      <!-- ✅ User Image Display (Top Center) -->
+      <!-- User Image Display (Top Center) -->
       <div class="tw-flex tw-justify-center tw-items-center tw-mb-4">
         <img :src="imagePreview || defaultUserImage" alt="User Image"
              class="tw-w-32 tw-h-32 tw-rounded-full tw-border tw-border-gray-300"/>
       </div>
 
-      <!-- ✅ Form Fields -->
+      <!-- Form Fields -->
       <form @submit.prevent="handleSubmit" class="tw-flex tw-flex-col tw-gap-5">
 
-        <!-- ✅ Image Upload (ONLY in Add/Edit Mode) -->
+        <!-- Image Upload (ONLY in Add/Edit Mode) -->
         <div class="tw-flex tw-flex-col tw-gap-2" v-if="mode !== 'view'">
           <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Upload Image</label>
           <input type="file" @change="handleImageChange" accept="image/*"
                  class="tw-w-full border tw-border-gray-300 tw-rounded-[8px]"/>
         </div>
 
-        <!-- ✅ Name -->
+        <!-- Name -->
         <div class="tw-flex tw-flex-col tw-gap-2">
           <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Organization Name</label>
           <input v-model="form.name" type="text" placeholder="Enter Name" required
@@ -160,7 +160,7 @@ const handleClose = () => {
                  :disabled="mode === 'view'"/>
         </div>
 
-        <!-- ✅ Email -->
+        <!-- Email -->
         <div class="tw-flex tw-flex-col tw-gap-2">
           <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Email</label>
           <input v-model="form.email" type="email" placeholder="Enter Email" required
@@ -168,14 +168,14 @@ const handleClose = () => {
                  :disabled="mode === 'view'"/>
         </div>
 
-        <!-- ✅ Password (Only in Add Mode) -->
+        <!-- Password (Only in Add Mode) -->
         <div class="tw-flex tw-flex-col tw-gap-2" >
           <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Password</label>
           <input v-model="form.password" type="password" placeholder="Enter Password" required
                  class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2" :disabled="mode === 'view'"/>
         </div>
 
-        <!-- ✅ Role Selection (Only for Superadmin) -->
+        <!-- Role Selection (Only for Superadmin) -->
         <div class="tw-flex tw-flex-col tw-gap-2">
           <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Role</label>
           <select v-model="form.role"
@@ -187,7 +187,7 @@ const handleClose = () => {
           </select>
         </div>
 
-        <!-- ✅ Submit Button -->
+        <!-- Submit Button -->
         <div class="tw-flex tw-justify-end">
           <button v-if="mode !== 'view'" type="submit"
                   class="tw-bg-[#24B2E3] tw-text-[16px] text-white tw-px-[28px] tw-py-[12px] tw-rounded-[13px] tw-font-medium">

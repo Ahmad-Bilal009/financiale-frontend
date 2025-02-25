@@ -10,7 +10,7 @@ const activeFilter = ref('all')
 // **Función para alternar el filtro seleccionado**
 const toggleFilter = (filter: string) => {
   activeFilter.value = filter
-  emit('filterChange', filter) // ✅ Emitir cambio al padre
+  emit('filterChange', filter) // Emitir cambio al padre
 }
 </script>
 

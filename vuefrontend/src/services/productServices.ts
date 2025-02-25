@@ -1,10 +1,18 @@
 import axios from 'axios'
 
-const API_URL = 'https://heavy-cows-reply.loca.lt/api/products'
+const API_URL = 'https://574e-39-44-2-66.ngrok-free.app/api/products'
 
-const getAuthHeaders = () => ({
-  headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-})
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token') // Retrieve the token from localStorage
+  return {
+    headers: {
+      'ngrok-skip-browser-warning': 'true', // Bypass Ngrok warning
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+  }
+}
 
 export default {
   //  Fetch all products
@@ -55,13 +63,9 @@ export default {
   },
 
   //  Toggle Product Status (Approve/Reject/Pending)
-  async updateProductStatus(productId: number, status: 'pending' | 'approved' | 'rejected') {
+  async updateProductStatus(productId: number, status: string) {
     try {
-      const response = await axios.put(
-        `${API_URL}/${productId}/status`,
-        { status },
-        getAuthHeaders(),
-      )
+      const response = await axios.patch(`${API_URL}/${productId}`, { status }, getAuthHeaders())
       return response.data
     } catch (error: any) {
       throw error.response?.data?.message || 'Failed to update product status'

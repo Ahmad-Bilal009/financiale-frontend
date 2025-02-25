@@ -12,7 +12,7 @@ const isModalOpen = ref(false)
 const modalMode = ref<'add' | 'edit' | 'view'>('add')
 const selectedUser = ref<User | null>(null) // Allow selectedUser to be either User or null
 const users = ref<User[]>([]) // Store fetched users with correct typing
-const activeFilter = ref(true) // ✅ Default: Show all users
+const activeFilter = ref(true) // Default: Show all users
 const toast = useToast()
 
 interface User {
@@ -53,7 +53,7 @@ const fetchUsers = async () => {
   }
 }
 
-// ✅ **Filter users based on toggle state**
+// **Filter users based on toggle state**
 const filteredUsers = computed(() => {
   return activeFilter.value ? users.value : users.value.filter(user => user.isDisabled)
 })
@@ -135,7 +135,7 @@ onMounted(fetchUsers)
       <div class="md:tw-flex tw-gap-5 tw-items-start md:tw-items-center">
         <SearchBar :onSearch="search" placeholder="Buscar aquí..." />
         <div class="tw-flex tw-mt-2 md:tw-mt-0 tw-gap-4 tw-items-center">
-          <!-- ✅ Escuchar cambios en la alternancia -->
+          <!-- Escuchar cambios en la alternancia -->
           <UserToggle @toggleStatus="handleToggleStatus" />
           <AddUserButton text="+ Agregar Usuario" @click="openAddUserModal" />
         </div>

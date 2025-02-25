@@ -47,7 +47,7 @@ const openAddUserModal = () => {
 };
 
 // **Open Edit User Modal**
-const openEditUserModal = (user: User) => { // ✅ Fix implicit `any` type
+const openEditUserModal = (user: User) => { // Fix implicit `any` type
   selectedUser.value = user;
   modalMode.value = 'edit';
   isModalOpen.value = true;
@@ -59,7 +59,7 @@ const closeModal = () => {
 };
 
 // **Handle Save User**
-const handleUserSave = async (userData: User, userId?: number) => { // ✅ Fix implicit `any` types
+const handleUserSave = async (userData: User, userId?: number) => { // Fix implicit `any` types
   try {
     await userService.saveUser(userData, userId);
     toast.success('User saved successfully!');

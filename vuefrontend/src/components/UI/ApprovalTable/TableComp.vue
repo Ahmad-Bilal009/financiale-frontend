@@ -30,7 +30,7 @@ const renderCell = (row: { [key: string]: string }, columnKey: string) => {
       return row.stage
     case 'createdAt':
       return row.createdAt
-    case 'status': // ✅ Ensure the status column is used
+    case 'status': // Ensure the status column is used
       return row.status
     default:
       return ''
@@ -59,7 +59,7 @@ const deleteItem = (index: number) => {
 
 ---
 
-### **✅ Fixed Template**
+### **Fixed Template**
 ```vue
 <template>
   <div class="tw-overflow-x-auto">
@@ -110,7 +110,7 @@ const deleteItem = (index: number) => {
               :key="column.key"
               :class="`tw-px-1 tw-py-[27px] text-${column.align}`"
             >
-              <!-- ✅ View Button -->
+              <!-- View Button -->
               <div
                 v-if="column.key === 'view'"
                 class="tw-flex tw-items-center tw-justify-center tw-gap-2"
@@ -123,12 +123,12 @@ const deleteItem = (index: number) => {
                 </RouterLink>
               </div>
 
-              <!-- ✅ Approve & Reject Buttons (Dynamic) -->
+              <!-- Approve & Reject Buttons (Dynamic) -->
               <div
                 v-if="column.key === 'action'"
                 class="tw-flex tw-items-center tw-justify-center tw-gap-2"
               >
-                <!-- ✅ "All" Filter: Show Correct Buttons Based on Status -->
+                <!-- "All" Filter: Show Correct Buttons Based on Status -->
                 <template v-if="props.activeFilter === 'all'">
                   <button
                     v-if="rowData.status === 'approved'"
@@ -160,7 +160,7 @@ const deleteItem = (index: number) => {
                   </template>
                 </template>
 
-                <!-- ✅ "Approved" Filter: Show ONLY "Reject" -->
+                <!-- "Approved" Filter: Show ONLY "Reject" -->
                 <button
                   v-if="props.activeFilter === 'approved'"
                   class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
@@ -169,7 +169,7 @@ const deleteItem = (index: number) => {
                   RECHAZAR
                 </button>
 
-                <!-- ✅ "Rejected" Filter: Show ONLY "Approve" -->
+                <!-- "Rejected" Filter: Show ONLY "Approve" -->
                 <button
                   v-if="props.activeFilter === 'rejected'"
                   class="tw-bg-[#0BA5EC] hover:tw-bg-[#0990cc] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"

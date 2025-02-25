@@ -1,6 +1,6 @@
 const Product = require('../models/product')
 const User = require('../models/User')
-// ✅ Create a new product
+// Create a new product
 exports.createProduct = async (req, res) => {
   try {
     const {
@@ -70,7 +70,7 @@ exports.getProducts = async (req, res) => {
       .json({ message: 'Failed to fetch products', error: error.message })
   }
 }
-// ✅ Get a single product by ID
+// Get a single product by ID
 exports.getProductById = async (req, res) => {
   try {
     const { id } = req.params
@@ -88,7 +88,7 @@ exports.getProductById = async (req, res) => {
   }
 }
 
-// ✅ Update a product
+// Update a product
 exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params
@@ -139,7 +139,7 @@ exports.updateProduct = async (req, res) => {
   }
 }
 
-// ✅ Update product status (Approve/Reject)
+// Update product status (Approve/Reject)
 exports.updateProductStatus = async (req, res) => {
   try {
     const { id } = req.params
@@ -160,16 +160,14 @@ exports.updateProductStatus = async (req, res) => {
       .status(200)
       .json({ message: `Product ${status} successfully!`, product })
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: 'Failed to update product status',
-        error: error.message
-      })
+    res.status(500).json({
+      message: 'Failed to update product status',
+      error: error.message
+    })
   }
 }
 
-// ✅ Delete a product
+// Delete a product
 exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.params

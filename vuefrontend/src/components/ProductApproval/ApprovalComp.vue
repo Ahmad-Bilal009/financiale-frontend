@@ -12,13 +12,13 @@ const toast = useToast()
 const isDeleteModalOpen = ref(false)
 const selectedProductId = ref<number | null>(null)
 
-// ** State Management **
+//  State Management
 const selectVisitors = ref({ key: 'all', label: 'Todos' })
 const selectedOrganization = ref({ key: 'all', label: 'Todas' })
 const products = ref<Product[]>([])
-const activeFilter = ref('all') // ✅ Default: show all products
+const activeFilter = ref('all') // Default: show all products
 
-// **Visitors & Organization Options**
+// Visitors & Organization Options
 const Visitors = ref([
   { key: 'all', label: 'Todos' },
   { key: 'today', label: 'Hoy' },
@@ -33,7 +33,7 @@ const Organization = ref([
   { key: 'tsmc', label: 'TSMC' },
 ])
 
-// **Table Headers (Dynamic)**
+// Table Headers (Dynamic)
 const tableheading = computed(() => {
   const columns = [
     { key: 'title', label: 'Título', align: 'center' },
@@ -64,12 +64,14 @@ interface Product {
   userId?: number;
   contactDetail?: { address: string };
   stageOfEntrepreneurship?: string;
+  stage: string;
   status: string;
   createdAt?: string;
   organization?: string;
+  location?: string;
 }
 
-// **Fetch Products**
+// Fetch Products
 const fetchProducts = async () => {
   try {
     const userResponse = await userService.getUsers()
@@ -103,65 +105,79 @@ const fetchProducts = async () => {
   }
 }
 
-// **Computed: Filtered Products**
+// Computed: Filtered Products
 const filteredProducts = computed(() => {
   return products.value.map(product => ({
     id: product.id.toString(),
     title: product.title,
+    location: product.location || "N/A",
     userId: product.userId?.toString() || "N/A",
     contactDetail: product.contactDetail?.address || "N/A",
-    stageOfEntrepreneurship: product.stageOfEntrepreneurship || "N/A",
+    stage: product.stage || "N/A",
     status: product.status,
     createdAt: product.createdAt || "N/A",
     organization: product.organization || "N/A",
   }));
 });
 
-// **Handle Filter Change (Triggered from Toggle Component)**
+
 const handleFilterChange = (filter: string) => {
   console.log("Filtro cambiado a:", filter)
   activeFilter.value = filter
 }
 
-// **Search Function**
+
 const search = (query: string) => {
   console.log("Searching for:", query);
-  // Implement search logic here, e.g., filter products based on the query
 }
 
-// **Approve Product Function**
-const approveProduct = (productId: number) => {
-  console.log("Approving product with ID:", productId);
-  // Implement the logic to approve the product here
+// Approve Product Function
+const approveProduct = async (productId: number) => {
+  try {
+    console.log("Approving product with ID:", productId);
+    await productService.updateProductStatus(productId, 'approved');
+    toast.success("Product approved successfully!");
+    fetchProducts(); // Refresh the product list
+  } catch (error) {
+    console.error("Error approving product:", error);
+    toast.error("Failed to approve product.");
+  }
 }
 
-// **Reject Product Function**
-const rejectProduct = (productId: number) => {
-  console.log("Rejecting product with ID:", productId);
-  // Implement the logic to reject the product here
+// Reject Product Function
+const rejectProduct = async (productId: number) => {
+  try {
+    console.log("Rejecting product with ID:", productId);
+    await productService.updateProductStatus(productId, 'rejected');
+    toast.success("Product rejected successfully!");
+    fetchProducts(); // Refresh the product list
+  } catch (error) {
+    console.error("Error rejecting product:", error);
+    toast.error("Failed to reject product.");
+  }
 }
 
-// **Open Delete Modal Function**
+// Open Delete Modal Function
 const openDeleteModal = (productId: number) => {
   console.log("Opening delete modal for product with ID:", productId);
   selectedProductId.value = productId;
   isDeleteModalOpen.value = true;
 }
 
-// **Handle Sort Function**
+// Handle Sort Function
 const handleSort = (key: string) => {
   console.log(`Sorting by ${key}`);
   // Implement the sorting logic here
 }
 
-// **Close Delete Modal Function**
+// Close Delete Modal Function
 const closeDeleteModal = () => {
   console.log("Closing delete modal");
   isDeleteModalOpen.value = false;
   selectedProductId.value = null;
 }
 
-// **Delete Product Function**
+// Delete Product Function
 const deleteProduct = () => {
   if (selectedProductId.value !== null) {
     console.log("Deleting product with ID:", selectedProductId.value);
@@ -173,7 +189,7 @@ const deleteProduct = () => {
   }
 }
 
-// **On Component Mount**
+// On Component Mount
 onMounted(fetchProducts)
 </script>
 

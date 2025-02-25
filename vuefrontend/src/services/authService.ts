@@ -1,6 +1,8 @@
 import axios from 'axios'
 
-const API_URL = 'https://heavy-cows-reply.loca.lt/api/auth'
+const API_URL = 'https://574e-39-44-2-66.ngrok-free.app/api/auth'
+
+
 
 export default {
   async login(credentials: { email: string; password: string }) {

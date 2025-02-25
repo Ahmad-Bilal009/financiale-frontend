@@ -10,7 +10,7 @@ const isApproved = ref(true)
 // **Función para alternar el estado y emitir el evento**
 const toggleApproval = (state: boolean) => {
   isApproved.value = state
-  emit('toggleStatus', state) // ✅ Emitir evento con estado (true = Todos, false = Deshabilitados)
+  emit('toggleStatus', state) // Emitir evento con estado (true = Todos, false = Deshabilitados)
 }
 </script>
 

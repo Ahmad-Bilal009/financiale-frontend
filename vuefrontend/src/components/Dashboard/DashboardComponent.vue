@@ -6,7 +6,6 @@ import UserTableComp from '@/components/UI/ManageUser/UserComp.vue'
 import userService from '@/services/userService'
 import productService from '@/services/productServices'
 import dashboardService from '@/services/dashboardService'
-import visitorsService from '@/services/visitorsService'
 import { useToast } from "vue-toastification"
 
 const toast = useToast();
@@ -83,15 +82,15 @@ const fetchProducts = async () => {
         map[user.id] = user.name; // Map user ID to Organization Name
         return map;
       }, {} as Record<number, string>);
-      console.log("✅ Users Fetched:", usersMap);
+      console.log("Users Fetched:", usersMap);
     }
 
     // **Fetch Products**
     const response = await productService.getProducts();
-    console.log("✅ API Response (Products):", response);
+    console.log("API Response (Products):", response);
 
     products.value = response
-      .filter((product: Product) => isAdminComputed || String(product.userId) === String(userId)) // Use the Product interface
+      .filter((product: Product) => isAdminComputed || String(product.userId) === String(userId)) 
       .map((product: Product) => ({
         id: product.id,
         title: product.title,
@@ -102,7 +101,7 @@ const fetchProducts = async () => {
         createdAt: product.createdAt || null,
       }));
 
-    console.log("✅ Filtered Products:", products.value);
+    console.log("Filtered Products:", products.value);
   } catch (error) {
     console.error("❌ Error fetching products:", error);
     toast.error("Failed to fetch products");
@@ -115,7 +114,7 @@ const fetchProducts = async () => {
 
 //Fetch Users (Only for Admin)
 const fetchUsers = async () => {
-  if (isAdminComputed) {
+  if (isAdminComputed.value) {
     try {
       const data = await userService.getUsers();
       users.value = data.filter((user: User) => user.role === 'user').map((user: User) => ({
@@ -125,8 +124,8 @@ const fetchUsers = async () => {
         role: user.role,
         isDisabled: Boolean(user.isDisabled),
       }));
-    } catch {
-      toast.error('Failed to fetch users');
+    } catch(error) {
+      toast.error(`${error}` ||'Failed to fetch users');
     }
   }
 }
@@ -181,20 +180,10 @@ const getWeekNumber = (date: Date) => {
 };
 
 
-//Fetch Visitor Stats (If Needed)
-const fetchVisitorStats = async () => {
-  try {
-    const response = await visitorsService.getVisitors()
-    stats.value.totalVisitors = response.totalVisitors || 0
-  } catch (error) {
-    toast.error("Failed to load dashboard Visitors")
-  }
-}
 
 onMounted(() => {
   fetchProducts()
   fetchDashboardStats()
-  fetchVisitorStats()
   fetchUsers()
 })
 
