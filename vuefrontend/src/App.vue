@@ -20,34 +20,7 @@ const layout = computed(() => {
   }
 });
 
-// Function to track visitors and fetch website stats
-const trackVisitor = async () => {
-  if (!sessionStorage.getItem("visited")) {
-    sessionStorage.setItem("visited", "true");
 
-    try {
-      const response = await fetch("http://localhost:5001/api/visitorstats/visitor");
-      const data = await response.json();
-      console.log("Stats:", data);
-    } catch (error) {
-      console.error("Error fetching stats:", error);
-    }
-  } else {
-    try {
-      const response = await fetch("http://localhost:5001/api/visitorstats/visitor");
-      const data = await response.json();
-      console.log("Stats:", data);
-    } catch (error) {
-      console.error("Error fetching stats:", error);
-    }
-  }
-};
-
-
-
-onMounted(() => {
-  trackVisitor();
-});
 </script>
 
 <template>

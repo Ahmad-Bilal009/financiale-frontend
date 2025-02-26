@@ -26,6 +26,7 @@ const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const visitorRoutes = require('./routes/visitorRoute');
 const visitorStatsRoutes = require('./routes/visitorstats');
 
 // Use Routes
@@ -34,6 +35,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api', userRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/visitors', visitorRoutes);
 app.use('/api/visitorstats', visitorStatsRoutes);
 
 // Default Route

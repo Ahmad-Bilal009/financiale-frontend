@@ -28,7 +28,7 @@ const Product = sequelize.define("Product", {
   productInformation: {
     type: DataTypes.TEXT,
     allowNull: false,
-  }, 
+  },
   productType: {
     type: DataTypes.ENUM("Type1", "Type2", "Type3"),
     allowNull: false,
@@ -63,7 +63,11 @@ const Product = sequelize.define("Product", {
   },
   status: {
     type: DataTypes.ENUM("pending", "approved", "rejected"),
-    defaultValue: "pending", // Default status is pending
+    defaultValue: "pending",
+  },
+  visitorCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0, // Default to 0 visitors
   },
   createdAt: {
     type: DataTypes.DATE,

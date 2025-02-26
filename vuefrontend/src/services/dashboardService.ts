@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://574e-39-44-2-66.ngrok-free.app/api/dashboard';
+const API_URL = 'http://localhost:5001/api/dashboard';
 
 export default {
   async getStats() {

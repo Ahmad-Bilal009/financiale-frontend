@@ -4,6 +4,7 @@ import TableComp from '@/components/UI/table/TableComp.vue'
 import ApprovalTableComp from '@/components/UI/ApprovalTable/TableComp.vue'
 import UserTableComp from '@/components/UI/ManageUser/UserComp.vue'
 import userService from '@/services/userService'
+import visitorService from "@/services/visitorServices";
 import productService from '@/services/productServices'
 import dashboardService from '@/services/dashboardService'
 import { useToast } from "vue-toastification"
@@ -73,33 +74,32 @@ interface Product {
 
 const fetchProducts = async () => {
   try {
-    let usersMap: Record<number, string> = {}; // Store userId → Organization Name
+    let usersMap: Record<number, { name: string; image: string | null }> = {};
 
-    // **Only fetch users if Admin (To get Organization names)**
-    if (isAdminComputed) {
+    // Fetch users if Admin (for organization mapping)
+    if (isAdminComputed.value) {
       const userResponse = await userService.getUsers();
-      usersMap = userResponse.reduce((map: Record<number, string>, user: User) => {
-        map[user.id] = user.name; // Map user ID to Organization Name
+      usersMap = userResponse.reduce((map: Record<number, { name: string; image: string | null }>, user: User) => {
+        map[user.id] = { name: user.name, image: user.image || null };
         return map;
-      }, {} as Record<number, string>);
-      console.log("Users Fetched:", usersMap);
+      }, {});
     }
 
-    // **Fetch Products**
-    const response = await productService.getProducts();
+    // Fetch only approved products
+    const response = await productService.getProducts({ status: "approved" });
     console.log("API Response (Products):", response);
 
-    products.value = response
-      .filter((product: Product) => isAdminComputed || String(product.userId) === String(userId)) 
-      .map((product: Product) => ({
-        id: product.id,
-        title: product.title,
-        organization: product.userId ? usersMap[product.userId] || (isAdminComputed ? "N/A" : user.name) : "N/A",
-        location: product.contactDetail?.address || "N/A",
-        stage: product.stageOfEntrepreneurship || "N/A",
-        userId: product.userId || null,
-        createdAt: product.createdAt || null,
-      }));
+    // Attach user data to products
+    products.value = response.map((product: Product) => ({
+      id: product.id,
+      title: product.title,
+      organization: usersMap[product.userId]?.name || (isAdminComputed.value ? "N/A" : user.name),
+      location: product.contactDetail?.address || "N/A",
+      stage: product.stageOfEntrepreneurship || "N/A",
+      visitorCount: product.visitorCount || 0, // Add visitor count
+      userId: product.userId || null,
+      createdAt: product.createdAt || null,
+    }));
 
     console.log("Filtered Products:", products.value);
   } catch (error) {
@@ -107,6 +107,7 @@ const fetchProducts = async () => {
     toast.error("Failed to fetch products");
   }
 };
+
 
 
 
@@ -135,13 +136,15 @@ const fetchDashboardStats = async () => {
   try {
 
     const response = await dashboardService.getStats();
+    const totalVisitors = await visitorService.getTotalVisitors();
+
     stats.value = response || {
       totalProducts: 0,
       createdToday: 0,
       createdThisWeek: 0,
       createdThisMonth: 0,
       totalUsers: 0,
-      totalVisitors: 0,
+      totalVisitors: totalVisitors || 0,
     };
 
     // If the user is NOT an admin, filter stats to only show their products
@@ -185,6 +188,7 @@ onMounted(() => {
   fetchProducts()
   fetchDashboardStats()
   fetchUsers()
+  
 })
 
 // Computed Properties for Data Display
@@ -224,11 +228,7 @@ const handleSort = (key: string) => {
   console.log(`Sorting by: ${key}`)
 }
 
-// Example function with typed parameters
-const someFunction = (arg: string | string[]) => {
-  const numberArg = Array.isArray(arg) ? parseInt(arg[0], 10) : parseInt(arg, 10);
-  // Use numberArg
-};
+
 
 // Define activeFilter
 const activeFilter = ref('all');
@@ -239,10 +239,6 @@ const handleDelete = (productId: number) => {
   // Implement delete logic here
 };
 
-// Define handleMoreInfo
-const handleMoreInfo = (id: number) => {
-  console.log(`More info for product ID: ${id}`);
-};
 </script>
 
 

@@ -4,13 +4,13 @@ const { toDefaultValue } = require('sequelize/lib/utils')
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.addColumn('product', 'status', {
+    await queryInterface.addColumn('products', 'status', {
       type: Sequelize.ENUM('pending', 'approval', 'rejected'),
       defaultValue: 'pending'
     })
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn('product', 'status')
+    await queryInterface.removeColumn('products', 'status')
   }
 }

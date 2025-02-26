@@ -30,7 +30,7 @@ const fetchProducts = async () => {
       .map((product: any) => ({
         id: product.id,
         title: product.title,
-        organization: product.organization || "N/A",
+        organization: product.User?.name || "Unknown Organization",
         location: product.contactDetail?.address || "N/A",
         stage: product.stageOfEntrepreneurship || "N/A",
         status: product.status || "N/A",
