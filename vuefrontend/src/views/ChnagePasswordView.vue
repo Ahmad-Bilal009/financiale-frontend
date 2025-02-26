@@ -59,9 +59,6 @@ const handleContinue = () => {
 
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-min-h-screen tw-bg-gray-50 tw-p-8">
-    <!-- Settings Header -->
-    <h1 class="tw-text-xl tw-font-bold tw-text-[30px] tw-mb-10">Settings</h1>
-
     <!-- Reset Password Screen -->
     <div v-if="currentScreen === 'resetPassword'" class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-max-w-md tw-mx-auto tw-my-auto">
       <!-- Icon -->

@@ -57,6 +57,7 @@ interface User {
   role: string;
   email: string;
   isDisabled: boolean;
+  image?: string;
   // Add other relevant properties if needed
 }
 
@@ -67,9 +68,12 @@ interface Product {
   userId?: number;
   contactDetail?: { address: string };
   stageOfEntrepreneurship?: string;
+  stage: string;
   status: string;
   createdAt?: string;
-  // Add other relevant properties as needed
+  organization?: string;
+  location?: string;
+  visitorCount?: number;
 }
 
 const fetchProducts = async () => {
@@ -86,14 +90,14 @@ const fetchProducts = async () => {
     }
 
     // Fetch only approved products
-    const response = await productService.getProducts({ status: "approved" });
+    const response = await productService.getProducts();
     console.log("API Response (Products):", response);
 
     // Attach user data to products
     products.value = response.map((product: Product) => ({
       id: product.id,
       title: product.title,
-      organization: usersMap[product.userId]?.name || (isAdminComputed.value ? "N/A" : user.name),
+      organization: usersMap[product.userId as number]?.name || (isAdminComputed.value ? "N/A" : user.name),
       location: product.contactDetail?.address || "N/A",
       stage: product.stageOfEntrepreneurship || "N/A",
       visitorCount: product.visitorCount || 0, // Add visitor count
@@ -188,7 +192,7 @@ onMounted(() => {
   fetchProducts()
   fetchDashboardStats()
   fetchUsers()
-  
+
 })
 
 // Computed Properties for Data Display

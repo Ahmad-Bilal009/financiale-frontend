@@ -70,7 +70,7 @@ const router = createRouter({
     {
       path: '/settings',
       name: 'settings',
-      component: () => import('../views/SettingsView.vue'),
+      component: () => import('../components/Settings/SettingComponent.vue'),
       meta: {
         layout: 'DashboardLayout',
       },
