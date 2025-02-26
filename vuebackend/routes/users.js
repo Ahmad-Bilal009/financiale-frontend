@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt')
 // Allowed roles
 const allowedRoles = ['user', 'admin', 'superadmin']
 
+
 // Create a new user
 router.post('/users', async (req, res) => {
   try {
@@ -38,5 +39,7 @@ router.post('/users', async (req, res) => {
     res.status(500).json({ message: 'Server error', error })
   }
 })
+
+
 
 module.exports = router

@@ -1,15 +1,15 @@
 import axios from 'axios'
 
-const API_URL = 'https://1c3f-39-44-2-66.ngrok-free.app/api/products'
+const API_URL = 'http://localhost:5001/api/products'
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token') // Retrieve the token from localStorage
   return {
     headers: {
       'ngrok-skip-browser-warning': 'true', // Bypass Ngrok warning
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
     },
   }
 }

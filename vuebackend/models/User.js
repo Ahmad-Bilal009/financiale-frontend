@@ -12,7 +12,7 @@ const User = sequelize.define("User", {
     allowNull: false,
   },
   email: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING, 
     allowNull: false,
     unique: true,
   },
@@ -31,6 +31,10 @@ const User = sequelize.define("User", {
   image: {
     type: DataTypes.STRING, // Store image path
     allowNull: true,
+  },
+  contactInfo: {
+    type: DataTypes.JSON,
+    allowNull: false,
   },
   createdAt: {
     type: DataTypes.DATE,

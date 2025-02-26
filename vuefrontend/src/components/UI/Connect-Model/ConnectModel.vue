@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { defineProps, defineEmits, ref, computed } from 'vue'
+import { ref, onMounted } from "vue";
 import { useToast } from "vue-toastification";
-import dashboardService from '@/services/dashboardService';
+import contactInfoService from "@/services/contactInfoService";
+import dashboardService from "@/services/dashboardService";
+
+// Import Images
+import websiteIcon from '../../../../public/webisteimage.png';
+import whatsappIcon from '../../../../public/whatsappimage.png';
+import phoneIcon from '../../../../public/phoneimage.avif';
+import emailIcon from '../../../../public/emailimage.avif';
 
 const toast = useToast();
 
 // Props
-const { isOpen } = defineProps({
+defineProps({
   isOpen: {
     type: Boolean,
     required: true,
@@ -14,119 +21,122 @@ const { isOpen } = defineProps({
 });
 
 // Emits
-const emit = defineEmits(['close']);
+const emit = defineEmits(["close"]);
 
-// **Action State**
-const selectedAction = ref("");
-const inputValue = ref("");
-
-// **Available Actions**
-const actions = [
-  { label: "Send Email", value: "email" },
-  { label: "Visit Website", value: "website" },
-  { label: "Send WhatsApp Message", value: "whatsapp" },
-  { label: "Call Number", value: "call" },
-];
-
-// **Dynamically Set Placeholder and Input Type**
-const inputPlaceholder = computed(() => {
-  switch (selectedAction.value) {
-    case "email":
-      return "Enter Email Address";
-    case "website":
-      return "Enter Website URL";
-    case "whatsapp":
-      return "Enter WhatsApp Link";
-    case "call":
-      return "Enter Phone Number";
-    default:
-      return "Enter Details";
-  }
+// Reactive state for contact information
+const contactInfo = ref({
+  whatsapp: "",
+  website: "",
+  contact: "",
+  email: "",
 });
 
-// **Submit Action and Track Click Count**
-const handleSubmit = async () => {
-  if (!selectedAction.value || !inputValue.value) {
-    toast.error("Please select an action and enter a value!");
-    return;
-  }
+// State to control phone number visibility
+const showPhoneNumber = ref(false);
 
+// **Fetch Contact Info from API**
+const fetchContactInfo = async () => {
   try {
-    // Track Click in Database for Dashboard Statistics
-    await dashboardService.trackClick(selectedAction.value);
+    const userId = JSON.parse(localStorage.getItem("user") || "{}").id;
+    if (!userId) {
+      toast.error("User not logged in!");
+      return;
+    }
+    const response = await contactInfoService.getContactInfo(userId);
+    if (response) {
+      contactInfo.value = response;
+    }
+  } catch (error) {
+    console.error("Error fetching contact info:", error);
+    toast.error("Failed to load contact information.");
+  }
+};
 
-    // Perform Action (Redirect, Open Email, etc.)
-    if (selectedAction.value === "email") {
-      window.location.href = `mailto:${inputValue.value}`;
-    } else if (selectedAction.value === "website") {
-      window.open(inputValue.value, "_blank");
-    } else if (selectedAction.value === "whatsapp") {
-      window.open(inputValue.value, "_blank");
-    } else if (selectedAction.value === "call") {
-      window.location.href = `tel:${inputValue.value}`;
+// **Track Click and Perform Action**
+const handleClick = async (type: string, link: string) => {
+  try {
+    if (!link) {
+      toast.error("This information is not provided!");
+      return;
     }
 
-    toast.success("Action performed successfully!");
-    emit("close"); // Close Modal
+    // Track Click in Dashboard
+    await dashboardService.trackClick(type);
+
+    // Perform Action
+    if (type === "phone") {
+      showPhoneNumber.value = !showPhoneNumber.value; // Toggle phone number visibility
+    } else {
+      window.open(type === "email" ? `mailto:${link}` : link, "_blank");
+    }
   } catch (error) {
     console.error("❌ Error tracking click:", error);
     toast.error("Failed to perform action.");
   }
 };
 
-// **Close Modal**
-const handleClose = () => {
-  emit("close");
-};
+// Fetch Contact Info on Component Mount
+onMounted(fetchContactInfo);
 </script>
 
 <template>
   <div
     v-if="isOpen"
-    class="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-50 tw-flex tw-items-center tw-justify-center "
+    class="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-50 tw-flex tw-items-center tw-justify-center"
   >
     <div
-      class="tw-bg-white tw-p-4 sm:tw-p-9 tw-rounded-lg tw-w-[300px] tw-min-h-[290px] sm:tw-w-[428px]"
+      class="tw-bg-white tw-p-6 tw-rounded-lg tw-w-[300px] sm:tw-w-[500px] tw-text-center"
     >
-      <!-- Header -->
-      <div class="tw-flex tw-justify-center tw-items-center tw-mb-6">
-        <h2 class="tw-text-2xl tw-font-medium tw-text-[#070707]">Choose an Action</h2>
-      </div>
+      <h2 class="tw-text-2xl tw-font-medium tw-text-[#070707] tw-mb-6">
+        Contact Options
+      </h2>
 
-      <!-- Action Selection -->
-      <div class="tw-flex tw-flex-col tw-gap-4 tw-items-center tw-mb-[25px]">
-        <label class="tw-font-medium">Select Action:</label>
-        <select v-model="selectedAction" class="tw-w-full tw-p-2 tw-border tw-rounded">
-          <option value="" disabled>Select Action</option>
-          <option v-for="(action, index) in actions" :key="index" :value="action.value">
-            {{ action.label }}
-          </option>
-        </select>
+      <div class="tw-flex tw-justify-center tw-gap-6 tw-mt-8 tw-mb-8">
+        <!-- WhatsApp -->
+        <img
+          :src="whatsappIcon"
+          alt="WhatsApp"
+          class="tw-w-[50px] tw-h-[50px] tw-bg-white tw-cursor-pointer"
+          @click="handleClick('whatsapp', contactInfo.whatsapp)"
+        />
 
-        <!-- Dynamic Input Field -->
-        <input
-          v-if="selectedAction"
-          v-model="inputValue"
-          :placeholder="inputPlaceholder"
-          class="tw-w-full tw-p-2 tw-border tw-rounded"
+        <!-- Website -->
+        <img
+          :src="websiteIcon"
+          alt="Website"
+          class="tw-w-[50px] tw-h-[50px] tw-cursor-pointer"
+          @click="handleClick('website', contactInfo.website)"
+        />
+
+        <!-- Email -->
+        <img
+          :src="emailIcon"
+          alt="Email"
+          class="tw-w-[50px] tw-h-[50px] tw-cursor-pointer"
+          @click="handleClick('email', contactInfo.email)"
+        />
+
+        <!-- Phone -->
+        <img
+          :src="phoneIcon"
+          alt="Phone"
+          class="tw-w-[50px] tw-h-[50px] tw-cursor-pointer"
+          @click="handleClick('phone', contactInfo.contact)"
         />
       </div>
 
-      <!-- Buttons -->
-      <div class="tw-flex tw-justify-center tw-gap-2">
-        <button
-          @click="handleClose"
-          class="tw-bg-[#ECECEC] tw-text-[#515151] tw-text-sm tw-min-w-[124px] tw-py-2 tw-rounded-md"
-        >
-          Cancel
-        </button>
-        <button
-          @click="handleSubmit"
-          class="tw-bg-[#24B2E3] tw-text-white tw-text-sm tw-min-w-[124px] tw-py-2 tw-rounded-md"
-        >
-          Proceed
-        </button>
+      <!-- Display Phone Number Only When Clicked -->
+      <div v-if="showPhoneNumber" class="tw-text-lg tw-font-semibold tw-text-[#24B2E3]">
+        📞 {{ contactInfo.contact || "Not Provided" }}
       </div>
+
+      <!-- Close Button -->
+      <button
+        @click="emit('close')"
+        class="tw-bg-[#ECECEC] tw-text-[#515151] tw-text-sm tw-min-w-[124px] tw-py-2 tw-rounded-md tw-mt-8"
+      >
+        Close
+      </button>
     </div>
   </div>
 </template>

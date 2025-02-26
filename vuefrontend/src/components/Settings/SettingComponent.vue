@@ -16,10 +16,12 @@ const handleToggleChange = (status: boolean) => {
 
 <template>
   <div class="tw-p-6">
-    <h2 class="tw-text-2xl tw-font-semibold tw-mb-4">Settings</h2>
+    <div class="tw-flex tw-justify-between">
+      <h2 class="tw-text-2xl tw-font-semibold tw-mb-4">Settings</h2>
 
-    <!-- Toggle Component (Switch between Change Password & Button Links) -->
-    <SettingToggle :activeFilter="activeFilter" @update:activeFilter="handleToggleChange" />
+      <!-- Toggle Component (Switch between Change Password & Button Links) -->
+      <SettingToggle :activeFilter="activeFilter" @update:activeFilter="handleToggleChange" />
+    </div>
 
     <!-- Conditionally render views -->
     <div v-if="activeFilter">

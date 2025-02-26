@@ -6,6 +6,8 @@ import ConnectModal from "../UI/Connect-Model/ConnectModel.vue";
 
 
 
+
+
 const getIcon = (key: string) => {
   const iconMap: Record<string, string> = {
     "Contact Name": "../../../public/profile.png",
@@ -38,14 +40,21 @@ const fetchProductDetails = async () => {
     console.error("Failed to fetch product details:", error);
   }
 };
+const handleMoreInfo = () => {
+  console.log("Opening Modal...");
+  isModalOpen.value = true;
+};
+
+// ** Close Modal Function **
+const closeModal = () => {
+  console.log("Closing Modal...");
+  isModalOpen.value = false;
+};
 
 // ** Fetch Data When Component Mounts **
 onMounted(fetchProductDetails);
 
-// Define handleMoreInfo
-const handleMoreInfo = (id: number) => {
-  console.log(`More info for product ID: ${id}`);
-};
+
 </script>
 
 <template>
@@ -160,6 +169,6 @@ const handleMoreInfo = (id: number) => {
       </div>
     </div>
 
-    <ConnectModal :isOpen="isModalOpen" @close="isModalOpen = false" />
+    <ConnectModal :isOpen="isModalOpen" @close="closeModal" />
   </div>
 </template>
