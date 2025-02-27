@@ -138,17 +138,18 @@ const fetchUsers = async () => {
 //Fetch Dashboard Stats (Filtered for User)
 const fetchDashboardStats = async () => {
   try {
-
     const response = await dashboardService.getStats();
-    const totalVisitors = await visitorService.getTotalVisitors();
+    const visitorResponse = await visitorService.getTotalVisitors();
+    console.log(visitorResponse.data, response)
 
-    stats.value = response || {
+    stats.value = {
       totalProducts: 0,
       createdToday: 0,
       createdThisWeek: 0,
       createdThisMonth: 0,
       totalUsers: 0,
-      totalVisitors: totalVisitors || 0,
+      totalVisitors: visitorResponse.data.totalVisitors || 0,
+      ...response
     };
 
     // If the user is NOT an admin, filter stats to only show their products
@@ -212,8 +213,10 @@ const visitorsAndProduct = computed(() => [
   { title: 'Total de Productos', number: stats.value.totalProducts },
   { title: 'Total de Organizaciones', number: stats.value.totalUsers },
   { title: 'Total de Visitantes', number: stats.value.totalVisitors },
+]);
 
-])
+console.log("visitorsAndProduct Data:", visitorsAndProduct.value);
+
 
 const tableheading = computed(() => {
   const baseColumns = [

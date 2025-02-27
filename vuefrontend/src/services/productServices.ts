@@ -62,10 +62,14 @@ export default {
     }
   },
 
-  //  Toggle Product Status (Approve/Reject/Pending)
+  // ** FIXED: Update Product Status (Approve/Reject) **
   async updateProductStatus(productId: number, status: string) {
     try {
-      const response = await axios.patch(`${API_URL}/${productId}`, { status }, getAuthHeaders())
+      const response = await axios.put(
+        `${API_URL}/${productId}/status`,
+        { status },
+        getAuthHeaders(),
+      ) // Fixed Endpoint
       return response.data
     } catch (error: any) {
       throw error.response?.data?.message || 'Failed to update product status'

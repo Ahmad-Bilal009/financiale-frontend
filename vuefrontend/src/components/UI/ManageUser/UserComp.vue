@@ -18,6 +18,7 @@ interface UserData {
   password?: string
   role: string
   isDisabled: boolean
+  totalVisitors: number
 }
 
 const props = defineProps<{
@@ -66,6 +67,7 @@ const renderCell = (row: UserData, columnKey: string) => {
     case 'email': return row.email
     case 'role': return row.role
     case 'password': return row.password
+    case 'totalVisitors': return row.totalVisitors
     case 'isDisabled': return row.isDisabled ? 'Deshabilitado' : 'Activo'
     default: return ''
   }

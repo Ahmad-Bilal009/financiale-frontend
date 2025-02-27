@@ -6,11 +6,11 @@ import ViewEyeIcon from '@/assets/svg/view-eye.svg'
 // **Define Props**
 const props = defineProps<{
   columns: { key: string; label: string; align: string }[]
-  rowData: { [key: string]: string }[]
+  rowData: { [key: string]: string | number }[] // ✅ Allows numbers (for IDs)
   activeFilter: string
   onSort: (key: string) => void
-  onDelete?: (index: number) => void
-  onApprove?: (index: number) => void
+  onApprove?: (productId: number) => void
+  onReject?: (productId: number) => void
   link: string
   variant?: 'default' | 'action'
 }>()
@@ -18,7 +18,7 @@ const props = defineProps<{
 const computedVariant = props.variant || 'default'
 
 // **Render Cell Content**
-const renderCell = (row: { [key: string]: string }, columnKey: string) => {
+const renderCell = (row: { [key: string]: string | number }, columnKey: string) => {
   switch (columnKey) {
     case 'title':
       return row.title
@@ -30,7 +30,9 @@ const renderCell = (row: { [key: string]: string }, columnKey: string) => {
       return row.stage
     case 'createdAt':
       return row.createdAt
-    case 'status': // Ensure the status column is used
+    case 'visitorCount':
+      return row.visitorCount
+    case 'status':
       return row.status
     default:
       return ''
@@ -42,24 +44,24 @@ const handleSort = (key: string) => {
   props.onSort(key)
 }
 
-// **Approve Handler**
-const approveItem = (index: number) => {
+// **Approve Product**
+const approveItem = (productId: number) => {
   if (props.onApprove) {
-    props.onApprove(index)
+    props.onApprove(productId)
   }
 }
 
-// **Reject (Delete) Handler**
-const deleteItem = (index: number) => {
-  if (props.onDelete) {
-    props.onDelete(index)
+// **Reject Product**
+const rejectItem = (productId: number) => {
+  if (props.onReject) {
+    props.onReject(productId)
   }
 }
 </script>
 
 ---
 
-### **Fixed Template**
+### **🖥 Updated Template (Without Delete Button)**
 ```vue
 <template>
   <div class="tw-overflow-x-auto">
@@ -89,12 +91,13 @@ const deleteItem = (index: number) => {
           :key="index"
           class="tw-whitespace-nowrap hover:tw-bg-gray-100 tw-border-b tw-text-sm tw-font-normal tw-text-[#0E0E0E]"
         >
+          <!-- Default View -->
           <RouterLink
             v-if="computedVariant === 'default'"
-            :to="`${props.link}/view/${index}`"
+            :to="`${props.link}/view/${rowData.id}`"
             class="tw-contents"
           >
-            <td class="tw-px-4 tw-py-[27px] text-left">{{ index + 1 }}</td>
+            <td class="tw-px-4 tw-py-[27px] text-left">{{ rowData.id }}</td>
             <td
               v-for="column in props.columns"
               :key="column.key"
@@ -103,8 +106,10 @@ const deleteItem = (index: number) => {
               {{ renderCell(rowData, column.key) }}
             </td>
           </RouterLink>
+
+          <!-- Action Buttons -->
           <template v-else>
-            <td class="tw-px-4 tw-py-[27px] text-left">{{ index + 1 }}</td>
+            <td class="tw-px-4 tw-py-[27px] text-left">{{ rowData.id }}</td>
             <td
               v-for="column in props.columns"
               :key="column.key"
@@ -116,68 +121,54 @@ const deleteItem = (index: number) => {
                 class="tw-flex tw-items-center tw-justify-center tw-gap-2"
               >
                 <RouterLink
-                  :to="`${props.link}/view/${index}`"
+                  :to="`${props.link}/view/${rowData.id}`"
                   class="tw-border-[1px] hover:tw-bg-gray-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
                 >
                   <ViewEyeIcon />
                 </RouterLink>
               </div>
 
-              <!-- Approve & Reject Buttons (Dynamic) -->
+              <!-- Action Buttons: Approve, Reject -->
               <div
                 v-if="column.key === 'action'"
                 class="tw-flex tw-items-center tw-justify-center tw-gap-2"
               >
-                <!-- "All" Filter: Show Correct Buttons Based on Status -->
-                <template v-if="props.activeFilter === 'all'">
-                  <button
-                    v-if="rowData.status === 'approved'"
-                    class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
-                    @click="deleteItem(index)"
-                  >
-                    RECHAZAR
-                  </button>
-                  <button
-                    v-if="rowData.status === 'rejected'"
-                    class="tw-bg-[#0BA5EC] hover:tw-bg-[#0990cc] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
-                    @click="approveItem(index)"
-                  >
-                    APROBAR
-                  </button>
-                  <template v-if="rowData.status !== 'approved' && rowData.status !== 'rejected'">
-                    <button
-                      class="tw-bg-[#0BA5EC] hover:tw-bg-[#0990cc] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
-                      @click="approveItem(index)"
-                    >
-                      APROBAR
-                    </button>
-                    <button
-                      class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium tw-ml-2"
-                      @click="deleteItem(index)"
-                    >
-                      RECHAZAR
-                    </button>
-                  </template>
-                </template>
-
-                <!-- "Approved" Filter: Show ONLY "Reject" -->
+                <!-- If Approved, Show Reject Button -->
                 <button
-                  v-if="props.activeFilter === 'approved'"
+                  v-if="rowData.status === 'approved'"
                   class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
-                  @click="deleteItem(index)"
+                  @click="rejectItem(rowData.id)"
                 >
                   RECHAZAR
                 </button>
 
-                <!-- "Rejected" Filter: Show ONLY "Approve" -->
+                <!-- If Rejected, Show Approve Button -->
                 <button
-                  v-if="props.activeFilter === 'rejected'"
+                  v-if="rowData.status === 'rejected'"
                   class="tw-bg-[#0BA5EC] hover:tw-bg-[#0990cc] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
-                  @click="approveItem(index)"
+                  @click="approveItem(rowData.id)"
                 >
                   APROBAR
                 </button>
+
+                <!-- If Pending, Show Both Approve & Reject -->
+                <template v-if="rowData.status !== 'approved' && rowData.status !== 'rejected'">
+                  <button
+                    class="tw-bg-[#0BA5EC] hover:tw-bg-[#0990cc] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
+                    @click="approveItem(rowData.id)"
+                  >
+                    APROBAR
+                  </button>
+                  <button
+                    class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium tw-ml-2"
+                    @click="rejectItem(rowData.id)"
+                  >
+                    RECHAZAR
+                  </button>
+                </template>
               </div>
+
+              <!-- Default Display -->
               <div v-else>
                 {{ renderCell(rowData, column.key) }}
               </div>

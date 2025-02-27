@@ -1,6 +1,6 @@
 const db = require('../db')
 
-// ✅ Update Contact Info in Users Table (PUT)
+// Update Contact Info in Users Table (PUT)
 exports.updateContactInfo = (req, res) => {
   const { userId } = req.params
   const { phone, email, website, whatsapp } = req.body
@@ -26,7 +26,7 @@ exports.updateContactInfo = (req, res) => {
   )
 }
 
-// ✅ Get Contact Info (GET)
+// Get Contact Info (GET)
 exports.getContactInfo = (req, res) => {
   const { userId } = req.params
 

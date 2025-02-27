@@ -6,6 +6,7 @@ import UserToggle from '@/components/UI/Toggle-Switch/UserToggle.vue'
 import AddUserModel from '@/components/UI/AddUser-Modal/AddUser.vue'
 import { ref, onMounted, computed } from 'vue'
 import userService from '@/services/userService'
+import visitorService from '@/services/visitorServices' // Import visitor API service
 import { useToast } from 'vue-toastification'
 
 const isModalOpen = ref(false)
@@ -22,137 +23,150 @@ interface User {
   password: string;
   isDisabled: boolean;
   role: string;
-  // Add other relevant properties as needed
+  totalVisitors?: number; // Add totalVisitors field
 }
 
-interface Product {
-  id: number;
-  title: string;
-  userId?: number;
-  contactDetail?: { address: string };
-  stageOfEntrepreneurship?: string;
-  status: string;
-  createdAt?: string;
-  // Add other relevant properties as needed
+// **Fetch Visitors Count for Each User**
+const fetchVisitorsCount = async () => {
+  try {
+    const visitorPromises = users.value.map(async (user) => {
+      const response = await visitorService.getUserVisitors(user.id);
+      return { id: user.id, totalVisitors: response.data.totalVisitors || 0 }; // Ensure 0 if no visitors
+    });
+
+    const visitorsData = await Promise.all(visitorPromises);
+
+    // Update users with visitor count
+    users.value = users.value.map(user => {
+      const visitorInfo = visitorsData.find(v => v.id === user.id);
+      return {
+        ...user,
+        totalVisitors: visitorInfo ? visitorInfo.totalVisitors : 0, // Assign visitors count
+      };
+    });
+
+    console.log("Updated Users with Visitors:", users.value);
+  } catch (error) {
+    toast.error("Failed to fetch visitors count");
+  }
 }
 
 // **Fetch Users**
 const fetchUsers = async () => {
   try {
-    const data = await userService.getUsers()
+    const data = await userService.getUsers();
     users.value = data.filter((user: User) => user.role === 'user').map((user: User) => ({
       id: user.id,
       name: user.name,
       email: user.email,
       password: user.password,
       isDisabled: user.isDisabled,
-    }))
+      totalVisitors: 0, // Initialize visitors count
+    }));
+
+    await fetchVisitorsCount(); // Fetch visitors count after users are loaded
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'No se pudieron obtener los usuarios'
-    toast.error(errorMessage)
+    toast.error("Failed to fetch users");
   }
 }
 
 // **Filter users based on toggle state**
 const filteredUsers = computed(() => {
-  return activeFilter.value ? users.value : users.value.filter(user => user.isDisabled)
-})
+  return activeFilter.value ? users.value : users.value.filter(user => user.isDisabled);
+});
 
 // **Handle toggle status from UserToggle**
 const handleToggleStatus = (status: boolean) => {
-  activeFilter.value = status
-  console.log("🔄 Cambio de alternancia:", status ? "Todos los usuarios" : "Usuarios deshabilitados")
-}
+  activeFilter.value = status;
+  console.log("🔄 Toggle Change:", status ? "All Users" : "Disabled Users");
+};
 
 // **Open Add User Modal**
 const openAddUserModal = () => {
-  selectedUser.value = null
-  modalMode.value = 'add'
-  isModalOpen.value = true
-}
+  selectedUser.value = null;
+  modalMode.value = 'add';
+  isModalOpen.value = true;
+};
 
 // **Open Edit User Modal**
 const openEditUserModal = (user: User) => {
-  selectedUser.value = user
-  modalMode.value = 'edit'
-  isModalOpen.value = true
-}
+  selectedUser.value = user;
+  modalMode.value = 'edit';
+  isModalOpen.value = true;
+};
 
-// **Open View User Modal** (NEW FUNCTIONALITY 🚀)
+// **Open View User Modal**
 const openViewUserModal = (user: User) => {
-  selectedUser.value = user
-  modalMode.value = 'view'
-  isModalOpen.value = true
-}
+  selectedUser.value = user;
+  modalMode.value = 'view';
+  isModalOpen.value = true;
+};
 
 // **Close Modal**
-const closeModal = () => (isModalOpen.value = false)
+const closeModal = () => (isModalOpen.value = false);
 
 // **Handle User Save**
 const handleUserSave = async (userData: User, userId: number) => {
   try {
-    await userService.saveUser(userData, userId)
-    toast.success('¡Usuario guardado con éxito!')
-    fetchUsers() // Refresh users after action
+    await userService.saveUser(userData, userId);
+    toast.success('User saved successfully!');
+    fetchUsers(); // Refresh users after action
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'No se pudo guardar el usuario'
-    toast.error(errorMessage)
+    toast.error("Failed to save user");
   }
-}
+};
 
 // **Search functionality**
 const search = (value: string) => {
-  console.log('🔎 Buscando:', value)
-}
+  console.log('🔎 Searching:', value);
+};
 
 // **Sorting handler**
 const handleSort = (key: string) => {
-  console.log(`Ordenando por: ${key}`)
-}
+  console.log(`Sorting by: ${key}`);
+};
 
 // **Handle Delete User**
 const handleDeleteUser = async (userId: number) => {
   try {
     console.log("Deleting user with ID:", userId);
-    // Implement the logic to delete the user here, e.g., make an API call
     await userService.deleteUser(userId);
-    toast.success('¡Usuario eliminado con éxito!');
-    fetchUsers(); // Refresh users after deletion
+    toast.success('User deleted successfully!');
+    fetchUsers();
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'No se pudo eliminar el usuario';
-    toast.error(errorMessage);
+    toast.error("Failed to delete user");
   }
-}
+};
 
-onMounted(fetchUsers)
+onMounted(fetchUsers);
 </script>
 
 <template>
   <div class="tw-flex tw-flex-col tw-mb-12 tw-mt-12 tw-gap-12">
-    <!-- Encabezado -->
+    <!-- Header -->
     <div class="md:tw-flex tw-justify-between md:tw-items-center">
-      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Gestionar Usuarios</div>
+      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Manage Users</div>
       <div class="md:tw-flex tw-gap-5 tw-items-start md:tw-items-center">
-        <SearchBar :onSearch="search" placeholder="Buscar aquí..." />
+        <SearchBar :onSearch="search" placeholder="Search here..." />
         <div class="tw-flex tw-mt-2 md:tw-mt-0 tw-gap-4 tw-items-center">
-          <!-- Escuchar cambios en la alternancia -->
+          <!-- Toggle for filtering users -->
           <UserToggle @toggleStatus="handleToggleStatus" />
-          <AddUserButton text="+ Agregar Usuario" @click="openAddUserModal" />
+          <AddUserButton text="+ Add User" @click="openAddUserModal" />
         </div>
       </div>
     </div>
 
-    <!-- Tabla de Usuarios -->
+    <!-- User Table -->
     <div class="tw-flex tw-flex-col tw-gap-6 tw-p-5 tw-bg-white tw-rounded-[20px]">
       <TableComp
         :columns="[
-          { key: 'name', label: 'Nombre', align: 'left' },
-          { key: 'email', label: 'Correo Electrónico', align: 'left' },
-          { key: 'password', label: 'Contraseña', align: 'center' },
-          { key: 'action', label: 'Acciones', align: 'center' },
-          { key: 'isDisabled', label: 'Estado', align: 'center' },
-          { key: 'totalVisitors', label: 'Total de visitantes', align: 'center' },
-          { key: 'deleteProduct', label: 'Eliminar Productos', align: 'center' },
+          { key: 'name', label: 'Name', align: 'left' },
+          { key: 'email', label: 'Email', align: 'left' },
+          { key: 'password', label: 'Password', align: 'center' },
+          { key: 'totalVisitors', label: 'Total Visitors', align: 'center' },
+          { key: 'action', label: 'Actions', align: 'center' },
+          { key: 'isDisabled', label: 'Status', align: 'center' },
+          { key: 'deleteProduct', label: 'Delete Products', align: 'center' },
         ]"
         :rowData="filteredUsers"
         @sort="handleSort"
@@ -165,7 +179,7 @@ onMounted(fetchUsers)
       />
     </div>
 
-    <!-- Modal Agregar / Editar Usuario -->
+    <!-- Add/Edit User Modal -->
     <AddUserModel
       :isOpen="isModalOpen"
       :mode="modalMode"
