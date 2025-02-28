@@ -39,7 +39,7 @@ exports.createProduct = async (req, res) => {
         ? geographicCoverage
         : [],
       requirement: requirement || '',
-      contactDetail: contactDetail ? JSON.stringify(contactDetail) : '{}',
+      contactDetail: contactDetail,
       status: 'pending'
     })
 
@@ -127,8 +127,6 @@ exports.updateProduct = async (req, res) => {
         : product.geographicCoverage,
       requirement: requirement || product.requirement,
       contactDetail: contactDetail
-        ? JSON.stringify(contactDetail)
-        : product.contactDetail
     })
 
     res.status(200).json({ message: 'Product updated successfully!', product })

@@ -3,6 +3,7 @@ import { ref, onMounted, computed, defineProps } from 'vue'
 import TableComp from '@/components/UI/table/TableComp.vue'
 import ApprovalTableComp from '@/components/UI/ApprovalTable/TableComp.vue'
 import UserTableComp from '@/components/UI/ManageUser/UserComp.vue'
+import DeleteModel from '@/components/UI/Delete-Model/DeleteModel.vue'
 import userService from '@/services/userService'
 import visitorService from "@/services/visitorServices";
 import productService from '@/services/productServices'
@@ -10,6 +11,9 @@ import dashboardService from '@/services/dashboardService'
 import { useToast } from "vue-toastification"
 
 const toast = useToast();
+
+const isModalOpen = ref(false)
+const selectedProductId = ref<number | null>(null) // Store selected product ID
 
 
 const user = JSON.parse(localStorage.getItem('user') || '{}')
@@ -223,6 +227,7 @@ const tableheading = computed(() => {
     { key: "title", label: "Título", align: "center" },
     { key: "organization", label: "Organización", align: "center" },
     { key: "location", label: "Ubicación", align: "center" },
+    { key: "view", label: "Ubicación", align: "center" },
     { key: "stage", label: "Etapa", align: "center" },
   ];
   if (isAdminComputed) {
@@ -240,11 +245,35 @@ const handleSort = (key: string) => {
 // Define activeFilter
 const activeFilter = ref('all');
 
-// Define handleDelete
-const handleDelete = (productId: number) => {
-  console.log(`Deleting product with ID: ${productId}`);
-  // Implement delete logic here
-};
+// **Open Delete Modal**
+const openModal = (productId: number) => {
+  selectedProductId.value = productId
+  isModalOpen.value = true
+}
+
+// **Close Delete Modal**
+const handleClose = () => {
+  isModalOpen.value = false
+  selectedProductId.value = null
+}
+
+// **Delete Product**
+const deleteProduct = async () => {
+  if (!selectedProductId.value) {
+    toast.error("No product selected!")
+    return
+  }
+
+  try {
+    await productService.deleteProduct(selectedProductId.value)
+    toast.success("Product deleted successfully!")
+    handleClose() // Close modal after deleting
+    fetchProducts() // Refresh after delete
+  } catch (error) {
+    console.error("Error deleting product:", error)
+    toast.error("Failed to delete product")
+  }
+}
 
 </script>
 
@@ -275,7 +304,7 @@ const handleDelete = (productId: number) => {
           variant="action"
           :activeFilter="activeFilter"
           @sort="handleSort"
-          @delete="handleDelete"
+          @delete="openModal"
         />
       </div>
 
@@ -336,5 +365,7 @@ const handleDelete = (productId: number) => {
         />
       </div>
     </template>
+
+    <DeleteModel :isOpen="isModalOpen" @close="handleClose" @delete="deleteProduct" />
   </div>
 </template>

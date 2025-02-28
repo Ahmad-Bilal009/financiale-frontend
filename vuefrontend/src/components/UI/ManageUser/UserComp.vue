@@ -77,8 +77,6 @@ const renderCell = (row: UserData, columnKey: string) => {
 const deleteItem = (index: number) => {
   if (props.onDelete) {
     props.onDelete(index)
-  } else {
-    console.warn("⚠️ La función onDelete falta en el componente padre.")
   }
 }
 </script>
@@ -137,7 +135,8 @@ const deleteItem = (index: number) => {
               </button>
 
               <button
-                @click="deleteItem(index)"
+                v-if="props.onDelete"
+                @click="deleteItem(rowData.id)"
                 class="border tw-justify-center hover:tw-bg-red-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
               >
                 <DeleteIcon />

@@ -20,7 +20,7 @@ const router = createRouter({
       },
     },
     {
-      path: "/CardInfo/:id",
+      path: '/CardInfo/:id',
       name: 'info',
       component: () => import('../views/CompanyInfo.vue'),
       meta: {
@@ -62,7 +62,7 @@ const router = createRouter({
     {
       path: '/products/edit/:id',
       name: 'product-edit',
-      component: () => import('../views/ProductPage/ProductEditDashboard.vue'),
+      component: () => import('../views/ProductPage/ProductAddView.vue'),
       meta: {
         layout: 'DashboardLayout',
       },

@@ -15,7 +15,7 @@ const handleInput = (event: Event) => {
 </script>
 
 <template>
-  <div class="tw-z-[-20]  tw-relative">
+  <div class="  tw-relative">
     <input
       type="text"
       @input="handleInput"

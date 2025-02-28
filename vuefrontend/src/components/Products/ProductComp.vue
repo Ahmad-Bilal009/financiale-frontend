@@ -14,12 +14,14 @@ const toast = useToast()
 
 // State Management
 const isModalOpen = ref(false)
+const selectedProductId = ref<number | null>(null) // Store selected product ID
 const products = ref([])
 
 // Get Logged-In User ID
 const user = JSON.parse(localStorage.getItem('user') || '{}')
 const userId = user?.id || null  // Ensure we have the user's ID
 
+// Fetch Products
 const fetchProducts = async () => {
   try {
     const response = await productService.getProducts()
@@ -72,19 +74,29 @@ const handleSort = (key: string) => {
   console.log(`Sorting by: ${key}`)
 }
 
-// Delete Modal
-const openModal = () => {
+// **Open Delete Modal**
+const openModal = (productId: number) => {
+  selectedProductId.value = productId
   isModalOpen.value = true
 }
 
+// **Close Delete Modal**
 const handleClose = () => {
   isModalOpen.value = false
+  selectedProductId.value = null
 }
 
-const deleteProduct = async (productId: number) => {
+// **Delete Product**
+const deleteProduct = async () => {
+  if (!selectedProductId.value) {
+    toast.error("No product selected!")
+    return
+  }
+
   try {
-    await productService.deleteProduct(productId)
+    await productService.deleteProduct(selectedProductId.value)
     toast.success("Product deleted successfully!")
+    handleClose() // Close modal after deleting
     fetchProducts() // Refresh after delete
   } catch (error) {
     console.error("Error deleting product:", error)
@@ -114,7 +126,7 @@ const deleteProduct = async (productId: number) => {
         @sort="handleSort"
         link="/products"
         variant="action"
-        @delete="deleteProduct"
+        @delete="openModal"
       />
     </div>
 
@@ -123,6 +135,7 @@ const deleteProduct = async (productId: number) => {
       No products added yet.
     </div>
 
+    <!-- Delete Confirmation Modal -->
     <DeleteModel :isOpen="isModalOpen" @close="handleClose" @delete="deleteProduct" />
   </div>
 </template>

@@ -1,27 +1,31 @@
 <script setup lang="ts">
-import SearchBar from '@/components/UI/SearchBar/SearchBar.vue';
-import TableComp from '@/components/UI/ManageUser/UserComp.vue';
-import AddUserButton from '@/components/UI/Button/AddUserbutton.vue';
-import UserToggle from '@/components/UI/Toggle-Switch/UserToggle.vue';
-import AddUserModel from '@/components/UI/AddUser-Modal/AddUser.vue';
-import { ref, onMounted } from 'vue';
-import userService from '@/services/userService';
-import { useToast } from 'vue-toastification';
+import SearchBar from '@/components/UI/SearchBar/SearchBar.vue'
+import TableComp from '@/components/UI/ManageUser/UserComp.vue'
+import AddUserButton from '@/components/UI/Button/AddUserbutton.vue'
+import UserToggle from '@/components/UI/Toggle-Switch/UserToggle.vue'
+import AddUserModel from '@/components/UI/AddUser-Modal/AddUser.vue'
+import { ref, onMounted, computed } from 'vue'
+import userService from '@/services/userService'
+import { useToast } from 'vue-toastification'
 
-// **Types**
+const isModalOpen = ref(false)
+const modalMode = ref<'add' | 'edit' | 'view'>('add')
+const selectedUser = ref<User | null>(null) // Allow selectedUser to be either User or null
+const users = ref<User[]>([]) // Store fetched users with correct typing
+const activeFilter = ref(true) // Default: Show all users
+const toast = useToast()
+
 interface User {
   id: number;
   name: string;
   email: string;
-  role: string;
+  password: string;
   isDisabled: boolean;
+  role: string;
+  totalVisitors?: number; // Add totalVisitors field
 }
 
-const isModalOpen = ref(false);
-const modalMode = ref<'add' | 'edit'>('add'); // Track add or edit mode
-const selectedUser = ref<Record<string, any> | undefined>(undefined); // Store selected user for editing
-const users = ref<User[]>([]); // Store fetched users
-const toast = useToast();
+
 
 // **Fetch Users**
 const fetchUsers = async () => {
@@ -37,66 +41,75 @@ const fetchUsers = async () => {
   }
 };
 
-onMounted(fetchUsers);
+// **Filter users based on toggle state**
+const filteredUsers = computed(() => {
+  return activeFilter.value ? users.value : users.value.filter(user => user.isDisabled);
+});
+
+// **Handle toggle status from UserToggle**
+const handleToggleStatus = (status: boolean) => {
+  activeFilter.value = status;
+  console.log("🔄 Toggle Change:", status ? "All Users" : "Disabled Users");
+};
 
 // **Open Add User Modal**
 const openAddUserModal = () => {
-  selectedUser.value = undefined; // Reset selected user
+  selectedUser.value = null;
   modalMode.value = 'add';
   isModalOpen.value = true;
 };
 
 // **Open Edit User Modal**
-const openEditUserModal = (user: User) => { // Fix implicit `any` type
+const openEditUserModal = (user: User) => {
   selectedUser.value = user;
   modalMode.value = 'edit';
   isModalOpen.value = true;
 };
 
-// **Close Modal**
-const closeModal = () => {
-  isModalOpen.value = false;
+// **Open View User Modal**
+const openViewUserModal = (user: User) => {
+  selectedUser.value = user;
+  modalMode.value = 'view';
+  isModalOpen.value = true;
 };
 
-// **Handle Save User**
-const handleUserSave = async (userData: User, userId?: number) => { // Fix implicit `any` types
+// **Close Modal**
+const closeModal = () => (isModalOpen.value = false);
+
+// **Handle User Save**
+const handleUserSave = async (userData: User, userId: number) => {
   try {
     await userService.saveUser(userData, userId);
     toast.success('User saved successfully!');
     fetchUsers(); // Refresh users after action
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      toast.error(error.message || 'Failed to save user');
-    } else {
-      toast.error('Failed to save user');
-    }
+  } catch (error) {
+    toast.error("Failed to save user");
   }
 };
 
-// **Toggle User Status**
-const toggleUserStatus = async (userId: number) => {
-  try {
-    await userService.toggleUserStatus(userId);
-    toast.success('User status updated!');
-    fetchUsers(); // Refresh user list
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      toast.error(error.message || 'Failed to update user status');
-    } else {
-      toast.error('Failed to update user status');
-    }
-  }
-};
-
-// **Search functionality (Future use)**
+// **Search functionality**
 const search = (value: string) => {
   console.log('🔎 Searching:', value);
 };
 
-// **Sorting handler (Future use)**
+// **Sorting handler**
 const handleSort = (key: string) => {
   console.log(`Sorting by: ${key}`);
 };
+
+// **Handle Delete User**
+const handleDeleteUser = async (userId: number) => {
+  try {
+    console.log("Deleting user with ID:", userId);
+    await userService.deleteUser(userId);
+    toast.success('User deleted successfully!');
+    fetchUsers();
+  } catch (error) {
+    toast.error("Failed to delete user");
+  }
+};
+
+onMounted(fetchUsers);
 </script>
 
 <template>
@@ -107,7 +120,8 @@ const handleSort = (key: string) => {
       <div class="md:tw-flex tw-gap-5 tw-items-start md:tw-items-center">
         <SearchBar :onSearch="search" placeholder="Search here..." />
         <div class="tw-flex tw-mt-2 md:tw-mt-0 tw-gap-4 tw-items-center">
-          <UserToggle />
+          <!-- Toggle for filtering users -->
+          <UserToggle @toggleStatus="handleToggleStatus" />
           <AddUserButton text="+ Add User" @click="openAddUserModal" />
         </div>
       </div>
@@ -119,24 +133,26 @@ const handleSort = (key: string) => {
         :columns="[
           { key: 'name', label: 'Name', align: 'left' },
           { key: 'email', label: 'Email', align: 'left' },
-          { key: 'role', label: 'Role', align: 'center' },
+          { key: 'password', label: 'Password', align: 'center' },
           { key: 'action', label: 'Actions', align: 'center' },
-          { key: 'isDisabled', label: 'Status', align: 'center' }
+          { key: 'isDisabled', label: 'Status', align: 'center' },
         ]"
-        :rowData="users"
+        :rowData="filteredUsers"
         @sort="handleSort"
-        @toggleStatus="toggleUserStatus"
         @editUser="openEditUserModal"
+        @viewUser="openViewUserModal"
+        @delete="handleDeleteUser"
         link="/manage-users"
         variant="action"
+        :activeFilter="activeFilter"
       />
     </div>
 
-    <!-- Add / Edit User Modal -->
+    <!-- Add/Edit User Modal -->
     <AddUserModel
       :isOpen="isModalOpen"
       :mode="modalMode"
-      :userData="selectedUser"
+      :userData="selectedUser || {}"
       @close="closeModal"
       @saveUser="handleUserSave"
     />

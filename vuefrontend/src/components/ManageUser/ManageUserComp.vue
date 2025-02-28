@@ -4,6 +4,7 @@ import TableComp from '@/components/UI/ManageUser/UserComp.vue'
 import AddUserButton from '@/components/UI/Button/AddUserbutton.vue'
 import UserToggle from '@/components/UI/Toggle-Switch/UserToggle.vue'
 import AddUserModel from '@/components/UI/AddUser-Modal/AddUser.vue'
+import UserDeleteModel from '../UI/Delete-Model/UserDeleteModel.vue'
 import { ref, onMounted, computed } from 'vue'
 import userService from '@/services/userService'
 import visitorService from '@/services/visitorServices' // Import visitor API service
@@ -15,6 +16,8 @@ const selectedUser = ref<User | null>(null) // Allow selectedUser to be either U
 const users = ref<User[]>([]) // Store fetched users with correct typing
 const activeFilter = ref(true) // Default: Show all users
 const toast = useToast()
+const isDeleteModalOpen = ref(false) // Modal state for delete confirmation
+const userIdToDelete = ref<number | null>(null) // Store user ID to delete
 
 interface User {
   id: number;
@@ -126,17 +129,40 @@ const handleSort = (key: string) => {
   console.log(`Sorting by: ${key}`);
 };
 
-// **Handle Delete User**
-const handleDeleteUser = async (userId: number) => {
-  try {
-    console.log("Deleting user with ID:", userId);
-    await userService.deleteUser(userId);
-    toast.success('User deleted successfully!');
-    fetchUsers();
-  } catch (error) {
-    toast.error("Failed to delete user");
+// **Open Delete Confirmation Modal**
+const openDeleteModal = (userId: number) => {
+  userIdToDelete.value = userId
+  isDeleteModalOpen.value = true
+}
+
+// **Close Delete Confirmation Modal**
+const closeDeleteModal = () => {
+  isDeleteModalOpen.value = false
+  userIdToDelete.value = null // Reset user ID
+}
+
+const confirmDeleteUser = async () => {
+  console.log("🛑 Trying to delete user:", userIdToDelete.value); // Debugging log
+
+  if (userIdToDelete.value) {
+    try {
+      console.log("📡 Sending DELETE request...");
+      await userService.deleteUser(userIdToDelete.value);
+      console.log("✅ API responded successfully!");
+
+      toast.success('User deleted successfully!');
+      fetchUsers(); // Refresh users after deletion
+      closeDeleteModal();
+    } catch (error) {
+      console.error("🚨 Error deleting user:", error.response?.data || error);
+      toast.error("Failed to delete user");
+    }
+  } else {
+    console.warn("⚠️ No user ID to delete!");
   }
 };
+
+
 
 onMounted(fetchUsers);
 </script>
@@ -172,7 +198,7 @@ onMounted(fetchUsers);
         @sort="handleSort"
         @editUser="openEditUserModal"
         @viewUser="openViewUserModal"
-        @delete="handleDeleteUser"
+        @delete="openDeleteModal"
         link="/manage-users"
         variant="action"
         :activeFilter="activeFilter"
@@ -187,5 +213,13 @@ onMounted(fetchUsers);
       @close="closeModal"
       @saveUser="handleUserSave"
     />
+
+    <!-- Delete Confirmation Modal -->
+    <UserDeleteModel
+      :isOpen="isDeleteModalOpen"
+      @close="closeDeleteModal"
+      @confirm="confirmDeleteUser"
+    />
+
   </div>
 </template>

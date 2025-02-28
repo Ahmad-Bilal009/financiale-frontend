@@ -35,6 +35,7 @@ const tableheading = computed(() => {
     { key: 'location', label: 'Ubicación', align: 'center' },
     { key: 'organization', label: 'Organización', align: 'center' },
     { key: 'stage', label: 'Etapa', align: 'center' },
+    { key: 'view', label: 'View', align: 'center' },
     { key: 'createdAt', label: 'Creado el', align: 'center' },
     { key: 'action', label: 'Acción', align: 'center' }
   ]

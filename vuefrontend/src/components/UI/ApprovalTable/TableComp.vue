@@ -6,7 +6,7 @@ import ViewEyeIcon from '@/assets/svg/view-eye.svg'
 // **Define Props**
 const props = defineProps<{
   columns: { key: string; label: string; align: string }[]
-  rowData: { [key: string]: string | number }[] // ✅ Allows numbers (for IDs)
+  rowData: { [key: string]: string | number }[] //  Allows numbers (for IDs)
   activeFilter: string
   onSort: (key: string) => void
   onApprove?: (productId: number) => void

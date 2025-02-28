@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import productService from "@/services/productServices";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
+const route = useRoute();
+const router = useRouter();
+
+// Check if it's Edit Mode (if productId exists)
+const productId = route.params.id ? Number(route.params.id) : null;
+const isEditing = ref(!!productId); // Detect Edit Mode
 
 // Product form state
 const productForm = ref({
@@ -26,85 +33,81 @@ const productForm = ref({
   status: "pending",
 });
 
-
 const geoInput = ref("");
 
-// Function to add tags dynamically
+// ** Fetch Product Details for Edit Mode **
+const fetchProductDetails = async () => {
+  if (!productId) return;
+
+  try {
+    const product = await productService.getProductById(productId);
+    if (product) {
+      productForm.value = {
+        ...product,
+        contactDetail: {
+          name: product.contactDetail?.name || "", // Ensure fields are initialized
+          email: product.contactDetail?.email || "",
+          phone: product.contactDetail?.phone || "",
+          address: product.contactDetail?.address || "",
+        }
+      }; // Populate Form with API Data
+    }
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    toast.error("Failed to load product details.");
+  }
+};
+
+// ** Add Tag to Geographic Coverage **
 const addTag = () => {
   if (geoInput.value.trim() && !productForm.value.geographicCoverage.includes(geoInput.value.trim())) {
-    productForm.value.geographicCoverage = [...productForm.value.geographicCoverage, geoInput.value.trim()];
+    productForm.value.geographicCoverage.push(geoInput.value.trim());
     geoInput.value = ""; // Clear input after adding tag
   }
 };
 
-// Function to remove a tag
+// ** Remove Tag from Geographic Coverage **
 const removeTag = (index: number) => {
-  productForm.value.geographicCoverage = productForm.value.geographicCoverage.filter((_, i) => i !== index);
+  productForm.value.geographicCoverage.splice(index, 1);
 };
 
-
-
-
-// Submit Form (Add Product)
+// ** Submit Product (Create or Update) **
 const submitProduct = async () => {
   try {
-    console.log("Submitting product:", productForm.value);
-
     // Validation
-    if (!productForm.value.title) {
-      toast.error("Title is required");
+    if (!productForm.value.title || !productForm.value.description || !productForm.value.productType || !productForm.value.requirement) {
+      toast.error("Please fill in all required fields.");
       return;
     }
-    if (!productForm.value.description) {
-      toast.error("Description is required");
-      return;
-    }
-    if (!productForm.value.productType) {
-      toast.error("Product Type is required");
-      return;
-    }
-    if (!productForm.value.requirement) {
-      toast.error("Requirements are required");
-      return;
+    if (isEditing.value) {
+      // ** Update Existing Product **
+      await productService.saveProduct(productForm.value, productId);
+      toast.success("Product updated successfully!");
+    } else {
+      // ** Create New Product **
+      await productService.saveProduct(productForm.value);
+      toast.success("Product added successfully!");
     }
 
-    // API Call
-    await productService.saveProduct(productForm.value);
-    toast.success("Product added successfully!");
-
-    // Reset form after success
-    productForm.value = {
-      title: "",
-      description: "",
-      productInformation: "",
-      productType: "",
-      creditGuarantees: "",
-      stageOfEntrepreneurship: "",
-      objectiveOfCredit: "",
-      benefitsOfEntrepreneurship: "",
-      geographicCoverage: [],
-      requirement: "",
-      contactDetail: {
-        name: "",
-        email: "",
-        phone: "",
-        address: "",
-      },
-      status: "pending",
-    };
+    router.push("/products"); // Redirect after submission
   } catch (error) {
     console.error("API Error:", error);
-    toast.error("An error occurred while saving the product");
+    toast.error("An error occurred while saving the product.");
   }
 };
+
+// Fetch product details if in edit mode
+onMounted(fetchProductDetails);
 </script>
 
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-mt-8 tw-h-[calc(100vh-100px)] tw-p-8">
-    <h1 class="tw-text-2xl tw-font-bold tw-mb-10">Add Product</h1>
+    <h1 class="tw-text-2xl tw-font-bold tw-mb-10">
+      {{ isEditing ? "Edit Product" : "Add Product" }}
+    </h1>
     <div class="tw-grid tw-grid-cols-2 tw-gap-8 tw-w-full">
       <!-- Basic Information -->
-      <div class="tw-p-5  tw-rounded-[16px] -lg tw-bg-white tw-shadow">
+      <div class="tw-p-5 tw-rounded-[16px] -lg tw-bg-white tw-shadow">
         <h2 class="tw-text-lg tw-font-bold tw-mb-4">Basic Information</h2>
         <div class="tw-space-y-4">
 
@@ -138,8 +141,6 @@ const submitProduct = async () => {
             <input v-model="productForm.creditGuarantees" type="text" placeholder="Enter Title" class="tw-w-full tw-p-3 border border-[#D2D2D2] tw-rounded-[8px]" />
           </div>
 
-
-
           <div class="tw-flex tw-flex-col tw-gap-[10px]">
             <label class="tw-block tw-font-medium tw-text-[#515151]">Stage of Entrepreneurship</label>
             <select v-model="productForm.stageOfEntrepreneurship" class="tw-w-full tw-p-3 border border-[#D2D2D2] tw-rounded-[8px]">
@@ -150,8 +151,6 @@ const submitProduct = async () => {
             </select>
           </div>
 
-
-
           <div class="tw-flex tw-flex-col tw-gap-[10px]">
             <label class="tw-block tw-font-medium tw-text-[#515151]">Objective of Credit</label>
             <select v-model="productForm.objectiveOfCredit" class="tw-w-full tw-p-3 border border-[#D2D2D2] tw-rounded-[8px]">
@@ -161,7 +160,6 @@ const submitProduct = async () => {
               <option value="Working Capital">Working Capital</option>
             </select>
           </div>
-
 
           <div class="tw-flex tw-flex-col tw-gap-[10px]">
             <label class="tw-block tw-font-medium tw-text-[#515151]">Benefits for Entrepreneurs and MSMEs</label>
@@ -189,18 +187,14 @@ const submitProduct = async () => {
             </div>
           </div>
 
-
-
         </div>
       </div>
-
-
 
       <div class="tw-flex tw-h-full tw-flex-col tw-gap-8">
         <!-- Requirements -->
         <div class="tw-p-5 tw-rounded-[16px] -lg tw-bg-white tw-shadow">
           <h2 class="tw-text-lg tw-font-bold tw-mb-4">Requirements</h2>
-          <label  class="tw-block tw-font-medium tw-text-[#515151]">Requirements</label>
+          <label class="tw-block tw-font-medium tw-text-[#515151]">Requirements</label>
           <textarea v-model="productForm.requirement" placeholder="Enter Requirements" class="tw-w-full tw-h-[162px] tw-p-3 border border-[#D2D2D2] tw-rounded-[8px] tw-h-36"></textarea>
         </div>
 
@@ -221,16 +215,14 @@ const submitProduct = async () => {
             <input v-model="productForm.contactDetail.address" type="text" placeholder="Enter Address" class="tw-w-full tw-p-3 border border-[#D2D2D2] tw-rounded-[8px]" />
           </div>
 
-
           <!-- Button Positioned at the Bottom -->
           <div class="tw-w-full tw-flex tw-justify-end tw-mt-auto">
             <button
               class="tw-bg-[#24B2E3] tw-text-white tw-px-[28px] tw-py-[18px] tw-rounded-[13px] tw-shadow hover:tw-bg-[#1A90C3]"
               @click="submitProduct"
             >
-              + Add Product
+              {{ isEditing ? "Update Product" : "Add Product" }}
             </button>
-
           </div>
         </div>
       </div>

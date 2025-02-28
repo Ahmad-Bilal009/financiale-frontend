@@ -112,7 +112,7 @@ const handleSort = (key: string) => {
                 class="tw-flex tw-items-center tw-justify-center tw-gap-2"
               >
                 <RouterLink
-                  :to="`${props.link}/view/${index}`"
+                  :to="`${props.link}/view/${rowData.id}`"
                   class="tw-border-[1px] hover:tw-bg-gray-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
                 >
                   <ViewEyeIcon />

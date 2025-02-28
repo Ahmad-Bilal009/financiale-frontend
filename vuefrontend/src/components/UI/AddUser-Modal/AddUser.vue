@@ -57,9 +57,10 @@ watch(
           role: props.userData.role || 'user',
           image: null,
         }
-        imagePreview.value = props.userData.image
-          ? `http://localhost:5001${props.userData.image}`
-          : defaultUserImage
+        imagePreview.value = props.userData.image && props.userData.image !== 'null'
+        ? `http://localhost:5001${props.userData.image}`
+        : defaultUserImage
+
       }
     }
   },

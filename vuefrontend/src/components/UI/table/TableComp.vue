@@ -74,7 +74,7 @@ const deleteItem = (index: number) => {
         >
           <RouterLink
             v-if="computedVariant === 'default'"
-            :to="`${props.link}/view/${index}`"
+            :to="`${props.link}/view/${rowData.id}`"
             class="tw-contents"
           >
             <td class="tw-px-4 tw-py-[27px] text-left">{{ index + 1 }}</td>
@@ -108,20 +108,20 @@ const deleteItem = (index: number) => {
               <template v-else-if="column.key === 'action'">
                 <div class="tw-flex tw-items-center tw-justify-center tw-gap-2">
                   <RouterLink
-                    :to="`${props.link}/view/${index}`"
+                    :to="`${props.link}/view/${rowData.id}`"
                     class="tw-border-[1px] hover:tw-bg-gray-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
                   >
                     <ViewEyeIcon />
                   </RouterLink>
                   <RouterLink
-                    :to="`${props.link}/edit/${index}`"
+                    :to="`${props.link}/edit/${rowData.id}`"
                     class="tw-border-[1px] hover:tw-bg-gray-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
                   >
                     <EditIcon />
                   </RouterLink>
                   <button
                     v-if="props.onDelete"
-                    @click="deleteItem(index)"
+                    @click="deleteItem(rowData.id)"
                     class="tw-border-[1px] hover:tw-bg-red-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
                   >
                     <DeleteIcon />

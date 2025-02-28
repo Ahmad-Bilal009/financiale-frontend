@@ -1,24 +1,60 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import productService from "@/services/productServices";
+import { useToast } from "vue-toastification";
 
-// Form Data
-const formData = ref({
-  title: 'Sample Product Title',
-  description: 'Sample description about the product.',
-  productInfo: 'Detailed information about the product goes here.',
-  productType: 'Credit',
-  creditGuarantees: ['Trust', 'Mortgage'],
-  entrepreneurshipStage: 'Startup',
-  creditObjective: 'Working Capital',
-  benefits: 'Provides financial support to MSMEs.',
-  geographicCoverage: ['USA', 'Canada'],
-  requirements: 'Sample requirements for the product.',
-  contactName: 'John Doe',
-  phone: '+123456789',
-  email: 'john.doe@example.com',
-  address: '123 Business Street, City, Country',
-})
+// **Dependencies**
+const route = useRoute();
+const toast = useToast();
+const user = JSON.parse(localStorage.getItem("user") || "{}");
+const isAdmin = user?.role === "admin";
+// **Reactive State for Product Data**
+const product = ref<any>(null);
+
+// **Fetch Product Details from API**
+const fetchProductDetails = async () => {
+  try {
+    const productId = route.params.id;
+    if (!productId) {
+      return;
+    }
+
+    const response = await productService.getProductById(Number(productId));
+    product.value = response;
+  } catch (err) {
+    toast.error("❌ Failed to load product details.");
+  }
+};
+
+// **Approve Product**
+const approveProduct = async () => {
+  try {
+    await productService.updateProductStatus(product.value.id, "approved");
+    toast.success(" Product approved successfully!");
+    fetchProductDetails();
+  } catch (err) {
+    toast.error("❌ Failed to approve product.");
+  }
+};
+
+// **Reject Product**
+const rejectProduct = async () => {
+  try {
+    await productService.updateProductStatus(product.value.id, "rejected");
+    toast.success("🚫 Product rejected successfully!");
+    fetchProductDetails();
+  } catch (err) {
+    toast.error("❌ Failed to reject product.");
+  }
+};
+
+// **Fetch Data When Component Mounts**
+onMounted(fetchProductDetails);
 </script>
+
+
+
 
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-mt-8 tw-h-[calc(100vh-100px)] tw-p-8">
@@ -31,7 +67,7 @@ const formData = ref({
         >
           <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Tittle</h4>
           <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
-            Créditos Grupales e Individuales
+            {{ product?.title || "N/A" }}
           </p>
         </div>
 
@@ -40,10 +76,7 @@ const formData = ref({
         >
           <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Description</h4>
           <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
-            La Cooperativa tiene la finalidad de apoyar a los asociados que se dedican al comercio,
-            agricultura, agropecuaria, actividades industriales, artesanías, servicio, entre otras
-            actividades, lo anterior para el desarrollo de las economías familiares y por ende el
-            desarrollo de las comunidades.
+            {{ product?.description || "N/A" }}
           </p>
         </div>
 
@@ -52,19 +85,7 @@ const formData = ref({
         >
           <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Information</h4>
           <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
-            HRD's experienced team understands that providing trade finance in today's volatile
-            global markets demands creativity and flexibility. As such, HRD utilizes a variety of
-            trade and export finance instruments to mitigate unnecessary credit risks. We provide
-            specialized financial services, tailored to the specific characteristics of each client.
-            <br />
-            <br />
-            Financial services include: <br /><br />
-            Documentary Letters of Credit (DLC) <br />
-            Standby Letters of Credit (SBLC) <br />
-            Bank Guarantees (BG) <br />
-            SWIFT Messaging <br />
-            Pre-Notices/RWA <br />
-            Proof of Funds (POF)
+            {{ product?.productInformation || "N/A" }}
           </p>
         </div>
 
@@ -74,14 +95,14 @@ const formData = ref({
           <div class="tw-flex tw-flex-col tw-gap-[13px]">
             <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Product Type</h4>
             <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
-              {{ formData.productType }}
+              {{ product?.productType || "N/A" }}
             </p>
           </div>
 
           <div class="tw-flex tw-flex-col tw-gap-[13px]">
             <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Credit Guarantees</h4>
             <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
-              {{ formData.creditGuarantees.join(', ') }}
+              {{ product?.creditGuarantees || "N/A" }}
             </p>
           </div>
 
@@ -89,13 +110,13 @@ const formData = ref({
             <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">
               Stage of entrepreneurship
             </h4>
-            <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">Growth</p>
+            <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">{{ product?.stageOfEntrepreneurship || "N/A" }}</p>
           </div>
 
           <div class="tw-flex tw-flex-col tw-gap-[13px]">
             <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Objective of credit</h4>
             <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
-              Objective of credit
+              {{ product?.objectiveOfCredit || "N/A" }}
             </p>
           </div>
 
@@ -104,7 +125,7 @@ const formData = ref({
               Benefits for Entrepreneurs and MSMEs
             </h4>
             <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
-              Benefits for Entrepreneurs and MSMEs
+              {{ product?.benefitsOfEntrepreneurship || "N/A" }}
             </p>
           </div>
 
@@ -112,20 +133,13 @@ const formData = ref({
             <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Geographic Coverage</h4>
             <div class="tw-flex tw-flex-row tw-gap-[7px]">
               <span
+                v-for="(location, index) in product?.geographicCoverage || []"
+                :key="index"
                 class="tw-text-[12px] tw-bg-gray-200 tw-text-gray-700 tw-px-[14px] tw-py-[12px] tw-rounded-[124px]"
               >
-                Chimaltenango
+                {{ location }}
               </span>
-              <span
-                class="tw-text-[12px] tw-bg-gray-200 tw-text-gray-700 tw-px-[14px] tw-py-[12px] tw-rounded-[124px]"
-              >
-                Quiche
-              </span>
-              <span
-                class="tw-text-[12px] tw-bg-gray-200 tw-text-gray-700 tw-px-[14px] tw-py-[12px] tw-rounded-[124px]"
-              >
-                Solola
-              </span>
+
             </div>
           </div>
         </div>
@@ -147,7 +161,7 @@ const formData = ref({
               </div>
               <div>
                 <p class="tw-font-semibold tw-text-gray-800">Contact Name:</p>
-                <p class="tw-text-gray-600">Juan Doe</p>
+                <p class="tw-text-gray-600">{{ product?.contactDetail?.name || "N/A" }}</p>
               </div>
             </div>
 
@@ -160,7 +174,7 @@ const formData = ref({
               </div>
               <div>
                 <p class="tw-font-semibold tw-text-gray-800">Phone:</p>
-                <p class="tw-text-gray-600">454681003434</p>
+                <p class="tw-text-gray-600">{{ product?.contactDetail?.phone || "N/A" }}</p>
               </div>
             </div>
 
@@ -173,7 +187,7 @@ const formData = ref({
               </div>
               <div>
                 <p class="tw-font-semibold tw-text-gray-800">Email:</p>
-                <p class="tw-text-gray-600">Rossell@gmail.com</p>
+                <p class="tw-text-gray-600">{{ product?.contactDetail?.email || "N/A" }}</p>
               </div>
             </div>
 
@@ -187,7 +201,7 @@ const formData = ref({
 
               <div>
                 <p class="tw-font-semibold tw-text-gray-00">Address:</p>
-                <p class="tw-text-gray-600">10842 W Blue Mound Rd</p>
+                <p class="tw-text-gray-600">{{ product?.contactDetail?.address || "N/A" }}</p>
               </div>
             </div>
           </div>
@@ -200,34 +214,17 @@ const formData = ref({
           <ul
             class="tw-list-disc tw-pl-5 tw-mt-2 tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]"
           >
-            <li>Information Authorization Letter</li>
-            <li>Customer profile</li>
-            <li>Sworn declaration</li>
-            <li>Shareholders Form</li>
-            <li>Copy of recent utility bill (water, electricity or telephone)</li>
-            <li>Bank account statement (last 3 months)</li>
-            <li>
-              Financial statements for the last 3 periods with integrations of asset accounts,
-              liabilities, administrative expenses and sales expenses
-            </li>
-            <li>Submit Contracts you submit with a company</li>
-            <li>
-              Projected monthly cash flow for the first 12 months, including an explanation of the
-              premises or bases used for its preparation; signed by the legal representative and
-              certified public accountant
-            </li>
-            <li>
-              Projected annual cash flow for the remainder of the requested term, signed by the
-              legal representative and certified public accountant
-            </li>
+          {{ product?.requirement || "N/A" }}
           </ul>
-          <div class="tw-flex tw-justify-end tw-mt-[24px] tw-flex-row tw-gap-[10px]">
+          <div v-if="isAdmin" class="tw-flex tw-justify-end tw-mt-[24px] tw-flex-row tw-gap-[10px]">
             <button
+              @click="rejectProduct"
               class="tw-bg-[#FA3D34] tw-text-white tw-px-7 tw-py-3 tw-rounded-[13px] tw-capitalize"
             >
               Reject
             </button>
             <button
+              @click="approveProduct"
               class="tw-bg-[#24B2E3] tw-text-white tw-px-7 tw-py-3 tw-rounded-[13px] tw-capitalize"
             >
               Approve
