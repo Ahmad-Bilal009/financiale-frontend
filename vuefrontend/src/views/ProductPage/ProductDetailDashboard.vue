@@ -58,14 +58,14 @@ onMounted(fetchProductDetails);
 
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-mt-8 tw-h-[calc(100vh-100px)] tw-p-8">
-    <h1 class="tw-text-2xl tw-font-bold tw-mb-10">Product Details</h1>
+    <h1 class="tw-text-2xl tw-font-bold tw-mb-10">Detalles del Producto</h1>
 
     <div class="tw-mb-[40px] tw-flex tw-flex-row tw-gap-[20px] tw-justify-center">
       <div class="tw-w-[65%] tw-flex tw-flex-col tw-gap-[20px]">
         <div
           class="tw-bg-white tw-shadow-md tw-border-[1.5px] tw-rounded-[24px] tw-gap-[13px] tw-p-[24px]"
         >
-          <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Tittle</h4>
+          <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Título</h4>
           <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
             {{ product?.title || "N/A" }}
           </p>
@@ -74,7 +74,7 @@ onMounted(fetchProductDetails);
         <div
           class="tw-bg-white tw-shadow-md tw-border-[1.5px] tw-rounded-[24px] tw-gap-[13px] tw-p-[24px]"
         >
-          <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Description</h4>
+          <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Descripción</h4>
           <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
             {{ product?.description || "N/A" }}
           </p>
@@ -83,7 +83,7 @@ onMounted(fetchProductDetails);
         <div
           class="tw-bg-white tw-shadow-md tw-border-[1.5px] tw-rounded-[24px] tw-gap-[13px] tw-p-[24px]"
         >
-          <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Information</h4>
+          <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Información</h4>
           <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
             {{ product?.productInformation || "N/A" }}
           </p>
@@ -93,14 +93,14 @@ onMounted(fetchProductDetails);
           class="tw-bg-white tw-flex tw-flex-col tw-shadow-md tw-border-[1.5px] tw-rounded-[24px] tw-gap-[13px] tw-p-[24px]"
         >
           <div class="tw-flex tw-flex-col tw-gap-[13px]">
-            <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Product Type</h4>
+            <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Tipo de Producto</h4>
             <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
               {{ product?.productType || "N/A" }}
             </p>
           </div>
 
           <div class="tw-flex tw-flex-col tw-gap-[13px]">
-            <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Credit Guarantees</h4>
+            <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Garantías de Crédito</h4>
             <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
               {{ product?.creditGuarantees || "N/A" }}
             </p>
@@ -108,13 +108,13 @@ onMounted(fetchProductDetails);
 
           <div class="tw-flex tw-flex-col tw-gap-[13px]">
             <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">
-              Stage of entrepreneurship
+              Etapa del Emprendimiento
             </h4>
             <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">{{ product?.stageOfEntrepreneurship || "N/A" }}</p>
           </div>
 
           <div class="tw-flex tw-flex-col tw-gap-[13px]">
-            <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Objective of credit</h4>
+            <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Objetivo del Crédito</h4>
             <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
               {{ product?.objectiveOfCredit || "N/A" }}
             </p>
@@ -122,7 +122,7 @@ onMounted(fetchProductDetails);
 
           <div class="tw-flex tw-flex-col tw-gap-[13px]">
             <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">
-              Benefits for Entrepreneurs and MSMEs
+              Beneficios para Emprendedores y MIPYMEs
             </h4>
             <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
               {{ product?.benefitsOfEntrepreneurship || "N/A" }}
@@ -130,7 +130,7 @@ onMounted(fetchProductDetails);
           </div>
 
           <div class="tw-flex tw-flex-col tw-gap-[13px]">
-            <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Geographic Coverage</h4>
+            <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Cobertura Geográfica</h4>
             <div class="tw-flex tw-flex-row tw-gap-[7px]">
               <span
                 v-for="(location, index) in product?.geographicCoverage || []"
@@ -149,7 +149,7 @@ onMounted(fetchProductDetails);
         <div
           class="tw-border-[1.5px] tw-rounded-[24px] tw-gap-[13px] tw-p-[24px] tw-bg-white tw-shadow-md"
         >
-          <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500] mb-[16px]">Contact Details</h4>
+          <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500] mb-[16px]">Detalles de Contacto</h4>
 
           <div class="tw-flex tw-flex-col tw-gap-[32px] tw-mt-[24px]">
             <!-- Contact Name -->
@@ -160,7 +160,7 @@ onMounted(fetchProductDetails);
                 <img class="tw-bg-gray-100" src="../../../public/profile.png" alt="" />
               </div>
               <div>
-                <p class="tw-font-semibold tw-text-gray-800">Contact Name:</p>
+                <p class="tw-font-semibold tw-text-gray-800">Nombre de Contacto:</p>
                 <p class="tw-text-gray-600">{{ product?.contactDetail?.name || "N/A" }}</p>
               </div>
             </div>
@@ -173,7 +173,7 @@ onMounted(fetchProductDetails);
                 <img class="tw-bg-gray-100" src="../../../public/call.png" alt="" />
               </div>
               <div>
-                <p class="tw-font-semibold tw-text-gray-800">Phone:</p>
+                <p class="tw-font-semibold tw-text-gray-800">Teléfono:</p>
                 <p class="tw-text-gray-600">{{ product?.contactDetail?.phone || "N/A" }}</p>
               </div>
             </div>
@@ -186,7 +186,7 @@ onMounted(fetchProductDetails);
                 <img class="tw-bg-gray-100" src="../../../public/sms.png" alt="" />
               </div>
               <div>
-                <p class="tw-font-semibold tw-text-gray-800">Email:</p>
+                <p class="tw-font-semibold tw-text-gray-800">Correo Electrónico:</p>
                 <p class="tw-text-gray-600">{{ product?.contactDetail?.email || "N/A" }}</p>
               </div>
             </div>
@@ -200,7 +200,7 @@ onMounted(fetchProductDetails);
               </div>
 
               <div>
-                <p class="tw-font-semibold tw-text-gray-00">Address:</p>
+                <p class="tw-font-semibold tw-text-gray-00">Dirección:</p>
                 <p class="tw-text-gray-600">{{ product?.contactDetail?.address || "N/A" }}</p>
               </div>
             </div>
@@ -210,7 +210,7 @@ onMounted(fetchProductDetails);
         <div
           class="tw-bg-white tw-shadow-md tw-border-[1.5px] tw-rounded-[24px] tw-gap-[13px] tw-p-[24px]"
         >
-          <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Requirements</h4>
+          <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Requisitos</h4>
           <ul
             class="tw-list-disc tw-pl-5 tw-mt-2 tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]"
           >
@@ -221,13 +221,13 @@ onMounted(fetchProductDetails);
               @click="rejectProduct"
               class="tw-bg-[#FA3D34] tw-text-white tw-px-7 tw-py-3 tw-rounded-[13px] tw-capitalize"
             >
-              Reject
+            Rechazar
             </button>
             <button
               @click="approveProduct"
               class="tw-bg-[#24B2E3] tw-text-white tw-px-7 tw-py-3 tw-rounded-[13px] tw-capitalize"
             >
-              Approve
+            Aprobado
             </button>
           </div>
         </div>

@@ -46,13 +46,13 @@ const saveChanges = () => {
 
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-mt-8 tw-h-[calc(100vh-100px)] tw-p-8">
-    <h1 class="tw-text-2xl tw-font-bold tw-mb-10">Edit Product Details</h1>
+    <h1 class="tw-text-2xl tw-font-bold tw-mb-10">Editar Detalles del Producto</h1>
     <div class="tw-grid tw-grid-cols-2 tw-gap-8 tw-w-full">
       <!-- Basic Information -->
       <div class="tw-p-5 tw-rounded-[16px] -lg tw-bg-white tw-shadow">
-        <h2 class="tw-text-lg tw-font-bold tw-mb-4">Basic Information</h2>
+        <h2 class="tw-text-lg tw-font-bold tw-mb-4">Información Básica</h2>
         <div class="tw-space-y-4">
-          <label class="tw-block tw-font-medium tw-text-[#515151]">Title</label>
+          <label class="tw-block tw-font-medium tw-text-[#515151]">Título</label>
           <input
             v-model="formData.title"
             type="text"
@@ -60,21 +60,21 @@ const saveChanges = () => {
             class="tw-w-full tw-p-3 border border-[#D2D2D2] tw-rounded-[8px]"
           />
 
-          <label class="tw-block tw-font-medium tw-text-[#515151]">Description</label>
+          <label class="tw-block tw-font-medium tw-text-[#515151]">Descripción</label>
           <textarea
             v-model="formData.description"
             placeholder="Enter Description"
             class="tw-w-full tw-h-[112px] tw-p-3 border border-[#D2D2D2] tw-rounded-[8px]"
           ></textarea>
 
-          <label class="tw-block tw-font-medium tw-text-[#515151]">Product Information</label>
+          <label class="tw-block tw-font-medium tw-text-[#515151]">Información del Producto</label>
           <textarea
             v-model="formData.productInfo"
             placeholder="Enter Information"
             class="tw-w-full tw-h-[152px] tw-p-3 border border-[#D2D2D2] tw-rounded-[8px]"
           ></textarea>
 
-          <label class="tw-block tw-font-medium tw-text-[#515151]">Product Type</label>
+          <label class="tw-block tw-font-medium tw-text-[#515151]">Tipo de Producto</label>
           <select
             v-model="formData.productType"
             class="tw-w-full tw-p-3 border border-[#D2D2D2] tw-rounded-[8px]"
@@ -86,7 +86,7 @@ const saveChanges = () => {
 
           <!-- Credit Guarantees -->
           <div class="tw-flex tw-flex-col tw-gap-[10px]">
-            <label class="tw-block tw-font-medium tw-text-[#515151]">Credit Guarantees</label>
+            <label class="tw-block tw-font-medium tw-text-[#515151]">Garantías de Crédito</label>
             <div class="tw-flex tw-flex-wrap tw-gap-2 border border-[#D2D2D2] tw-rounded-[8px] tw-p-2">
               <span
                 v-for="(tag, index) in formData.creditGuarantees"
@@ -106,7 +106,7 @@ const saveChanges = () => {
             </div>
           </div>
 
-          <label class="tw-block tw-font-medium tw-text-[#515151]">Stage of Entrepreneurship</label>
+          <label class="tw-block tw-font-medium tw-text-[#515151]">Etapa del Emprendimiento</label>
           <select
             v-model="formData.entrepreneurshipStage"
             class="tw-w-full tw-p-3 border border-[#D2D2D2] tw-rounded-[8px]"
@@ -116,7 +116,7 @@ const saveChanges = () => {
             <option value="Maturity">Maturity</option>
           </select>
 
-          <label class="tw-block tw-font-medium tw-text-[#515151]">Objective of Credit</label>
+          <label class="tw-block tw-font-medium tw-text-[#515151]">Objetivo del Crédito</label>
           <select
             v-model="formData.creditObjective"
             class="tw-w-full tw-p-3 border border-[#D2D2D2] tw-rounded-[8px]"
@@ -125,7 +125,7 @@ const saveChanges = () => {
             <option value="Expansion">Expansion</option>
           </select>
 
-          <label class="tw-block tw-font-medium tw-text-[#515151]">Benefits for Entrepreneurs and MSMEs</label>
+          <label class="tw-block tw-font-medium tw-text-[#515151]">Beneficios para Emprendedores y MIPYMEs</label>
           <input
             v-model="formData.benefits"
             type="text"
@@ -135,7 +135,7 @@ const saveChanges = () => {
 
           <!-- Geographic Coverage -->
           <div class="tw-flex tw-flex-col tw-gap-[10px] tw-mt-4">
-            <label class="tw-block tw-font-medium tw-text-[#515151]">Geographic Coverage</label>
+            <label class="tw-block tw-font-medium tw-text-[#515151]">Cobertura Geográfica</label>
             <div class="tw-flex tw-flex-wrap tw-gap-2 border border-[#D2D2D2] tw-rounded-[8px] tw-p-2">
               <span
                 v-for="(tag, index) in formData.geographicCoverage"
@@ -161,7 +161,7 @@ const saveChanges = () => {
       <div class="tw-flex tw-h-full tw-flex-col tw-gap-8">
         <!-- Requirements -->
         <div class="tw-p-5 tw-rounded-[16px] -lg tw-bg-white tw-shadow">
-          <h2 class="tw-text-lg tw-font-bold tw-mb-4">Requirements</h2>
+          <h2 class="tw-text-lg tw-font-bold tw-mb-4">Requisitos</h2>
           <textarea
             v-model="formData.requirements"
             placeholder="Enter Requirements"
@@ -171,9 +171,9 @@ const saveChanges = () => {
 
         <!-- Contact Details -->
         <div class="tw-p-5 tw-h-full tw-rounded-[16px] -lg tw-bg-white tw-shadow tw-flex tw-flex-col">
-          <h2 class="tw-text-lg tw-font-bold tw-mb-4">Contact Details</h2>
+          <h2 class="tw-text-lg tw-font-bold tw-mb-4">Detalles de Contacto</h2>
           <div class="tw-space-y-4 tw-flex-grow">
-            <label class="tw-block tw-font-medium tw-text-[#515151]">Contact Name</label>
+            <label class="tw-block tw-font-medium tw-text-[#515151]">Nombre de Contacto</label>
             <input
               v-model="formData.contactName"
               type="text"
@@ -181,7 +181,7 @@ const saveChanges = () => {
               class="tw-w-full tw-p-3 border border-[#D2D2D2] tw-rounded-[8px]"
             />
 
-            <label class="tw-block tw-font-medium tw-text-[#515151]">Phone</label>
+            <label class="tw-block tw-font-medium tw-text-[#515151]">Teléfono</label>
             <input
               v-model="formData.phone"
               type="text"
@@ -189,7 +189,7 @@ const saveChanges = () => {
               class="tw-w-full tw-p-3 border border-[#D2D2D2] tw-rounded-[8px]"
             />
 
-            <label class="tw-block tw-font-medium tw-text-[#515151]">Email</label>
+            <label class="tw-block tw-font-medium tw-text-[#515151]">Correo Electrónico</label>
             <input
               v-model="formData.email"
               type="email"
@@ -197,7 +197,7 @@ const saveChanges = () => {
               class="tw-w-full tw-p-3 border border-[#D2D2D2] tw-rounded-[8px]"
             />
 
-            <label class="tw-block tw-font-medium tw-text-[#515151]">Address</label>
+            <label class="tw-block tw-font-medium tw-text-[#515151]">Dirección</label>
             <input
               v-model="formData.address"
               type="text"
@@ -212,7 +212,7 @@ const saveChanges = () => {
               @click="saveChanges"
               class="tw-bg-[#24B2E3] tw-text-white tw-px-[28px] tw-py-[18px] tw-rounded-[13px] tw-shadow hover:tw-bg-[#1A90C3]"
             >
-              Save Changes
+            Guardar Cambios
             </button>
           </div>
         </div>

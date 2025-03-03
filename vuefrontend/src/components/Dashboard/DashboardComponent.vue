@@ -227,7 +227,6 @@ const tableheading = computed(() => {
     { key: "title", label: "Título", align: "center" },
     { key: "organization", label: "Organización", align: "center" },
     { key: "location", label: "Ubicación", align: "center" },
-    { key: "view", label: "Ubicación", align: "center" },
     { key: "stage", label: "Etapa", align: "center" },
   ];
   if (isAdminComputed) {
