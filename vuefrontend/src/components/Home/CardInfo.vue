@@ -88,7 +88,7 @@ onMounted(fetchProductDetails);
           class="tw-bg-[#24B2E3] tw-flex tw-items-center tw-justify-center tw-text-[#FFFFFF] tw-gap-[12px] tw-text-sm tw-font-medium tw-py-3 tw-px-6 tw-rounded-full"
           @click="handleMoreInfo(product.id)"
         >
-          <span>Connect</span>
+          <span>Conectar</span>
           <div class="tw-flex tw-items-center tw-justify-center tw-w-8 tw-h-8 tw-bg-white tw-text-[#24B2E3] tw-rounded-full">
             <img class="tw-w-[20px] tw-h-[20px]" src="../../../public/Group 21.png" alt="arrow-right">
           </div>
@@ -101,7 +101,7 @@ onMounted(fetchProductDetails);
       <!-- Left Column -->
       <div class="md:tw-col-span-2 tw-flex tw-flex-col tw-gap-6">
         <div class="tw-bg-white tw-shadow-md tw-border-[1.5px] tw-rounded-[24px] tw-gap-[13px] tw-p-[24px]">
-          <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Information</h4>
+          <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Información</h4>
           <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
             {{ product.productInformation || "No additional information available." }}
           </p>
@@ -109,11 +109,11 @@ onMounted(fetchProductDetails);
 
         <div class="tw-flex tw-flex-col tw-bg-white tw-shadow-md tw-border-[1.5px] tw-rounded-[24px] tw-gap-[13px] tw-p-[24px]">
           <div v-for="(value, key) in {
-            'Product Type': product.productType,
-            'Credit Guarantees': product.creditGuarantees,
-            'Stage of Entrepreneurship': product.stageOfEntrepreneurship,
-            'Objective of Credit': product.objectiveOfCredit,
-            'Benefits for Entrepreneurs': product.benefitsOfEntrepreneurship
+            'Tipo de Producto': product.productType,
+            'Garantías de Crédito': product.creditGuarantees,
+            'Etapa del Emprendimiento': product.stageOfEntrepreneurship,
+            'Objetivo del Crédito': product.objectiveOfCredit,
+            'Beneficios para Emprendedores y MIPYMEs': product.benefitsOfEntrepreneurship
           }" :key="key" class="tw-flex tw-flex-col tw-gap-[13px]">
             <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">{{ key }}</h4>
             <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
@@ -122,7 +122,7 @@ onMounted(fetchProductDetails);
           </div>
 
           <div class="tw-flex tw-flex-col tw-gap-[13px]">
-            <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Geographic Coverage</h4>
+            <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">Cobertura Geográfica</h4>
             <div class="tw-flex tw-flex-wrap tw-gap-[7px]">
               <span v-for="(tag, index) in product.geographicCoverage" :key="index"
                 class="tw-text-[12px] tw-bg-gray-200 tw-text-gray-700 tw-px-[14px] tw-py-[12px] tw-rounded-[124px]">
@@ -136,15 +136,15 @@ onMounted(fetchProductDetails);
       <!-- Right Column -->
       <div class="tw-flex tw-flex-col tw-gap-6">
         <div class="tw-border tw-rounded-[24px] tw-p-6 tw-bg-white tw-shadow-md">
-          <h4 class="tw-text-[20px] tw-font-medium mb-4">Contact Details</h4>
+          <h4 class="tw-text-[20px] tw-font-medium mb-4">Detalles de Contacto</h4>
 
           <div class="tw-flex tw-flex-col tw-gap-4">
             <div
               v-for="(value, key) in {
-                'Contact Name': product.contactDetail?.name,
-                'Phone': product.contactDetail?.phone,
-                'Email': product.contactDetail?.email,
-                'Address': product.contactDetail?.address
+                'Nombre de Contacto': product.contactDetail?.name,
+                'Teléfono': product.contactDetail?.phone,
+                'Correo Electrónico': product.contactDetail?.email,
+                'Dirección': product.contactDetail?.address
               }"
               :key="key"
               class="tw-flex tw-items-start tw-gap-4"
@@ -161,7 +161,7 @@ onMounted(fetchProductDetails);
 
         <!-- Requirements -->
         <div class="tw-bg-white tw-shadow-md tw-border tw-rounded-[24px] tw-p-6">
-          <h4 class="tw-text-[20px] tw-font-medium">Requirements</h4>
+          <h4 class="tw-text-[20px] tw-font-medium">Requisitos</h4>
           <ul class="tw-list-disc tw-pl-5 tw-mt-2 tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
             <li v-for="(req, index) in product.requirement?.split(',')" :key="index">{{ req }}</li>
           </ul>
