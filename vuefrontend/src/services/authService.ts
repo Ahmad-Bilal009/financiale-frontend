@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:5001/api/auth'
+const API_URL = 'https://e809-39-63-31-174.ngrok-free.app/api/auth'
 
 export default {
   async login(credentials: { email: string; password: string }) {

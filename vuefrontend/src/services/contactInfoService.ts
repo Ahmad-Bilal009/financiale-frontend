@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE_URL = 'http://localhost:5001/api/users' // Update with your backend URL
+const API_BASE_URL = 'https://e809-39-63-31-174.ngrok-free.app/api/users' // Update with your backend URL
 
 export default {
   // **Fetch contact info of a specific user**
