@@ -40,9 +40,9 @@ const fetchProductDetails = async () => {
     console.error("Failed to fetch product details:", error);
   }
 };
-const handleMoreInfo = (productId: number) => {
-  console.log("Product ID:", productId);
-  // You can use router.push or any other logic here
+const handleMoreInfo = () => {
+  console.log("Opening Modal...");
+  isModalOpen.value = true;
 };
 
 // ** Close Modal Function **
