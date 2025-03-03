@@ -169,8 +169,6 @@ const rejectProduct = async (productId: number) => {
   }
 }
 
-
-
 // ** Search Functionality **
 const search = (query: string) => {
   console.log("Searching for:", query);
@@ -178,6 +176,12 @@ const search = (query: string) => {
 
 // ** Lifecycle Hook **
 onMounted(fetchProducts)
+
+// Define the handleSort method
+const handleSort = (sortKey: string) => {
+  console.log("Sorting by:", sortKey); // Log the sortKey instead of query
+  // Add your sorting logic here
+};
 </script>
 
 <template>

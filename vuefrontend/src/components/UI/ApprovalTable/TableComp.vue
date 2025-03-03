@@ -137,7 +137,7 @@ const rejectItem = (productId: number) => {
                 <button
                   v-if="rowData.status === 'approved'"
                   class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
-                  @click="rejectItem(rowData.id)"
+                  @click="rejectItem(Number(rowData.id))"
                 >
                   RECHAZAR
                 </button>
@@ -146,7 +146,7 @@ const rejectItem = (productId: number) => {
                 <button
                   v-if="rowData.status === 'rejected'"
                   class="tw-bg-[#0BA5EC] hover:tw-bg-[#0990cc] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
-                  @click="approveItem(rowData.id)"
+                  @click="approveItem(Number(rowData.id))"
                 >
                   APROBAR
                 </button>
@@ -155,13 +155,13 @@ const rejectItem = (productId: number) => {
                 <template v-if="rowData.status !== 'approved' && rowData.status !== 'rejected'">
                   <button
                     class="tw-bg-[#0BA5EC] hover:tw-bg-[#0990cc] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
-                    @click="approveItem(rowData.id)"
+                    @click="approveItem(Number(rowData.id))"
                   >
                     APROBAR
                   </button>
                   <button
                     class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium tw-ml-2"
-                    @click="rejectItem(rowData.id)"
+                    @click="rejectItem(Number(rowData.id))"
                   >
                     RECHAZAR
                   </button>

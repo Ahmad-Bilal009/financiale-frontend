@@ -121,7 +121,7 @@ const deleteItem = (index: number) => {
                   </RouterLink>
                   <button
                     v-if="props.onDelete"
-                    @click="deleteItem(rowData.id)"
+                    @click="deleteItem(Number(rowData.id))"
                     class="tw-border-[1px] hover:tw-bg-red-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
                   >
                     <DeleteIcon />

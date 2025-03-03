@@ -4,7 +4,7 @@ import TableComp from '@/components/UI/ManageUser/UserComp.vue'
 import AddUserButton from '@/components/UI/Button/AddUserbutton.vue'
 import UserToggle from '@/components/UI/Toggle-Switch/UserToggle.vue'
 import AddUserModel from '@/components/UI/AddUser-Modal/AddUser.vue'
-import UserDeleteModel from '../UI/Delete-Model/UserDeleteModel.vue'
+import UserDeleteModel from '@/components/UI/Delete-Model/UserDeleteModel.vue'
 import { ref, onMounted, computed } from 'vue'
 import userService from '@/services/userService'
 import visitorService from '@/services/visitorServices' // Import visitor API service
@@ -26,7 +26,7 @@ interface User {
   password: string;
   isDisabled: boolean;
   role: string;
-  totalVisitors?: number; // Add totalVisitors field
+  totalVisitors: number; // Add totalVisitors field
 }
 
 // **Fetch Visitors Count for Each User**
@@ -154,8 +154,13 @@ const confirmDeleteUser = async () => {
       fetchUsers(); // Refresh users after deletion
       closeDeleteModal();
     } catch (error) {
-      console.error("🚨 Error deleting user:", error.response?.data || error);
-      toast.error("Failed to delete user");
+      if (error instanceof Error) {
+        console.error("🚨 Error deleting user:", error.message);
+        toast.error("Failed to delete user: " + error.message);
+      } else {
+        console.error("🚨 Error deleting user:", error);
+        toast.error("Failed to delete user");
+      }
     }
   } else {
     console.warn("⚠️ No user ID to delete!");

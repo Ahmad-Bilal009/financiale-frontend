@@ -22,7 +22,6 @@ interface User {
   password: string;
   isDisabled: boolean;
   role: string;
-  totalVisitors?: number; // Add totalVisitors field
 }
 
 

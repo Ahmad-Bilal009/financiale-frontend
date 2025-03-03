@@ -79,10 +79,15 @@ const submitProduct = async () => {
       toast.error("Please fill in all required fields.");
       return;
     }
+
     if (isEditing.value) {
       // ** Update Existing Product **
-      await productService.saveProduct(productForm.value, productId);
-      toast.success("Product updated successfully!");
+      if (productId !== null) { // Check if productId is not null
+        await productService.saveProduct(productForm.value, productId);
+        toast.success("Product updated successfully!");
+      } else {
+        toast.error("Product ID is invalid.");
+      }
     } else {
       // ** Create New Product **
       await productService.saveProduct(productForm.value);

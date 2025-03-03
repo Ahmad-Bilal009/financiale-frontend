@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import ArrowDownIcon from '@/assets/svg/arrow-down.svg'
-import { RouterLink } from 'vue-router'
 import ViewEyeIcon from '@/assets/svg/view-eye.svg'
 import EditIcon from '@/assets/svg/edit-icon.svg'
-import circle from '@/assets/svg/Circle.png'
 import DeleteIcon from '@/assets/svg/delete-icon.svg' // Ensure correct import
 import { defineProps, computed } from 'vue'
 import userService from '@/services/userService'
@@ -18,7 +16,7 @@ interface UserData {
   password?: string
   role: string
   isDisabled: boolean
-  totalVisitors: number
+  totalVisitors?: number
 }
 
 const props = defineProps<{
@@ -68,6 +66,7 @@ const renderCell = (row: UserData, columnKey: string) => {
     case 'role': return row.role
     case 'password': return row.password
     case 'totalVisitors': return row.totalVisitors
+    case 'type': return row.role
     case 'isDisabled': return row.isDisabled ? 'Deshabilitado' : 'Activo'
     default: return ''
   }

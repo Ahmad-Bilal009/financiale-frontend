@@ -275,6 +275,11 @@ const deleteProduct = async () => {
   }
 }
 
+const handleDelete = (id: number) => {
+  // Your delete logic here
+  console.log("Deleting user with ID:", id);
+};
+
 </script>
 
 
