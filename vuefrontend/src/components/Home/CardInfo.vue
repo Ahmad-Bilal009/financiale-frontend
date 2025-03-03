@@ -40,9 +40,9 @@ const fetchProductDetails = async () => {
     console.error("Failed to fetch product details:", error);
   }
 };
-const handleMoreInfo = () => {
-  console.log("Opening Modal...");
-  isModalOpen.value = true;
+const handleMoreInfo = (productId: number) => {
+  console.log("Opening more info for product ID:", productId);
+  // Add your logic to handle more info here
 };
 
 // ** Close Modal Function **
