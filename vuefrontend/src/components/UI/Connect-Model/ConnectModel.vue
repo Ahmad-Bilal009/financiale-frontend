@@ -70,7 +70,7 @@ const handleClick = async (type: string, link: string) => {
       window.open(type === "email" ? `mailto:${link}` : link, "_blank");
     }
   } catch (error) {
-    console.error("Error tracking click:", error);
+    console.error("❌ Error tracking click:", error);
     toast.error("Failed to perform action.");
   }
 };

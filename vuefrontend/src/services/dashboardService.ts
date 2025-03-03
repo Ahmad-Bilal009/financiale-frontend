@@ -2,18 +2,23 @@ import axios from 'axios'
 
 const API_URL = 'https://e809-39-63-31-174.ngrok-free.app/api/dashboard'
 
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token') // Retrieve the token from localStorage
+  return {
+    headers: {
+      'ngrok-skip-browser-warning': 'true', // Bypass Ngrok warning
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+  }
+}
+
 export default {
   async getStats() {
     try {
       const token = localStorage.getItem('token')
-      const response = await axios.get(`${API_URL}/stats`, {
-        headers: {
-          'ngrok-skip-browser-warning': 'true', // Bypass Ngrok security warning
-          Authorization: `Bearer ${token}`, // Include authentication token
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      })
+      const response = await axios.get(`${API_URL}/stats`, getAuthHeaders())
       return response.data
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
