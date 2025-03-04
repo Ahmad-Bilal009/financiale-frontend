@@ -119,6 +119,7 @@ const fetchProducts = async () => {
       location: product.contactDetail?.address || "N/A",
       stage: product.stageOfEntrepreneurship || "N/A",
       visitorCount: product.visitorCount || 0, // Add visitor count
+      status: product.status,
       userId: product.userId || null,
       createdAt: product.createdAt || null,
     }));
@@ -265,7 +266,6 @@ const tableheading = computed(() => {
 const handleSort = (key: string) => {
   console.log(`Sorting by: ${key}`)
 }
-
 
 
 // Define activeFilter
