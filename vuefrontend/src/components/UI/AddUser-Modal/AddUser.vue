@@ -58,7 +58,7 @@ watch(
           image: null,
         }
         imagePreview.value = props.userData.image && props.userData.image !== 'null'
-        ? `https://e809-39-63-31-174.ngrok-free.app${props.userData.image}`
+        ? `https://1ed1-39-63-31-174.ngrok-free.app${props.userData.image}`
         : defaultUserImage
 
       }

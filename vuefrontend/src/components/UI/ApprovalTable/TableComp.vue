@@ -2,11 +2,12 @@
 import ArrowDownIcon from '@/assets/svg/arrow-down.svg'
 import { RouterLink } from 'vue-router'
 import ViewEyeIcon from '@/assets/svg/view-eye.svg'
+import { defineProps, computed, ref } from 'vue'
 
 // **Define Props**
 const props = defineProps<{
   columns: { key: string; label: string; align: string }[]
-  rowData: { [key: string]: string | number }[] //  Allows numbers (for IDs)
+  rowData: any[] //  Allows numbers (for IDs)
   activeFilter: string
   onSort: (key: string) => void
   onApprove?: (productId: number) => void
@@ -57,12 +58,29 @@ const rejectItem = (productId: number) => {
     props.onReject(productId)
   }
 }
+
+const itemsPerPage = 10
+const currentPage = ref(1)
+
+// Calculate total pages
+const totalPages = computed(() => Math.ceil(props.rowData.length / itemsPerPage))
+
+// Get paginated data
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return props.rowData.slice(start, end)
+})
+
+// Change page
+const goToPage = (page: number) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+  }
+}
 </script>
 
----
 
-### **🖥 Updated Template (Without Delete Button)**
-```vue
 <template>
   <div class="tw-overflow-x-auto">
     <table class="tw-table-auto tw-w-full">
@@ -87,7 +105,7 @@ const rejectItem = (productId: number) => {
       </thead>
       <tbody>
         <tr
-          v-for="(rowData, index) in props.rowData"
+          v-for="(rowData, index) in paginatedData"
           :key="index"
           class="tw-whitespace-nowrap hover:tw-bg-gray-100 tw-border-b tw-text-sm tw-font-normal tw-text-[#0E0E0E]"
         >
@@ -177,5 +195,29 @@ const rejectItem = (productId: number) => {
         </tr>
       </tbody>
     </table>
+
+    <div class="tw-flex tw-justify-between tw-items-center tw-mt-9">
+      <span>Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage, props.rowData.length) }} Items</span>
+
+      <div class="tw-flex tw-items-center tw-gap-2">
+        <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1" class="tw-p-2 tw-text-[#8D98AF] tw-rounded tw-border tw-bg-white tw-cursor-pointer">
+          &lt;
+        </button>
+
+        <button
+          v-for="page in totalPages"
+          :key="page"
+          @click="goToPage(page)"
+          :class="['tw-px-3 tw-py-1 tw-rounded', currentPage === page ? 'tw-bg-[#192854] tw-text-white' : ' tw-text-[#8D98AF]']"
+        >
+          {{ page }}
+        </button>
+
+        <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages" class="tw-p-2 tw-text-[#8D98AF] tw-rounded tw-border tw-bg-white tw-cursor-pointer">
+          &gt;
+        </button>
+      </div>
+    </div>
+
   </div>
 </template>

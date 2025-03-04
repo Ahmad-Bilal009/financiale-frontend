@@ -64,7 +64,7 @@ const fetchUsers = async () => {
       email: user.email,
       password: user.password,
       isDisabled: user.isDisabled,
-      totalVisitors: 0, // Initialize visitors count
+      totalVisitors: user.totalVisitors, // Initialize visitors count
     }));
 
     await fetchVisitorsCount(); // Fetch visitors count after users are loaded
@@ -81,7 +81,7 @@ const filteredUsers = computed(() => {
 // **Handle toggle status from UserToggle**
 const handleToggleStatus = (status: boolean) => {
   activeFilter.value = status;
-  console.log("🔄 Toggle Change:", status ? "All Users" : "Disabled Users");
+  console.log("Toggle Change:", status ? "All Users" : "Disabled Users");
 };
 
 // **Open Add User Modal**
@@ -121,7 +121,7 @@ const handleUserSave = async (userData: User, userId: number) => {
 
 // **Search functionality**
 const search = (value: string) => {
-  console.log('🔎 Searching:', value);
+  console.log('Searching:', value);
 };
 
 // **Sorting handler**
@@ -142,23 +142,23 @@ const closeDeleteModal = () => {
 }
 
 const confirmDeleteUser = async () => {
-  console.log("🛑 Trying to delete user:", userIdToDelete.value); // Debugging log
+  console.log("Trying to delete user:", userIdToDelete.value); // Debugging log
 
   if (userIdToDelete.value) {
     try {
-      console.log("📡 Sending DELETE request...");
+      console.log("Sending DELETE request...");
       await userService.deleteUser(userIdToDelete.value);
-      console.log("✅ API responded successfully!");
+      console.log("API responded successfully!");
 
       toast.success('User deleted successfully!');
       fetchUsers(); // Refresh users after deletion
       closeDeleteModal();
     } catch (error) {
       if (error instanceof Error) {
-        console.error("🚨 Error deleting user:", error.message);
+        console.error("Error deleting user:", error.message);
         toast.error("Failed to delete user: " + error.message);
       } else {
-        console.error("🚨 Error deleting user:", error);
+        console.error("Error deleting user:", error);
         toast.error("Failed to delete user");
       }
     }

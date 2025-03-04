@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'https://e809-39-63-31-174.ngrok-free.app/api/visitors' // Adjust to your backend
+const API_URL = 'https://1ed1-39-63-31-174.ngrok-free.app/api/visitors' // Adjust to your backend
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token') // Retrieve the token from localStorage
@@ -15,9 +15,12 @@ const getAuthHeaders = () => {
 }
 
 export default {
-  incrementVisitor: (productId: number) => axios.post(`${API_URL}/increment/${productId}`),
+  incrementVisitor: (productId: number) =>
+    axios.post(`${API_URL}/increment/${productId}`, getAuthHeaders()),
   getTotalVisitors: () => axios.get(`${API_URL}/total`, getAuthHeaders()),
-  getProductVisitors: (productId: number) => axios.get(`${API_URL}/product/${productId}`),
-  getUserVisitors: (userId: number) => axios.get(`${API_URL}/user/${userId}`),
-  getSortedVisitors: (filter: string) => axios.get(`${API_URL}/sorted?filter=${filter}`),
+  getProductVisitors: (productId: number) =>
+    axios.get(`${API_URL}/product/${productId}`, getAuthHeaders()),
+  getUserVisitors: (userId: number) => axios.get(`${API_URL}/user/${userId}`, getAuthHeaders()),
+  getSortedVisitors: (filter: string) =>
+    axios.get(`${API_URL}/sorted?filter=${filter}`, getAuthHeaders()),
 }
