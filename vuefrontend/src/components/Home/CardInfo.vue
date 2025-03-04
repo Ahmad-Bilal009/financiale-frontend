@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import productService from "@/services/productServices";
+import AppBreadcrumb from "../UI/Breadcrumb.vue"
 import ConnectModal from "../UI/Connect-Model/ConnectModel.vue";
 
 
@@ -59,6 +60,12 @@ onMounted(fetchProductDetails);
 
 <template>
   <div class="tw-mt-12 tw-mb-12 tw-flex tw-flex-col tw-gap-6" v-if="product">
+
+    <AppBreadcrumb :items="[
+      { label: 'Home', path: '/' },
+      { label: 'Products', path: '/' },
+      { label: product.id, path: '#' } // Current page, no link
+    ]" />
     <!-- Header Section -->
     <div class="tw-flex tw-flex-col tw-items-center tw-text-center tw-gap-5">
       <!-- Bank Logo -->

@@ -340,10 +340,6 @@ const rejectProduct = async (productId: number) => {
   }
 }
 
-// ** Search Functionality **
-const search = (query: string) => {
-  console.log("Searching for:", query);
-}
 </script>
 
 

@@ -1,6 +1,7 @@
+import BASE_URL from '../config/config'
 import axios from 'axios'
 
-const API_URL = 'https://cf42-39-63-31-174.ngrok-free.app/api/products'
+const API_URL = `${BASE_URL}/products`
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token') // Retrieve the token from localStorage
