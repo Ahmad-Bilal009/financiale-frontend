@@ -214,12 +214,18 @@ const handleSort = (sortKey: string) => {
     <!-- Filters (Only Show When Approved is Selected) -->
     <div v-if="activeFilter === 'approved'" class="tw-gap-[18px] tw-flex tw-justify-end">
       <div class="tw-flex tw-flex-col tw-gap-2 tw-w-full md:tw-w-auto">
+        <label class="tw-text-[12px] md:tw-text-[16px] tw-font-medium tw-leading-[20px] tw-text-dark-gray">
+          Visitantes
+        </label>
         <select v-model="selectVisitors" class="tw-bg-white tw-w-40 tw-shadow tw-rounded-[8px] tw-p-2">
           <option v-for="option in Visitors" :key="option.key" :value="option.key">{{ option.label }}</option>
         </select>
       </div>
 
       <div class="tw-flex tw-flex-col tw-gap-2 tw-w-full md:tw-w-auto">
+        <label class="tw-text-[12px] md:tw-text-[16px] tw-font-medium tw-leading-[20px] tw-text-dark-gray">
+          Organización
+        </label>
         <select v-model="selectedOrganization" class="tw-bg-white tw-w-40 tw-shadow tw-rounded-[8px] tw-p-2">
           <option v-for="option in availableOrganizations" :key="option.key" :value="option.key">
             {{ option.label }}

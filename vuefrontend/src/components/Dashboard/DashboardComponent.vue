@@ -246,6 +246,8 @@ const items = computed(() => [
   { title: 'Creados Hoy', number: stats.value.createdToday },
   { title: 'Creados esta Semana', number: stats.value.createdThisWeek },
   { title: 'Creados este Mes', number: stats.value.createdThisMonth },
+  { title: 'Visitantes esta semana', number: stats.value.UserVisitors },
+  { title: 'Visitantes este mes', number: stats.value.UserVisitors },
   { title: 'Total de Visitantes', number: stats.value.UserVisitors },
 ])
 
