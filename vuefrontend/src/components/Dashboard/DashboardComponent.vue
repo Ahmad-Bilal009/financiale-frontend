@@ -18,7 +18,8 @@ const selectedProductId = ref<number | null>(null) // Store selected product ID
 
 const user = JSON.parse(localStorage.getItem('user') || '{}')
 const userId = user?.id || null
-const isAdmin = user?.role === 'admin'
+const isAdmin = computed(() => user.role === "admin");
+
 
 // Receive `userRole` as a prop from the parent component
 const props = defineProps({
@@ -42,6 +43,7 @@ interface Stats {
   createdThisMonth: number;
   totalUsers: number;
   totalVisitors: number;
+  UserVisitors: number;
 }
 
 // Update the stats object to use the new interface
@@ -52,6 +54,7 @@ const stats = ref<Stats>({
   createdThisMonth: 0,
   totalUsers: 0,
   totalVisitors: 0,
+  UserVisitors: 0,
 });
 
 // Define the User interface
@@ -170,7 +173,9 @@ const fetchDashboardStats = async () => {
     // Fetch general stats
     const response = await dashboardService.getStats();
     const visitorResponse = await visitorService.getTotalVisitors();
-    console.log("Visitor Stats:", visitorResponse.data, "Dashboard Stats:", response);
+    const UserVisitorResponse = await visitorService.getUserVisitors(userId);
+
+    console.log("Visitor Stats:", visitorResponse.data, "User Visitor Stats:", UserVisitorResponse.data, "Dashboard Stats:", response);
 
     // Default stats
     stats.value = {
@@ -179,6 +184,7 @@ const fetchDashboardStats = async () => {
       createdThisWeek: 0,
       createdThisMonth: 0,
       totalUsers: 0,
+      UserVisitors: UserVisitorResponse.data?.totalVisitors || 0,
       totalVisitors: visitorResponse.data?.totalVisitors || 0,
       ...response, // Merge response stats
     };
@@ -212,6 +218,7 @@ const fetchDashboardStats = async () => {
   }
 };
 
+
 // Utility function to get the week number of a given date
 const getWeekNumber = (date: Date) => {
   const oneJan = new Date(date.getFullYear(), 0, 1);
@@ -239,6 +246,7 @@ const items = computed(() => [
   { title: 'Creados Hoy', number: stats.value.createdToday },
   { title: 'Creados esta Semana', number: stats.value.createdThisWeek },
   { title: 'Creados este Mes', number: stats.value.createdThisMonth },
+  { title: 'Total de Visitantes', number: stats.value.UserVisitors },
 ])
 
 const visitorsAndProduct = computed(() => [

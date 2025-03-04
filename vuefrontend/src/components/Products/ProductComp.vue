@@ -36,6 +36,7 @@ const fetchProducts = async () => {
         location: product.contactDetail?.address || "N/A",
         stage: product.stageOfEntrepreneurship || "N/A",
         status: product.status || "N/A",
+        visitorCount: product.visitorCount || 0,
       }))
   } catch (error) {
     console.error("Error fetching products:", error)
@@ -56,6 +57,7 @@ const tableheading = ref([
   { key: 'location', label: 'Location', align: 'center' },
   { key: 'stage', label: 'Stage', align: 'center' },
   { key: 'status', label: 'Status', align: 'center' },
+  { key: 'visitorCount', label: 'Visitantes', align: 'center' },
   { key: 'action', label: 'Action', align: 'center' },
 ])
 
