@@ -223,16 +223,17 @@ console.log("visitorsAndProduct Data:", visitorsAndProduct.value);
 
 
 const tableheading = computed(() => {
-  const baseColumns = [
+  const columns = [
     { key: "title", label: "Título", align: "center" },
     { key: "organization", label: "Organización", align: "center" },
     { key: "location", label: "Ubicación", align: "center" },
     { key: "stage", label: "Etapa", align: "center" },
   ];
   if (isAdminComputed) {
-    baseColumns.push({ key: "action", label: "Acción", align: "center" });
+    columns.push({ key: 'visitorCount', label: 'Visitantes', align: 'center' })
+    columns.push({ key: "action", label: "Acción", align: "center" });
   }
-  return baseColumns;
+  return columns;
 });
 
 const handleSort = (key: string) => {

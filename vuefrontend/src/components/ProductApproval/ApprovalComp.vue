@@ -6,6 +6,8 @@ import { onMounted, ref, computed } from 'vue'
 import userService from '@/services/userService'
 import productService from '@/services/productServices'
 import { useToast } from "vue-toastification"
+import visitorService from '@/services/visitorServices'
+import { watch } from 'vue'
 
 const toast = useToast()
 const selectedProductId = ref<number | null>(null)
@@ -16,6 +18,20 @@ const selectedOrganization = ref('all') // Default organization filter
 const products = ref<Product[]>([])
 const activeFilter = ref('all') // Default: Show all products
 
+
+const fetchSortedVisitors = async () => {
+  try {
+    const response = await visitorService.getSortedVisitors(selectVisitors.value);
+    console.log("Fetched Visitors:", response.data);
+  } catch (error) {
+    toast.error(`Error fetching visitors: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+};
+
+watch(selectVisitors, fetchSortedVisitors);
+
+// Fetch initial visitors on component mount
+onMounted(fetchSortedVisitors);
 // ** Visitors & Organization Options **
 const Visitors = ref([
   { key: 'all', label: 'Todos' },
