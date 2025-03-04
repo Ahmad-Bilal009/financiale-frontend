@@ -126,7 +126,7 @@ const fetchProducts = async () => {
 
     console.log("Filtered Products:", products.value);
   } catch (error) {
-    console.error("❌ Error fetching products:", error);
+    console.error("Error fetching products:", error);
     toast.error("Failed to fetch products");
   }
 };
@@ -207,7 +207,7 @@ const fetchDashboardStats = async () => {
       }).length;
     }
   } catch (error) {
-    console.error("❌ Error fetching dashboard stats:", error);
+    console.error("Error fetching dashboard stats:", error);
     toast.error("Failed to load dashboard statistics");
   }
 };
@@ -305,7 +305,45 @@ const handleDelete = (id: number) => {
   // Your delete logic here
   console.log("Deleting user with ID:", id);
 };
+const approveProduct = async (productId: number) => {
+  console.log("Approving Product ID:", productId); // Debugging Log
 
+  if (!productId || isNaN(productId)) {
+    toast.error("Invalid product ID!");
+    return;
+  }
+
+  try {
+    await productService.updateProductStatus(productId, 'approved'); // Corrected API Call
+    toast.success("Product approved successfully!");
+    fetchProducts(); // Refresh Product List
+  } catch (error) {
+    toast.error("Failed to approve product.");
+  }
+}
+
+// ** Reject Product Function **
+const rejectProduct = async (productId: number) => {
+  console.log("Rejecting Product ID:", productId); // Debugging Log
+
+  if (!productId || isNaN(productId)) {
+    toast.error("Invalid product ID!");
+    return;
+  }
+
+  try {
+    await productService.updateProductStatus(productId, 'rejected'); // Corrected API Call
+    toast.success("Product rejected successfully!");
+    fetchProducts(); // Refresh Product List
+  } catch (error) {
+    toast.error("Failed to reject product.");
+  }
+}
+
+// ** Search Functionality **
+const search = (query: string) => {
+  console.log("Searching for:", query);
+}
 </script>
 
 
@@ -370,6 +408,8 @@ const handleDelete = (id: number) => {
           :activeFilter="activeFilter"
           @sort="handleSort"
           @delete="handleDelete"
+        @approve="approveProduct"
+        @reject="rejectProduct"
         />
       </div>
 
