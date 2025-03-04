@@ -86,7 +86,7 @@ onMounted(fetchProductDetails);
       <div class="tw-w-full tw-flex tw-justify-center">
         <button
           class="tw-bg-[#24B2E3] tw-flex tw-items-center tw-justify-center tw-text-[#FFFFFF] tw-gap-[12px] tw-text-sm tw-font-medium tw-py-3 tw-px-6 tw-rounded-full"
-          @click="handleMoreInfo(product.id)"
+          @click="handleMoreInfo()"
         >
           <span>Conectar</span>
           <div class="tw-flex tw-items-center tw-justify-center tw-w-8 tw-h-8 tw-bg-white tw-text-[#24B2E3] tw-rounded-full">

@@ -84,6 +84,15 @@ const fetchProducts = async () => {
   try {
     let usersMap: Record<number, { name: string; image: string | null }> = {};
 
+    // Get logged-in user details (Assuming stored in localStorage)
+    const loggedInUser = JSON.parse(localStorage.getItem("user") || "{}");
+    const loggedInUserId = loggedInUser?.id;
+
+    if (!loggedInUserId) {
+      toast.error("User not logged in!");
+      return;
+    }
+
     // Fetch users if Admin (for organization mapping)
     if (isAdminComputed.value) {
       const userResponse = await userService.getUsers();
@@ -97,11 +106,16 @@ const fetchProducts = async () => {
     const response = await productService.getProducts();
     console.log("API Response (Products):", response);
 
+    // Filter products based on logged-in user
+    const filteredProducts = response.filter(
+      (product: Product) => isAdminComputed.value || product.userId === loggedInUserId
+    );
+
     // Attach user data to products
-    products.value = response.map((product: Product) => ({
+    products.value = filteredProducts.map((product: Product) => ({
       id: product.id,
       title: product.title,
-      organization: usersMap[product.userId as number]?.name || (isAdminComputed.value ? "N/A" : user.name),
+      organization: usersMap[product.userId as number]?.name || (isAdminComputed.value ? "N/A" : loggedInUser.name),
       location: product.contactDetail?.address || "N/A",
       stage: product.stageOfEntrepreneurship || "N/A",
       visitorCount: product.visitorCount || 0, // Add visitor count
@@ -115,6 +129,7 @@ const fetchProducts = async () => {
     toast.error("Failed to fetch products");
   }
 };
+
 
 
 
@@ -142,25 +157,37 @@ const fetchUsers = async () => {
 //Fetch Dashboard Stats (Filtered for User)
 const fetchDashboardStats = async () => {
   try {
+    // Get logged-in user details
+    const loggedInUser = JSON.parse(localStorage.getItem("user") || "{}");
+    const userId = loggedInUser?.id;
+
+    if (!userId) {
+      toast.error("User not logged in!");
+      return;
+    }
+
+    // Fetch general stats
     const response = await dashboardService.getStats();
     const visitorResponse = await visitorService.getTotalVisitors();
-    console.log(visitorResponse.data, response)
+    console.log("Visitor Stats:", visitorResponse.data, "Dashboard Stats:", response);
 
+    // Default stats
     stats.value = {
       totalProducts: 0,
       createdToday: 0,
       createdThisWeek: 0,
       createdThisMonth: 0,
       totalUsers: 0,
-      totalVisitors: visitorResponse.data.totalVisitors || 0,
-      ...response
+      totalVisitors: visitorResponse.data?.totalVisitors || 0,
+      ...response, // Merge response stats
     };
 
     // If the user is NOT an admin, filter stats to only show their products
-    if (!isAdminComputed) {
-      const userProducts = products.value.filter((product: Product) => {
-        return String(product.userId) === String(userId);
-      });
+    if (!isAdminComputed.value) {
+      const userProducts = products.value.filter((product: Product) => String(product.userId) === String(userId));
+
+      stats.value.totalProducts = userProducts.length;
+
       stats.value.createdToday = userProducts.filter((product: Product) => {
         if (!product.createdAt) return false;
         return new Date(product.createdAt).toDateString() === new Date().toDateString();
@@ -177,19 +204,19 @@ const fetchDashboardStats = async () => {
         const currentDate = new Date();
         return productDate.getMonth() === currentDate.getMonth() && productDate.getFullYear() === currentDate.getFullYear();
       }).length;
-      stats.value.totalProducts = userProducts.length || 0;
     }
   } catch (error) {
+    console.error("❌ Error fetching dashboard stats:", error);
     toast.error("Failed to load dashboard statistics");
   }
 };
 
-//Helper function to get the week number of a date
+// Utility function to get the week number of a given date
 const getWeekNumber = (date: Date) => {
-  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
-  const pastDays = Math.floor((date.getTime() - firstDayOfYear.getTime()) / (24 * 60 * 60 * 1000));
-  return Math.ceil((pastDays + firstDayOfYear.getDay() + 1) / 7);
+  const oneJan = new Date(date.getFullYear(), 0, 1);
+  return Math.ceil(((date.getTime() - oneJan.getTime()) / 86400000 + oneJan.getDay() + 1) / 7);
 };
+
 
 
 
@@ -223,17 +250,16 @@ console.log("visitorsAndProduct Data:", visitorsAndProduct.value);
 
 
 const tableheading = computed(() => {
-  const columns = [
+  const baseColumns = [
     { key: "title", label: "Título", align: "center" },
     { key: "organization", label: "Organización", align: "center" },
     { key: "location", label: "Ubicación", align: "center" },
     { key: "stage", label: "Etapa", align: "center" },
   ];
   if (isAdminComputed) {
-    columns.push({ key: 'visitorCount', label: 'Visitantes', align: 'center' })
-    columns.push({ key: "action", label: "Acción", align: "center" });
+    baseColumns.push({ key: "action", label: "Acción", align: "center" });
   }
-  return columns;
+  return baseColumns;
 });
 
 const handleSort = (key: string) => {
