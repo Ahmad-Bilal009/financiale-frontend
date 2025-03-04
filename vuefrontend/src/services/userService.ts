@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'https://1ed1-39-63-31-174.ngrok-free.app/api/admin/users'
+const API_URL = 'https://cf42-39-63-31-174.ngrok-free.app/api/admin/users'
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token') // Retrieve the token from localStorage
