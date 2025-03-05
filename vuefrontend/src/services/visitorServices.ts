@@ -22,5 +22,6 @@ export default {
   getProductVisitors: (productId: number) =>
     axios.get(`${API_URL}/product/${productId}`, getAuthHeaders()),
   getUserVisitors: (userId: number) => axios.get(`${API_URL}/user/${userId}`, getAuthHeaders()),
-  getSortedVisitors: (filter: string) => axios.get(`${API_URL}/sorted?filter=${filter}`),
+  getSortedVisitors: (filter: string) =>
+    axios.get(`${API_URL}/sorted?filter=${filter}`, getAuthHeaders()),
 }

@@ -30,6 +30,7 @@ const routes = [
   { path: '/manage-users', name: 'Gestionar Usuarios', icon: User, roles: ['admin'] },
   { path: '/super-admin-manage-users', name: 'Gestionar Usuarios', icon: User, roles: ['superadmin'] },
   { path: '/product-handling', name: 'Manejo de Productos', icon: Tag, roles: ['admin'] },
+  { path: '/organization-stats', name: 'Organization Stats', icon: Settings, roles: ['admin'] },
 ]
 
 // 🔥 Filter routes dynamically based on user role

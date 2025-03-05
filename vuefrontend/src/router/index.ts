@@ -76,6 +76,14 @@ const router = createRouter({
       },
     },
     {
+      path: '/organization-stats',
+      name: 'organization-stats',
+      component: () => import('../components/OrganizationStats/OrganizationComp.vue'),
+      meta: {
+        layout: 'DashboardLayout',
+      },
+    },
+    {
       path: '/product-approval',
       name: 'product-approval',
       component: () => import('../views/ProductPage/ProductApprovalView.vue'),
