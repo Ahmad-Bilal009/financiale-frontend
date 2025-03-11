@@ -9,16 +9,16 @@ import ConnectModal from "../UI/Connect-Model/ConnectModel.vue";
 
 
 
+
 const getIcon = (key: string) => {
   const iconMap: Record<string, string> = {
-    "Contact Name": "../../../public/profile.png",
-    "Phone": "../../../public/call.png",
-    "Email": "../../../public/sms.png",
-    "Address": "../../../public/location.png"
+    "Nombre de Contacto": "/profile.png",
+    "Teléfono": "/call.png",
+    "Correo Electrónico": "/sms.png",
+    "Dirección": "/location.png"
   };
   return iconMap[key] || "/icons/default.png"; // Default icon fallback
 };
-
 // ** State Variables **
 const route = useRoute();
 const product = ref<any>(null);

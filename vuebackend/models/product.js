@@ -1,84 +1,91 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const User = require("./User");
+const { DataTypes } = require('sequelize')
+const sequelize = require('../config/database')
+const User = require('./User')
 
-const Product = sequelize.define("Product", {
+const Product = sequelize.define('Product', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
       model: User,
-      key: "id",
+      key: 'id'
     },
-    onDelete: "CASCADE",
+    onDelete: 'CASCADE'
   },
   title: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   description: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: false
   },
   productInformation: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: false
   },
   productType: {
-    type: DataTypes.ENUM("Type1", "Type2", "Type3"),
-    allowNull: false,
+    type: DataTypes.ENUM('Type1', 'Type2', 'Type3'),
+    allowNull: false
   },
   creditGuarantees: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: false
   },
   stageOfEntrepreneurship: {
-    type: DataTypes.ENUM("Startup", "Growth", "Mature"),
-    allowNull: false,
+    type: DataTypes.ENUM('Startup', 'Growth', 'Mature'),
+    allowNull: false
   },
   objectiveOfCredit: {
-    type: DataTypes.ENUM("Expansion", "Inventory", "Working Capital"),
-    allowNull: false,
+    type: DataTypes.ENUM('Expansion', 'Inventory', 'Working Capital'),
+    allowNull: false
   },
   benefitsOfEntrepreneurship: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: false
   },
   geographicCoverage: {
     type: DataTypes.JSON,
-    allowNull: false,
+    allowNull: false
   },
   requirement: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: false
   },
   contactDetail: {
     type: DataTypes.JSON,
-    allowNull: false,
+    allowNull: false
   },
   status: {
-    type: DataTypes.ENUM("pending", "approved", "rejected"),
-    defaultValue: "pending",
+    type: DataTypes.ENUM('pending', 'approved', 'rejected'),
+    defaultValue: 'pending'
   },
   visitorCount: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0, // Default to 0 visitors
+    type: DataTypes.JSON,
+    defaultValue: {
+      today: 0,
+      week: 0,
+      month: 0,
+      date: null,
+      weekStart: null,
+      monthStart: null
+    }
   },
   createdAt: {
     type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
+    defaultValue: DataTypes.NOW
   },
   updatedAt: {
     type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
-});
+    defaultValue: DataTypes.NOW
+  }
+})
 
-Product.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
+Product.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' })
 
-module.exports = Product;
+module.exports = Product

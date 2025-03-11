@@ -1,61 +1,109 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { useToast } from "vue-toastification"; // Import toast
+import authService from "@/services/authService"; // Import API service
 
-// Reactive state to manage screens
-const currentScreen = ref("resetPassword"); // Possible values: resetPassword, enterCode, createPassword, passwordReset
+const toast = useToast(); // Initialize toast
+
+const currentScreen = ref("resetPassword"); // resetPassword, enterCode, createPassword, passwordReset
 const email = ref("");
 const confirmationCode = ref(["", "", "", ""]);
 const newPassword = ref("");
 const confirmPassword = ref("");
+const isLoading = ref(false);
 
-// Function to handle sending the code
-const sendCode = () => {
-  if (email.value.trim() === "") {
-    alert("Please enter your email address.");
-  } else {
-    console.log("4-digit code sent to:", email.value);
-    currentScreen.value = "enterCode"; // Transition to confirmation code screen
+/**
+ * Send OTP Code to User Email
+ */
+const sendCode = async () => {
+  if (!email.value.trim()) {
+    toast.error("Please enter your email address.");
+    return;
+  }
+
+  try {
+    isLoading.value = true;
+    await authService.forgotPassword(email.value);
+    toast.success("A 4-digit code has been sent to your email.");
+    currentScreen.value = "enterCode"; // Transition to code verification
+  } catch (error) {
+    toast.error(error.message || "An error occurred.");
+  } finally {
+    isLoading.value = false;
   }
 };
 
-// Function to handle confirmation code input
+/**
+ * Handle OTP Input and Auto-Focus Next Field
+ */
 const handleCodeInput = (index: number, event: Event) => {
   const target = event.target as HTMLInputElement;
   confirmationCode.value[index] = target.value;
+
   if (target.value.length === 1 && index < 3) {
     const nextInput = document.querySelector(`#code-${index + 1}`) as HTMLInputElement;
     nextInput?.focus();
   }
 };
 
-// Function to verify confirmation code and transition to password screen
-const verifyCode = () => {
-  if (confirmationCode.value.join("").length === 4) {
-    console.log("Code verified:", confirmationCode.value.join(""));
-    currentScreen.value = "createPassword"; // Transition to create password screen
-  } else {
-    alert("Please enter the complete 4-digit code.");
+/**
+ * Verify OTP Code
+ */
+const verifyCode = async () => {
+  const otp = confirmationCode.value.join("");
+
+  if (otp.length !== 4) {
+    toast.warning("Please enter the complete 4-digit code.");
+    return;
+  }
+
+  try {
+    isLoading.value = true;
+    await authService.verifyOtp(email.value, otp);
+    toast.success("Code verified successfully.");
+    currentScreen.value = "createPassword"; // Move to password reset screen
+  } catch (error) {
+    toast.error(error.message || "Invalid code, please try again.");
+  } finally {
+    isLoading.value = false;
   }
 };
 
-// Function to handle resetting the password
-const resetPassword = () => {
+/**
+ * Reset Password
+ */
+const resetPassword = async () => {
   if (newPassword.value !== confirmPassword.value) {
-    alert("Passwords do not match.");
-  } else if (newPassword.value.length < 8) {
-    alert("Password must be at least 8 characters.");
-  } else {
-    console.log("Password reset successfully:", newPassword.value);
+    toast.error("Passwords do not match.");
+    return;
+  }
+
+  if (newPassword.value.length < 8) {
+    toast.warning("Password must be at least 8 characters.");
+    return;
+  }
+
+  try {
+    isLoading.value = true;
+    await authService.resetPassword(email.value, confirmationCode.value.join(""), newPassword.value);
+    toast.success("Password reset successfully.");
     currentScreen.value = "passwordReset"; // Transition to success screen
+  } catch (error) {
+    toast.error(error.message || "Password reset failed.");
+  } finally {
+    isLoading.value = false;
   }
 };
 
-// Function to handle final "Continue" button on success screen
+/**
+ * Redirect to Login Page
+ */
 const handleContinue = () => {
-  console.log("User is ready to log in.");
-  alert("You can now log in with your new password!");
+  window.location.href = "/login"; // Redirect user to login page
 };
 </script>
+
+
 
 <template>
   <div class="tw-flex tw-flex-col tw-items-start tw-min-h-screen tw-bg-gray-50 tw-p-8">

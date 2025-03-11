@@ -7,15 +7,12 @@ import productService from '@/services/productServices'
 import { useRouter } from 'vue-router'
 import { ref, onMounted, computed } from 'vue'
 import { useToast } from 'vue-toastification'
-import visitorService from '@/services/visitorServices'
-import { watch } from 'vue'
 
 // Dependencies
 const router = useRouter()
 const toast = useToast()
 
 // State Management
-const selectVisitors = ref('all')
 const isModalOpen = ref(false)
 const selectedProductId = ref<number | null>(null) // Store selected product ID
 const products = ref([])
@@ -63,26 +60,7 @@ const tableheading = ref([
   { key: 'visitorCount', label: 'Visitantes', align: 'center' },
   { key: 'action', label: 'Action', align: 'center' },
 ])
-const fetchSortedVisitors = async () => {
-  try {
-    const response = await visitorService.getSortedVisitors(selectVisitors.value);
-    console.log("Fetched Visitors:", response.data);
-  } catch (error) {
-    toast.error(`Error fetching visitors: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
-};
 
-watch(selectVisitors, fetchSortedVisitors);
-
-// Fetch initial visitors on component mount
-onMounted(fetchSortedVisitors);
-// ** Visitors & Organization Options **
-const Visitors = ref([
-  { key: 'all', label: 'Todos' },
-  { key: 'today', label: 'Hoy' },
-  { key: 'thisweek', label: 'Esta Semana' },
-  { key: 'thismonth', label: 'Este Mes' },
-])
 // Navigation
 const addProduct = () => {
   router.push('/products/add')
@@ -142,16 +120,7 @@ const deleteProduct = async () => {
       </div>
     </div>
 
-    <div class="tw-gap-[18px] tw-flex tw-justify-end">
-      <div class="tw-flex tw-flex-col tw-gap-2 tw-w-full md:tw-w-auto">
-        <label class="tw-text-[12px] md:tw-text-[16px] tw-font-medium tw-leading-[20px] tw-text-dark-gray">
-          Visitantes
-        </label>
-        <select v-model="selectVisitors" class="tw-bg-white tw-w-40 tw-shadow tw-rounded-[8px] tw-p-2">
-          <option v-for="option in Visitors" :key="option.key" :value="option.key">{{ option.label }}</option>
-        </select>
-      </div>
-    </div>
+
 
     <!-- Show Table Only if User Has Products -->
     <div v-if="hasProducts" class="tw-flex tw-flex-col tw-gap-6 tw-p-5 tw-bg-white tw-rounded-[20px]">

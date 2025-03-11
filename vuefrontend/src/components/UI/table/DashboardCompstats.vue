@@ -20,7 +20,7 @@ const handleSort = (key: string) => {
   props.onSort(key)
 }
 
-const itemsPerPage = 10
+const itemsPerPage = 5
 const currentPage = ref(1)
 const totalPages = computed(() => Math.ceil(props.rowData.length / itemsPerPage))
 const paginatedData = computed(() => {

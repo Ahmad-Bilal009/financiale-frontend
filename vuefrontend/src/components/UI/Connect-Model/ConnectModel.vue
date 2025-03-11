@@ -5,10 +5,10 @@ import contactInfoService from "@/services/contactInfoService";
 import dashboardService from "@/services/dashboardService";
 
 // Import Images
-import websiteIcon from '../../../../public/webisteimage.png';
-import whatsappIcon from '../../../../public/whatsappimage.png';
-import phoneIcon from '../../../../public/phoneimage.avif';
-import emailIcon from '../../../../public/emailimage.avif';
+import websiteIcon from '../../../../public/websiteiconimage.png';
+import whatsappIcon from '../../../../public/whatsappiconimages.png';
+import phoneIcon from '../../../../public/phoneiconimage.png';
+import emailIcon from '../../../../public/emailiconimage.png';
 
 const toast = useToast();
 
@@ -91,7 +91,7 @@ onMounted(fetchContactInfo);
         Contact Options
       </h2>
 
-      <div class="tw-flex tw-justify-center tw-gap-6 tw-mt-8 tw-mb-8">
+      <div class="tw-flex tw-justify-center tw-gap-8 tw-mt-10 tw-mb-10">
         <!-- WhatsApp -->
         <img
           :src="whatsappIcon"

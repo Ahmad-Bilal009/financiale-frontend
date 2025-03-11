@@ -59,19 +59,20 @@ onMounted(async () => {
 });
 
 
-const handleMoreInfo = async (productId?: number) => {
-  if (typeof productId !== "number") {
-    console.error("Product ID is missing or invalid!");
+const handleMoreInfo = async (productId: number) => {
+  if (!productId || isNaN(productId)) {
+    console.error("Error: Invalid or missing Product ID!", { productId });
     return;
   }
 
   try {
-    await visitorServices.incrementVisitor(productId); //  Ensure this is an async function
+    await visitorServices.incrementVisitor(productId); // Ensure this function is properly handled
     router.push(`/CardInfo/${productId}`);
   } catch (error) {
     console.error("Failed to increment visitor count:", error);
   }
 };
+
 
 
 

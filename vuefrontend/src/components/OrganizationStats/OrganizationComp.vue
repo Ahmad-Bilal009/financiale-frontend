@@ -2,24 +2,24 @@
 import DashboardComp from '@/components/UI/table/DashboardCompstats.vue'
 import productService from '@/services/productServices'
 import visitorService from '@/services/visitorServices'
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, nextTick } from 'vue';
 import { useToast } from 'vue-toastification'
 
-const toast = useToast()
+const toast = useToast();
 
 // State Management
-const products = ref<any[]>([])
-const isLoading = ref(true)  // <-- Added missing declaration
+const products = ref<any[]>([]);
+const isLoading = ref(true);
+const visitorData = ref<Record<number, { today: number; week: number; month: number }>>({});
 
-// Visitor Data (Mapped by Product ID)
-const visitorData = ref<Record<number, { today: number; week: number; month: number }>>({})
-
-// Fetch Visitors and Map by Product ID
+// Fetch Visitors & Map by Product ID
 const fetchVisitors = async () => {
   try {
-    const todayResponse = await visitorService.getSortedVisitors('today');
-    const weekResponse = await visitorService.getSortedVisitors('thisWeek');
-    const monthResponse = await visitorService.getSortedVisitors('thisMonth');
+    const [todayResponse, weekResponse, monthResponse] = await Promise.all([
+      visitorService.getSortedVisitors('today'),
+      visitorService.getSortedVisitors('thisWeek'),
+      visitorService.getSortedVisitors('thisMonth')
+    ]);
 
     console.log("Fetched Visitor Data:", todayResponse, weekResponse, monthResponse);
 
@@ -27,27 +27,20 @@ const fetchVisitors = async () => {
     const weekVisitors = weekResponse.data.visitors || [];
     const monthVisitors = monthResponse.data.visitors || [];
 
+    // Reset visitorData before populating
     visitorData.value = {};
 
-    todayVisitors.forEach(visitor => {
-      visitorData.value[visitor.id] = { today: visitor.visitorCount || 0, week: 0, month: 0 };
+    // Combine all visitor data
+    [...todayVisitors, ...weekVisitors, ...monthVisitors].forEach(visitor => {
+      const id = visitor.id;
+      if (!visitorData.value[id]) {
+        visitorData.value[id] = { today: 0, week: 0, month: 0 };
+      }
+      if (todayVisitors.some(v => v.id === id)) visitorData.value[id].today = visitor.visitorCount || 0;
+      if (weekVisitors.some(v => v.id === id)) visitorData.value[id].week = visitor.visitorCount || 0;
+      if (monthVisitors.some(v => v.id === id)) visitorData.value[id].month = visitor.visitorCount || 0;
     });
 
-    weekVisitors.forEach(visitor => {
-      if (visitorData.value[visitor.id]) {
-        visitorData.value[visitor.id].week = visitor.visitorCount || 0;
-      } else {
-        visitorData.value[visitor.id] = { today: 0, week: visitor.visitorCount || 0, month: 0 };
-      }
-    });
-
-    monthVisitors.forEach(visitor => {
-      if (visitorData.value[visitor.id]) {
-        visitorData.value[visitor.id].month = visitor.visitorCount || 0;
-      } else {
-        visitorData.value[visitor.id] = { today: 0, week: 0, month: visitor.visitorCount || 0 };
-      }
-    });
   } catch (error) {
     console.error("Error fetching visitors:", error);
     toast.error(`Error fetching visitors: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -64,7 +57,6 @@ const fetchProducts = async () => {
       throw new Error(`Invalid product response: ${JSON.stringify(response)}`);
     }
 
-    // Populate the `products` list
     products.value = response.map((product: any) => ({
       id: product.id,
       organization: product.User?.name || "N/A",
@@ -82,21 +74,21 @@ const fetchProducts = async () => {
   }
 };
 
-// Run in Sequence
+// Fetch Data on Mount
 onMounted(async () => {
-  await fetchVisitors();
-  await fetchProducts();
+  await Promise.all([fetchVisitors(), fetchProducts()]);
+  await nextTick(); // Ensure UI updates properly
 });
 
-// Recalculate `products` when `visitorData` updates
-watch(visitorData, () => {
+// Watch for Visitor Data Updates
+watch(visitorData, async () => {
   products.value = products.value.map(product => ({
     ...product,
     visitorToday: visitorData.value[product.id]?.today || 0,
     visitorWeek: visitorData.value[product.id]?.week || 0,
     visitorMonth: visitorData.value[product.id]?.month || 0,
   }));
-}, { deep: true });  // Ensure reactivity on nested objects
+}, { deep: true });
 
 // Table Headings
 const tableheading = ref([
@@ -105,24 +97,29 @@ const tableheading = ref([
   { key: 'visitorWeek', label: 'This Week', align: 'center' },
   { key: 'visitorMonth', label: 'This Month', align: 'center' },
   { key: 'visitorCount', label: 'Total Visitors', align: 'center' },
+]);
 
-])
+const statsheading = ref([
+  { key: 'visitorToday', label: 'Today', align: 'center' },
+  { key: 'visitorWeek', label: 'This Week', align: 'center' },
+  { key: 'visitorMonth', label: 'This Month', align: 'center' },
+  { key: 'visitorCount', label: 'Total Visitors', align: 'center' },
+]);
 
-// Sorting Function (Optional)
+// Sorting Function
 const handleSort = (key: string) => {
-  console.log(`Sorting by: ${key}`)
-}
-
+  console.log(`Sorting by: ${key}`);
+};
 </script>
 
 <template>
   <div class="tw-flex tw-flex-col tw-mb-12 tw-mt-12 tw-gap-12">
-    <!-- Header -->
-    <div class="md:tw-flex tw-justify-between md:tw-items-center">
-      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Visitor Listings</div>
+    <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Website Visitors</div>
+    <DashboardComp :columns="statsheading" :rowData="products" @sort="handleSort" link="/products" />
+
+    <div>
+      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Organization Visitors</div>
+      <DashboardComp :columns="tableheading" :rowData="products" @sort="handleSort" link="/products" />
     </div>
-
-
-    <DashboardComp :columns="tableheading" :rowData="products" @sort="handleSort" link="/products" />
   </div>
 </template>

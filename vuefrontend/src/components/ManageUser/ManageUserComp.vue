@@ -179,7 +179,7 @@ onMounted(fetchUsers);
       <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Manage Users</div>
       <div class="md:tw-flex tw-gap-5 tw-items-start md:tw-items-center">
         <SearchBar :onSearch="search" placeholder="Search here..." />
-        <div class="tw-flex tw-mt-2 md:tw-mt-0 tw-gap-4 tw-items-center">
+        <div class="md:tw-flex tw-mt-2 md:tw-mt-0 tw-gap-4 tw-items-center">
           <!-- Toggle for filtering users -->
           <UserToggle @toggleStatus="handleToggleStatus" />
           <AddUserButton text="+ Add User" @click="openAddUserModal" />

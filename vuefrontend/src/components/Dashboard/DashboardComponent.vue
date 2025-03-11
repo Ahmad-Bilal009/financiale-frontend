@@ -10,6 +10,8 @@ import productService from '@/services/productServices'
 import dashboardService from '@/services/dashboardService'
 import { useToast } from "vue-toastification"
 
+
+
 const toast = useToast();
 
 const isModalOpen = ref(false)
@@ -267,7 +269,7 @@ const tableheading = computed(() => {
     { key: "location", label: "Ubicación", align: "center" },
     { key: "stage", label: "Etapa", align: "center" },
   ];
-  if (isAdminComputed) {
+  if (isAdminComputed.value) {
     baseColumns.push({ key: "action", label: "Acción", align: "center" });
   }
   return baseColumns;
@@ -358,16 +360,22 @@ const rejectProduct = async (productId: number) => {
     <!-- 🎯 User Dashboard -->
     <template v-if="userRole === 'user'">
       <div class="tw-flex tw-bg-white tw-text-[#171725] tw-items-center md:tw-px-6 tw-px-4 tw-rounded-[20px] tw-py-4 md:tw-gap-8 tw-gap-4">
-        <div v-for="(item, index) in items" :key="index" class="tw-flex-1 tw-items-center">
-          <div class="md:tw-text-base tw-text-[12px] tw-font-medium">{{ item.title }}</div>
-          <div class="md:tw-text-[26px] tw-text-[16px] tw-font-semibold">{{ item.number }}</div>
+
+
+        <div class="tw-flex tw-w-full max-sm:tw-flex-wrap tw-justify-between tw-m-auto">
+          <div v-for="(item, index) in items" :key="index" class="tw-w-1/4 md:tw-flex-1 tw-justify-between tw-flex tw-flex-col tw-items-center tw-px-4 tw-py-4">
+            <div class="md:tw-text-base tw-text-[12px] tw-font-medium">{{ item.title }}</div>
+            <div class="md:tw-text-[26px] tw-text-[14px] tw-font-semibold">{{ item.number }}</div>
+          </div>
+
         </div>
+
       </div>
 
       <!-- Products Table (Only Show if User Has Products) -->
       <div v-if="hasProducts" class="tw-flex tw-flex-col tw-gap-6 tw-p-5 tw-bg-white tw-rounded-[20px]">
         <div class="tw-flex tw-justify-between tw-items-center">
-          <div class="tw-text-xl tw-font-medium">Tus Productos</div>
+          <div class="md:tw-text-xl tw-text-[16px] tw-font-medium">Tus Productos</div>
           <RouterLink to="/products" class="tw-text-base tw-font-medium hover:tw-underline tw-text-[#0171EA]">
             Ver todos
           </RouterLink>
@@ -393,15 +401,18 @@ const rejectProduct = async (productId: number) => {
     <template v-else-if="userRole === 'admin'">
       <div class="tw-flex tw-bg-white tw-text-[#171725] tw-items-center tw-px-6 tw-rounded-[20px] tw-py-4 tw-gap-8">
         <div v-for="(item, index) in visitorsAndProduct" :key="index" class="tw-flex-1">
-          <div class="tw-text-base tw-font-medium">{{ item.title }}</div>
-          <div class="tw-text-[26px] tw-font-semibold">{{ item.number }}</div>
+          <div class="md:tw-text-base tw-text-[13px] tw-font-medium">{{ item.title }}</div>
+          <div class="md:tw-text-[26px] tw-text-[14px] tw-font-semibold">{{ item.number }}</div>
         </div>
+        <RouterLink to="/organization-stats" class="tw-text-base tw-font-medium hover:tw-underline tw-text-[#0171EA]">
+          Ver todos
+        </RouterLink>
       </div>
 
       <!-- Product Approval Table -->
       <div class="tw-flex tw-flex-col tw-mb-8 tw-gap-6 tw-p-5 tw-bg-white tw-rounded-[20px]">
         <div class="tw-flex tw-justify-between tw-items-center">
-          <div class="tw-text-xl tw-font-medium">Aprobación de Productos</div>
+          <div class="md:tw-text-xl tw-text-[16px] tw-font-medium">Aprobación de Productos</div>
           <RouterLink to="/product-approval" class="tw-text-base tw-font-medium hover:tw-underline tw-text-[#0171EA]">
             Ver todos
           </RouterLink>
@@ -422,7 +433,7 @@ const rejectProduct = async (productId: number) => {
       <!-- Manage Users (Only for Admin) -->
       <div class="tw-flex tw-flex-col tw-mb-8 tw-gap-6 tw-p-5 tw-bg-white tw-rounded-[20px]">
         <div class="tw-flex tw-justify-between tw-items-center">
-          <div class="tw-text-xl tw-font-medium">Gestionar Usuarios</div>
+          <div class="md:tw-text-xl tw-text-[16px] tw-font-medium">Gestionar Usuarios</div>
           <RouterLink to="/manage-users" class="tw-text-base tw-font-medium hover:tw-underline tw-text-[#0171EA]">
             Ver todos
           </RouterLink>

@@ -15,11 +15,11 @@ const toggleFilter = (filter: string) => {
 </script>
 
 <template>
-  <div class="tw-flex tw-gap-2 tw-justify-center tw-bg-white tw-rounded-[10px] tw-p-2">
+  <div class="tw-flex md:tw-gap-2 tw-gap-1 tw-justify-center tw-bg-white tw-rounded-[10px] tw-p-2">
     <!-- Botón Todos -->
     <button
       :class="[
-        'tw-text-base tw-font-medium tw-rounded-[6px] tw-capitalize tw-px-8 md:tw-px-5 tw-py-1',
+        'tw-text-base tw-font-medium tw-rounded-[6px] tw-capitalize md:tw-px-8 tw-px-3 tw-py-1',
         activeFilter === 'all' ? 'tw-bg-[#24B2E3] tw-text-white' : 'tw-bg-transparent tw-text-gray-400',
       ]"
       @click="toggleFilter('all')"
@@ -30,7 +30,7 @@ const toggleFilter = (filter: string) => {
     <!-- Botón Aprobados -->
     <button
       :class="[
-        'tw-text-base tw-font-medium tw-rounded-[6px] tw-capitalize tw-px-8 md:tw-px-5 tw-py-1',
+        'tw-text-base tw-font-medium tw-rounded-[6px] tw-capitalize md:tw-px-8 tw-px-3 tw-py-1',
         activeFilter === 'approved' ? 'tw-bg-[#24B2E3] tw-text-white' : 'tw-bg-transparent tw-text-gray-400',
       ]"
       @click="toggleFilter('approved')"
@@ -41,7 +41,7 @@ const toggleFilter = (filter: string) => {
     <!-- Botón Rechazados -->
     <button
       :class="[
-        'tw-text-base tw-font-medium tw-rounded-[6px] tw-capitalize tw-px-8 md:tw-px-5 tw-py-1',
+        'tw-text-base tw-font-medium tw-rounded-[6px] tw-capitalize md:tw-px-8 tw-px-3 tw-py-1',
         activeFilter === 'rejected' ? 'tw-bg-[#24B2E3] tw-text-white' : 'tw-bg-transparent tw-text-gray-400',
       ]"
       @click="toggleFilter('rejected')"
