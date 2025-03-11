@@ -2,50 +2,62 @@
 import DashboardComp from '@/components/UI/table/DashboardCompstats.vue'
 import productService from '@/services/productServices'
 import visitorService from '@/services/visitorServices'
-import { ref, onMounted, watch, nextTick } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useToast } from 'vue-toastification'
 
-const toast = useToast();
+const toast = useToast()
 
 // State Management
-const products = ref<any[]>([]);
-const isLoading = ref(true);
-const visitorData = ref<Record<number, { today: number; week: number; month: number }>>({});
+const products = ref<any[]>([])
+const isLoading = ref(true)  // <-- Added missing declaration
 
-// Fetch Visitors & Map by Product ID
+// Visitor Data (Mapped by Product ID)
+const visitorData = ref<Record<number, { today: number; week: number; month: number }>>({})
+
+interface Visitor {
+  id: number;
+  visitorCount?: number;
+}
+
 const fetchVisitors = async () => {
   try {
-    const [todayResponse, weekResponse, monthResponse] = await Promise.all([
-      visitorService.getSortedVisitors('today'),
-      visitorService.getSortedVisitors('thisWeek'),
-      visitorService.getSortedVisitors('thisMonth')
-    ]);
+    const todayResponse = await visitorService.getSortedVisitors("today");
+    const weekResponse = await visitorService.getSortedVisitors("thisWeek");
+    const monthResponse = await visitorService.getSortedVisitors("thisMonth");
 
     console.log("Fetched Visitor Data:", todayResponse, weekResponse, monthResponse);
 
-    const todayVisitors = todayResponse.data.visitors || [];
-    const weekVisitors = weekResponse.data.visitors || [];
-    const monthVisitors = monthResponse.data.visitors || [];
+    const todayVisitors: Visitor[] = todayResponse.data.visitors || [];
+    const weekVisitors: Visitor[] = weekResponse.data.visitors || [];
+    const monthVisitors: Visitor[] = monthResponse.data.visitors || [];
 
-    // Reset visitorData before populating
     visitorData.value = {};
 
-    // Combine all visitor data
-    [...todayVisitors, ...weekVisitors, ...monthVisitors].forEach(visitor => {
-      const id = visitor.id;
-      if (!visitorData.value[id]) {
-        visitorData.value[id] = { today: 0, week: 0, month: 0 };
-      }
-      if (todayVisitors.some(v => v.id === id)) visitorData.value[id].today = visitor.visitorCount || 0;
-      if (weekVisitors.some(v => v.id === id)) visitorData.value[id].week = visitor.visitorCount || 0;
-      if (monthVisitors.some(v => v.id === id)) visitorData.value[id].month = visitor.visitorCount || 0;
+    todayVisitors.forEach((visitor: Visitor) => {
+      visitorData.value[visitor.id] = { today: visitor.visitorCount || 0, week: 0, month: 0 };
     });
 
+    weekVisitors.forEach((visitor: Visitor) => {
+      if (visitorData.value[visitor.id]) {
+        visitorData.value[visitor.id].week = visitor.visitorCount || 0;
+      } else {
+        visitorData.value[visitor.id] = { today: 0, week: visitor.visitorCount || 0, month: 0 };
+      }
+    });
+
+    monthVisitors.forEach((visitor: Visitor) => {
+      if (visitorData.value[visitor.id]) {
+        visitorData.value[visitor.id].month = visitor.visitorCount || 0;
+      } else {
+        visitorData.value[visitor.id] = { today: 0, week: 0, month: visitor.visitorCount || 0 };
+      }
+    });
   } catch (error) {
     console.error("Error fetching visitors:", error);
-    toast.error(`Error fetching visitors: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    toast.error(`Error fetching visitors: ${error instanceof Error ? error.message : "Unknown error"}`);
   }
 };
+
 
 // Fetch Products and Attach Visitor Data
 const fetchProducts = async () => {
@@ -57,6 +69,7 @@ const fetchProducts = async () => {
       throw new Error(`Invalid product response: ${JSON.stringify(response)}`);
     }
 
+    // Populate the `products` list
     products.value = response.map((product: any) => ({
       id: product.id,
       organization: product.User?.name || "N/A",
@@ -74,21 +87,21 @@ const fetchProducts = async () => {
   }
 };
 
-// Fetch Data on Mount
+// Run in Sequence
 onMounted(async () => {
-  await Promise.all([fetchVisitors(), fetchProducts()]);
-  await nextTick(); // Ensure UI updates properly
+  await fetchVisitors();
+  await fetchProducts();
 });
 
-// Watch for Visitor Data Updates
-watch(visitorData, async () => {
+// Recalculate `products` when `visitorData` updates
+watch(visitorData, () => {
   products.value = products.value.map(product => ({
     ...product,
     visitorToday: visitorData.value[product.id]?.today || 0,
     visitorWeek: visitorData.value[product.id]?.week || 0,
     visitorMonth: visitorData.value[product.id]?.month || 0,
   }));
-}, { deep: true });
+}, { deep: true });  // Ensure reactivity on nested objects
 
 // Table Headings
 const tableheading = ref([
@@ -97,29 +110,36 @@ const tableheading = ref([
   { key: 'visitorWeek', label: 'This Week', align: 'center' },
   { key: 'visitorMonth', label: 'This Month', align: 'center' },
   { key: 'visitorCount', label: 'Total Visitors', align: 'center' },
-]);
 
+])
 const statsheading = ref([
   { key: 'visitorToday', label: 'Today', align: 'center' },
   { key: 'visitorWeek', label: 'This Week', align: 'center' },
   { key: 'visitorMonth', label: 'This Month', align: 'center' },
   { key: 'visitorCount', label: 'Total Visitors', align: 'center' },
-]);
 
-// Sorting Function
+])
+
+// Sorting Function (Optional)
 const handleSort = (key: string) => {
-  console.log(`Sorting by: ${key}`);
-};
+  console.log(`Sorting by: ${key}`)
+}
+
 </script>
 
 <template>
   <div class="tw-flex tw-flex-col tw-mb-12 tw-mt-12 tw-gap-12">
+
+
     <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Website Visitors</div>
     <DashboardComp :columns="statsheading" :rowData="products" @sort="handleSort" link="/products" />
 
-    <div>
-      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Organization Visitors</div>
-      <DashboardComp :columns="tableheading" :rowData="products" @sort="handleSort" link="/products" />
-    </div>
+    <div >
+      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Organización visitors</div>
+
+
+
+    <DashboardComp :columns="tableheading" :rowData="products" @sort="handleSort" link="/products" />
+  </div>
   </div>
 </template>

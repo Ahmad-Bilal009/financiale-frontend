@@ -15,7 +15,7 @@ const isLoading = ref(false);
 /**
  * Send OTP Code to User Email
  */
-const sendCode = async () => {
+ const sendCode = async () => {
   if (!email.value.trim()) {
     toast.error("Please enter your email address.");
     return;
@@ -27,7 +27,8 @@ const sendCode = async () => {
     toast.success("A 4-digit code has been sent to your email.");
     currentScreen.value = "enterCode"; // Transition to code verification
   } catch (error) {
-    toast.error(error.message || "An error occurred.");
+    const errorMessage = error instanceof Error ? error.message : "An error occurred.";
+    toast.error(errorMessage);
   } finally {
     isLoading.value = false;
   }
@@ -63,7 +64,8 @@ const verifyCode = async () => {
     toast.success("Code verified successfully.");
     currentScreen.value = "createPassword"; // Move to password reset screen
   } catch (error) {
-    toast.error(error.message || "Invalid code, please try again.");
+    const errorMessage = error instanceof Error ? error.message : "Invalid code, please try again.";
+    toast.error(errorMessage);
   } finally {
     isLoading.value = false;
   }
@@ -89,11 +91,13 @@ const resetPassword = async () => {
     toast.success("Password reset successfully.");
     currentScreen.value = "passwordReset"; // Transition to success screen
   } catch (error) {
-    toast.error(error.message || "Password reset failed.");
+    const errorMessage = error instanceof Error ? error.message : "Password reset failed.";
+    toast.error(errorMessage);
   } finally {
     isLoading.value = false;
   }
 };
+
 
 /**
  * Redirect to Login Page
