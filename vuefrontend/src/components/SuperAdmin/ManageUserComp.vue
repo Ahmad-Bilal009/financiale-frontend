@@ -133,6 +133,7 @@ onMounted(fetchUsers);
           { key: 'name', label: 'Name', align: 'left' },
           { key: 'email', label: 'Email', align: 'left' },
           { key: 'password', label: 'Password', align: 'center' },
+          {key: 'role', label: 'Actions', align: 'center' },
           { key: 'action', label: 'Actions', align: 'center' },
           { key: 'isDisabled', label: 'Status', align: 'center' },
         ]"

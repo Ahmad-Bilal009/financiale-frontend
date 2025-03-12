@@ -176,10 +176,10 @@ router.post('/reset-password', async (req, res) => {
   }
 
   try {
-    // ✅ Debug: Log incoming request data
+    //  Debug: Log incoming request data
     console.log('Reset Password Request:', { email, otp, newPassword })
 
-    // ✅ Fetch user and validate OTP & expiration
+    //  Fetch user and validate OTP & expiration
     const user = await User.findOne({
       where: {
         email
@@ -193,10 +193,10 @@ router.post('/reset-password', async (req, res) => {
       return res.status(400).json({ message: 'Invalid or expired OTP!' })
     }
 
-    // ✅ Hash the new password
+    //  Hash the new password
     const hashedPassword = await bcrypt.hash(newPassword, 10)
 
-    // ✅ Update the password and clear OTP fields
+    //  Update the password and clear OTP fields
     await user.update({
       password: hashedPassword,
       resetOtp: null,

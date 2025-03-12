@@ -10,7 +10,7 @@ const props = defineProps<{
   variant?: 'default' | 'action'
 }>()
 
-const computedVariant = computed(() => props.variant || 'default')
+
 
 const renderCell = (row: { [key: string]: any }, columnKey: string) => {
   return row[columnKey] || '0'

@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import productService from "@/services/productServices";
+import visitorServices from "@/services/visitorServices";
 import AppBreadcrumb from "../UI/Breadcrumb.vue"
 import ConnectModal from "../UI/Connect-Model/ConnectModel.vue";
 
@@ -41,9 +42,24 @@ const fetchProductDetails = async () => {
     console.error("Failed to fetch product details:", error);
   }
 };
-const handleMoreInfo = () => {
+
+const incrementVisitorCount = async () => {
+  if (!product.value || !product.value.id) return;
+
+  try {
+    await visitorServices.incrementVisitor(product.value.id);
+    product.value.visitorCount = (product.value.visitorCount || 0) + 1; // Optimistic UI update
+    console.log("Visitor count updated successfully!");
+  } catch (error) {
+    console.error("Failed to update visitor count:", error);
+  }
+};
+
+// ** Open Modal & Increase Visitor Count **
+const handleMoreInfo = async () => {
   console.log("Opening Modal...");
   isModalOpen.value = true;
+  await incrementVisitorCount(); // Increment visitor count on modal open
 };
 
 // ** Close Modal Function **

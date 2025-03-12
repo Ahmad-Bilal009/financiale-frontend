@@ -1,0 +1,4 @@
+# add nod
+node_modules
+.env
+/build

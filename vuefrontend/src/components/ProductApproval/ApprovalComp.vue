@@ -107,23 +107,29 @@ const fetchProducts = async () => {
 // ** Computed: Filtered Products **
 const filteredProducts = computed(() => {
   return products.value
-    .filter(product =>
-      (activeFilter.value === 'all' || product.status === activeFilter.value) &&
-      (selectedOrganization.value === 'all' || product.organization === selectedOrganization.value)
-    )
+    .filter(product => {
+      // Ensure filters work properly
+      const matchesStatus = activeFilter.value === 'all' || product.status?.toLowerCase() === activeFilter.value.toLowerCase();
+      const matchesOrganization = selectedOrganization.value === 'all' || product.organization?.toLowerCase() === selectedOrganization.value.toLowerCase();
+
+      return matchesStatus && matchesOrganization;
+    })
     .map(product => ({
-      id: product.id.toString(),
-      title: product.title,
+      id: product.id?.toString() || "N/A",
+      title: product.title || "N/A",
       location: product.location || "N/A",
       userId: product.userId?.toString() || "N/A",
       contactDetail: product.contactDetail?.address || "N/A",
       stage: product.stage || "N/A",
-      status: product.status,
-      visitorCount: product.visitorCount || 0,
-      createdAt: product.createdAt || "N/A",
+      status: product.status || "N/A",
+      visitorCount: typeof product.visitorCount === 'object'
+        ? Object.values(product.visitorCount || {}).reduce((acc: number, count: unknown) => acc + (Number(count) || 0), 0) // Sum visitor count
+        : product.visitorCount || 0,
+      createdAt: product.createdAt ? new Date(product.createdAt).toLocaleDateString() : "N/A", // Format date
       organization: product.organization || "N/A",
-    }))
-})
+    }));
+});
+
 
 // ** Handle Filter Change (Approved/Rejection) **
 const handleFilterChange = (filter: string) => {

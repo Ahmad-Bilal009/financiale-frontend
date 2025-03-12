@@ -66,15 +66,9 @@ const Product = sequelize.define('Product', {
     defaultValue: 'pending'
   },
   visitorCount: {
-    type: DataTypes.JSON,
-    defaultValue: {
-      today: 0,
-      week: 0,
-      month: 0,
-      date: null,
-      weekStart: null,
-      monthStart: null
-    }
+    type: DataTypes.JSON, // Storing as a JSON object
+    defaultValue: {}, // Default empty object
+    allowNull: false
   },
   createdAt: {
     type: DataTypes.DATE,
