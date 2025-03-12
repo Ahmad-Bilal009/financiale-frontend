@@ -36,7 +36,9 @@ const fetchProducts = async () => {
         location: product.contactDetail?.address || "N/A",
         stage: product.stageOfEntrepreneurship || "N/A",
         status: product.status || "N/A",
-        visitorCount: product.visitorCount || 0,
+        visitorCount: typeof product.visitorCount === 'object'
+        ? Object.values(product.visitorCount || {}).reduce((acc: number, count: unknown) => acc + (Number(count) || 0), 0) // Sum visitor count
+        : product.visitorCount || 0,
       }))
   } catch (error) {
     console.error("Error fetching products:", error)

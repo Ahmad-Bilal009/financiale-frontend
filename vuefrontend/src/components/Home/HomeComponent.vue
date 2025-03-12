@@ -1,49 +1,82 @@
 <script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import CardsComponent from './CardsComponent.vue'
-import { ref } from 'vue'
+import productService from '@/services/productServices'
 
 interface Option {
   key: string
   label: string
 }
 
-// Separate states for each dropdown
+// ** State Variables **
 const selectedProductType = ref<Option>({ key: 'all', label: 'All' })
 const selectedStage = ref<Option>({ key: 'all', label: 'All' })
 const selectedOrganization = ref<Option>({ key: 'all', label: 'All' })
 const selectedLocation = ref<Option>({ key: 'all', label: 'All' })
+const products = ref<any[]>([]) // Holds all products from API
+const userOrganizations = ref<Record<string, string>>({}) // Store userId to organization mapping
 
-// Options for dropdowns
-const productTypeOptions = ref<Option[]>([
-  { key: 'all', label: 'All' },
-  { key: 'credit', label: 'Credit' },
-  { key: 'factoring', label: 'Factoring' },
-  { key: 'fintech', label: 'Fintech' },
-  { key: 'bank', label: 'Bank Guarantee' },
-])
+// ** Fetch Products from API **
+const fetchProducts = async () => {
+  try {
+    const response = await productService.getProducts()
+    products.value = response || []
 
-const stageOptions = ref<Option[]>([
-  { key: 'all', label: 'All' },
-  { key: 'startup', label: 'Startup' },
-  { key: 'growth', label: 'Growth' },
-])
-
-const organizationOptions = ref<Option[]>([
-  { key: 'all', label: 'All' },
-  { key: 'private', label: 'Private' },
-  { key: 'government', label: 'Government' },
-])
-
-const locationOptions = ref<Option[]>([
-  { key: 'all', label: 'All' },
-  { key: 'us', label: 'United States' },
-  { key: 'uk', label: 'United Kingdom' },
-  { key: 'ca', label: 'Canada' },
-])
-
-const handleDropdownSelect = (option: Option, type: string) => {
-  console.log(`Selected ${type}:`, option)
+    // Extract userId to organization mapping directly from products
+    products.value.forEach(product => {
+      userOrganizations.value[product.userId] = product.organization || 'Unknown'
+    })
+  } catch (error) {
+    console.error('Error fetching products:', error)
+  }
 }
+
+// ** Compute Unique Options for Filters **
+const productTypeOptions = computed(() => {
+  const types = new Set(products.value.map(product => product.productType))
+  return [{ key: 'all', label: 'All' }, ...Array.from(types).map(type => ({ key: type, label: type }))]
+})
+
+const stageOptions = computed(() => {
+  const stages = new Set(products.value.map(product => product.stageOfEntrepreneurship))
+  return [{ key: 'all', label: 'All' }, ...Array.from(stages).map(stage => ({ key: stage, label: stage }))]
+})
+
+const organizationOptions = computed(() => {
+  const orgs = new Set(products.value.map(product => product.User?.name || 'Unknown'))
+  return [{ key: 'all', label: 'All' }, ...Array.from(orgs).map(org => ({ key: org, label: org }))]
+})
+
+const locationOptions = computed(() => {
+  const cities = new Set(
+    products.value
+      .map(product => {
+        const addressParts = product.contactDetail?.address.split(',')
+        return addressParts && addressParts.length > 1 ? addressParts[1].trim() : ''
+      })
+      .filter(city => city !== '') // Remove empty values
+  )
+  return [{ key: 'all', label: 'All' }, ...Array.from(cities).map(city => ({ key: city, label: city }))]
+})
+
+
+// ** Compute Filtered Products **
+const filteredProducts = computed(() => {
+  return products.value.filter(product => {
+    const productOrg = userOrganizations.value[product.userId] || 'Unknown'
+    const city = product.address?.split(',')[1]?.trim() || ''
+
+    return (
+      (selectedProductType.value.key === 'all' || product.productType === selectedProductType.value.key) &&
+      (selectedStage.value.key === 'all' || product.stageOfEntrepreneurship === selectedStage.value.key) &&
+      (selectedOrganization.value.key === 'all' || productOrg === selectedOrganization.value.key) &&
+      (selectedLocation.value.key === 'all' || city === selectedLocation.value.key)
+    )
+  })
+})
+
+// ** Fetch Data on Mount **
+onMounted(fetchProducts)
 </script>
 
 <template>
@@ -112,7 +145,7 @@ const handleDropdownSelect = (option: Option, type: string) => {
 
     <!-- Cards Section -->
     <div class="tw-mt-6">
-      <CardsComponent />
+      <CardsComponent :products="filteredProducts" />
     </div>
   </div>
 </template>
