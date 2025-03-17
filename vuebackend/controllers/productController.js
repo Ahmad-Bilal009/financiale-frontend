@@ -53,12 +53,19 @@ exports.createProduct = async (req, res) => {
 
 exports.getProducts = async (req, res) => {
   try {
-    const { status } = req.query // Optional query parameter for filtering
+    const { status, userId } = req.query // Get userId and status from query params
 
-    let filter = { include: [{ model: User, attributes: ['id', 'name'] }] } // Include user details
+    let filter = {
+      include: [{ model: User, attributes: ['id', 'name'] }]
+    }
 
+    // Add filtering conditions dynamically
+    filter.where = {}
     if (status === 'approved') {
-      filter.where = { status: 'approved' }
+      filter.where.status = 'approved'
+    }
+    if (userId) {
+      filter.where.userId = userId // Filter by userId if provided
     }
 
     const products = await Product.findAll(filter)
@@ -70,6 +77,7 @@ exports.getProducts = async (req, res) => {
       .json({ message: 'Failed to fetch products', error: error.message })
   }
 }
+
 // Get a single product by ID
 exports.getProductById = async (req, res) => {
   try {

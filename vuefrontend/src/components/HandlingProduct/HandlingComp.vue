@@ -64,7 +64,7 @@ const fetchProducts = async () => {
   }
 };
 
-// **Computed property to filter only rejected products**
+// Computed property to filter only rejected products
 const rejectedProducts = computed(() => {
   return products.value.filter(product => product.status === "rejected").map(product => ({
     id: product.id.toString(),
@@ -77,12 +77,12 @@ const rejectedProducts = computed(() => {
   }));
 });
 
-// **Search functionality**
+// Search functionality
 const search = (value: string) => {
   console.log("Consulta de búsqueda:", value);
 };
 
-// **Sorting functionality**
+// Sorting functionality
 const handleSort = (key: string) => {
   console.log(`Ordenando por: ${key}`);
 };

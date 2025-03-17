@@ -26,10 +26,9 @@ const routes = [
   { path: '/dashboard', name: 'Panel de Control', icon: Dashboard, roles: ['admin', 'user'] },
   { path: '/products', name: 'Productos', icon: Products, roles: ['user'] },
   { path: '/settings', name: 'Configuraciones', icon: Settings, roles: ['user'] },
-  { path: '/product-approval', name: 'Aprobaciones de Productos', icon: Approval, roles: ['admin'] },
+  { path: '/product-approval', name: 'Manejo de Productos', icon: Approval, roles: ['admin'] },
   { path: '/manage-users', name: 'Gestionar Usuarios', icon: User, roles: ['admin'] },
   { path: '/super-admin-manage-users', name: 'Gestionar Usuarios', icon: User, roles: ['superadmin'] },
-  { path: '/product-handling', name: 'Manejo de Productos', icon: Tag, roles: ['admin'] },
   { path: '/organization-stats', name: 'Organization Stats', icon: Settings, roles: ['admin'] },
 ]
 
@@ -82,7 +81,7 @@ const isActiveRoute = (routePath: string) => currentRoute.path.startsWith(routeP
 
     <!-- Mobile Drawer -->
     <div
-      class="md:tw-hidden tw-fixed tw-top-0 tw-left-0 tw-h-full tw-bg-primary tw-text-white tw-w-[280px] tw-transform tw-transition-transform"
+      class="md:tw-hidden tw-fixed tw-z-50 tw-top-0 tw-left-0 tw-h-full tw-bg-primary tw-text-white tw-w-[280px] tw-transform tw-transition-transform"
       :class="{ 'tw-translate-x-0': isDrawerOpen, '-tw-translate-x-full': !isDrawerOpen }"
     >
       <div class="tw-flex tw-items-center tw-gap-3 tw-px-4 tw-mt-2 tw-mb-6">
@@ -122,7 +121,7 @@ const isActiveRoute = (routePath: string) => currentRoute.path.startsWith(routeP
     </div>
 
     <!-- Mobile Drawer Toggle -->
-    <div class="tw-flex md:tw-hidden tw-items-center tw-gap-2 tw-bg-primary tw-py-2.5 tw-px-4">
+    <div class="tw-flex md:tw-hidden  tw-items-center tw-gap-2 tw-bg-primary tw-py-2.5 tw-px-4">
       <button @click="toggleDrawer">
         <svg xmlns="http://www.w3.org/2000/svg" class="tw-h-8 tw-w-8 tw-text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />

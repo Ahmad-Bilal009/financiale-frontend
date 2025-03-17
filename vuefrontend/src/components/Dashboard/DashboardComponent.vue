@@ -101,23 +101,21 @@ const fetchProducts = async () => {
     // Fetch users if Admin (for organization mapping)
     if (isAdminComputed.value) {
       const userResponse = await userService.getUsers();
-      usersMap = userResponse.reduce((map: Record<number, { name: string; image: string | null }>, user: User) => {
-        map[user.id] = { name: user.name, image: user.image || null };
-        return map;
-      }, {});
+      usersMap = userResponse.reduce(
+        (map: Record<number, { name: string; image: string | null }>, user: User) => {
+          map[user.id] = { name: user.name, image: user.image || null };
+          return map;
+        },
+        {}
+      );
     }
 
-    // Fetch only approved products
-    const response = await productService.getProducts();
+    // Fetch products (passing userId if not admin)
+    const response = await productService.getProducts(isAdminComputed.value ? undefined : loggedInUserId);
     console.log("API Response (Products):", response);
 
-    // Filter products based on logged-in user
-    const filteredProducts = response.filter(
-      (product: Product) => isAdminComputed.value || product.userId === loggedInUserId
-    );
-
-    // Attach user data to products
-    products.value = filteredProducts.map((product: Product) => ({
+    // Map user data to products
+    products.value = response.map((product: Product) => ({
       id: product.id,
       title: product.title,
       organization: usersMap[product.userId as number]?.name || (isAdminComputed.value ? "N/A" : loggedInUser.name),
@@ -135,11 +133,6 @@ const fetchProducts = async () => {
     toast.error("Failed to fetch products");
   }
 };
-
-
-
-
-
 
 
 //Fetch Users (Only for Admin)
@@ -163,7 +156,6 @@ const fetchUsers = async () => {
 //Fetch Dashboard Stats (Filtered for User)
 const fetchDashboardStats = async () => {
   try {
-    // Get logged-in user details
     const loggedInUser = JSON.parse(localStorage.getItem("user") || "{}");
     const userId = loggedInUser?.id;
 
@@ -174,12 +166,21 @@ const fetchDashboardStats = async () => {
 
     // Fetch general stats
     const response = await dashboardService.getStats();
-    const visitorResponse = await visitorService.getTotalVisitors();
     const UserVisitorResponse = await visitorService.getUserVisitors(userId);
 
-    console.log("Visitor Stats:", visitorResponse.data, "User Visitor Stats:", UserVisitorResponse.data, "Dashboard Stats:", response);
+    // Call total visitors API **only if the user is an admin**
+    let totalVisitors = 0;
+    if (isAdminComputed.value) {
+      try {
+        const visitorResponse = await visitorService.getTotalVisitors();
+        totalVisitors = visitorResponse.data?.totalVisitors || 0;
+      } catch (error) {
+        console.error("Error fetching total visitors:", error);
+      }
+    }
 
-    // Default stats
+    console.log("User Visitor Stats:", UserVisitorResponse.data, "Dashboard Stats:", response);
+
     stats.value = {
       totalProducts: 0,
       createdToday: 0,
@@ -187,32 +188,23 @@ const fetchDashboardStats = async () => {
       createdThisMonth: 0,
       totalUsers: 0,
       UserVisitors: UserVisitorResponse.data?.totalVisitors || 0,
-      totalVisitors: visitorResponse.data?.totalVisitors || 0,
-      ...response, // Merge response stats
+      ...(isAdminComputed.value && { totalVisitors }), // Only add totalVisitors for admin
+      ...response,
     };
 
-    // If the user is NOT an admin, filter stats to only show their products
     if (!isAdminComputed.value) {
       const userProducts = products.value.filter((product: Product) => String(product.userId) === String(userId));
 
       stats.value.totalProducts = userProducts.length;
-
-      stats.value.createdToday = userProducts.filter((product: Product) => {
-        if (!product.createdAt) return false;
-        return new Date(product.createdAt).toDateString() === new Date().toDateString();
-      }).length;
-
-      stats.value.createdThisWeek = userProducts.filter((product: Product) => {
-        if (!product.createdAt) return false;
-        return getWeekNumber(new Date(product.createdAt)) === getWeekNumber(new Date());
-      }).length;
-
-      stats.value.createdThisMonth = userProducts.filter((product: Product) => {
-        if (!product.createdAt) return false;
-        const productDate = new Date(product.createdAt);
-        const currentDate = new Date();
-        return productDate.getMonth() === currentDate.getMonth() && productDate.getFullYear() === currentDate.getFullYear();
-      }).length;
+      stats.value.createdToday = userProducts.filter((product: Product) =>
+        product.createdAt && new Date(product.createdAt).toDateString() === new Date().toDateString()
+      ).length;
+      stats.value.createdThisWeek = userProducts.filter((product: Product) =>
+        product.createdAt && getWeekNumber(new Date(product.createdAt)) === getWeekNumber(new Date())
+      ).length;
+      stats.value.createdThisMonth = userProducts.filter((product: Product) =>
+        product.createdAt && new Date(product.createdAt).getMonth() === new Date().getMonth()
+      ).length;
     }
   } catch (error) {
     console.error("Error fetching dashboard stats:", error);

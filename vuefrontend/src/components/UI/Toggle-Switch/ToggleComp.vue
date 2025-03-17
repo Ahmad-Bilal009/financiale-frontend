@@ -5,7 +5,7 @@ import { ref, defineEmits } from 'vue'
 const emit = defineEmits(['filterChange'])
 
 // **Rastrear el filtro activo**
-const activeFilter = ref('all')
+const activeFilter = ref('approved')
 
 // **Función para alternar el filtro seleccionado**
 const toggleFilter = (filter: string) => {
@@ -20,22 +20,22 @@ const toggleFilter = (filter: string) => {
     <button
       :class="[
         'tw-text-base tw-font-medium tw-rounded-[6px] tw-capitalize md:tw-px-8 tw-px-3 tw-py-1',
-        activeFilter === 'all' ? 'tw-bg-[#24B2E3] tw-text-white' : 'tw-bg-transparent tw-text-gray-400',
+        activeFilter === 'approved' ? 'tw-bg-[#24B2E3] tw-text-white' : 'tw-bg-transparent tw-text-gray-400',
       ]"
-      @click="toggleFilter('all')"
+      @click="toggleFilter('approved')"
     >
-      Todos
+      Aprobados
     </button>
 
     <!-- Botón Aprobados -->
     <button
       :class="[
         'tw-text-base tw-font-medium tw-rounded-[6px] tw-capitalize md:tw-px-8 tw-px-3 tw-py-1',
-        activeFilter === 'approved' ? 'tw-bg-[#24B2E3] tw-text-white' : 'tw-bg-transparent tw-text-gray-400',
+        activeFilter === 'all' ? 'tw-bg-[#24B2E3] tw-text-white' : 'tw-bg-transparent tw-text-gray-400',
       ]"
-      @click="toggleFilter('approved')"
+      @click="toggleFilter('all')"
     >
-      Aprobados
+    Todos
     </button>
 
     <!-- Botón Rechazados -->

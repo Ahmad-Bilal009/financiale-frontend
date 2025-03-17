@@ -101,94 +101,96 @@ const goToPage = (page: number) => {
 </script>
 
 <template>
-  <div class="tw-overflow-x-auto">
-    <table class="tw-table-auto tw-w-full">
-      <thead>
-        <tr class="tw-border-b tw-text-base tw-font-medium tw-capitalize tw-text-[#8D98AF]">
-          <th class="tw-px-4 tw-py-4 tw-cursor-pointer" @click="handleSort('sr')">
-            <div class="tw-flex tw-items-center tw-gap-3.5">
-              ID <ArrowDownIcon />
-            </div>
-          </th>
-          <th
-            v-for="column in props.columns"
-            :key="column.key"
-            class="tw-px-4 tw-py-4 tw-cursor-pointer"
-            @click="handleSort(column.key)"
+  <div >
+    <div class="tw-overflow-x-auto">
+      <table class="tw-table-auto tw-w-full">
+        <thead>
+          <tr class="tw-border-b tw-text-base tw-font-medium tw-capitalize tw-text-[#8D98AF]">
+            <th class="tw-px-4 tw-py-4 tw-cursor-pointer" @click="handleSort('sr')">
+              <div class="tw-flex tw-items-center tw-gap-3.5">
+                ID <ArrowDownIcon />
+              </div>
+            </th>
+            <th
+              v-for="column in props.columns"
+              :key="column.key"
+              class="tw-px-4 tw-py-4 tw-cursor-pointer"
+              @click="handleSort(column.key)"
+            >
+              <div class="tw-flex tw-items-center tw-gap-3.5">
+                {{ column.label }} <ArrowDownIcon />
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(rowData, index) in paginatedData"
+            :key="rowData.id"
+            class="tw-border-b tw-text-sm tw-font-normal tw-text-[#0E0E0E]"
           >
-            <div class="tw-flex tw-items-center tw-gap-3.5">
-              {{ column.label }} <ArrowDownIcon />
-            </div>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="(rowData, index) in paginatedData"
-          :key="rowData.id"
-          class="tw-border-b tw-text-sm tw-font-normal tw-text-[#0E0E0E]"
-        >
-          <td class="tw-px-4 tw-py-[15px] text-left">{{ index + 1 }}</td>
-          <td v-for="column in props.columns" :key="column.key" class="tw-px-4 tw-py-[12px]">
+            <td class="tw-px-4 tw-py-[15px] text-left">{{ index + 1 }}</td>
+            <td v-for="column in props.columns" :key="column.key" class="tw-px-4 tw-py-[12px]">
 
 
-            <div v-if="column.key === 'password'" class="tw-flex tw-items-center tw-gap-1">
-              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
-              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
-              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
-              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
-              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
-              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
-              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
-              <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
-            </div>
+              <div v-if="column.key === 'password'" class="tw-flex tw-items-center tw-gap-1">
+                <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+                <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+                <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+                <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+                <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+                <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+                <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+                <circle class="tw-h-2 tw-w-2 tw-bg-[#6B7888] tw-rounded"/>
+              </div>
 
-            <!--  Action Buttons -->
-            <div v-if="column.key === 'action'" class="tw-flex tw-items-center tw-gap-2">
-              <button @click="$emit('viewUser', rowData)" class="border hover:tw-bg-gray-200 border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer">
-                <ViewEyeIcon />
-              </button>
-
-              <button @click="$emit('editUser', rowData)" class="border hover:tw-bg-gray-200  tw-rounded-[10px] tw-p-2 tw-cursor-pointer"  style="border: 5px solid red">
-                <EditIcon />
-              </button>
-
-              <button
-                v-if="props.onDelete"
-                @click="deleteItem(rowData.id)"
-                class="border tw-justify-center hover:tw-bg-red-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
-              >
-                <DeleteIcon />
-              </button>
-            </div>
-
-            <!--  Enable/Disable Toggle -->
-            <div v-else-if="column.key === 'isDisabled'" class="tw-flex tw-items-center tw-gap-2">
-              <v-switch
-                :model-value="rowData.isDisabled"
-                hide-details
-                inset
-                :color="rowData.isDisabled ? 'success' : 'success'"
-                @change="toggleUserStatus(rowData)"
-              />
-            </div>
-
-            <!--  Enable/Disable Toggle -->
-            <div v-else-if="column.key === 'deleteProduct'" class="tw-flex tw-items-center tw-gap-2 ">
-              <button
-                  class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
-                  @click="deleteItem(index)"
-                >
-                  Eliminar
+              <!--  Action Buttons -->
+              <div v-if="column.key === 'action'" class="tw-flex tw-items-center tw-gap-2">
+                <button @click="$emit('viewUser', rowData)" class="border hover:tw-bg-gray-200 border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer">
+                  <ViewEyeIcon />
                 </button>
-            </div>
 
-            <!--  Default Cell Rendering -->
-            <div v-else>{{ renderCell(rowData, column.key) }}</div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                <button @click="$emit('editUser', rowData)" class="border hover:tw-bg-gray-200  tw-rounded-[10px] tw-p-2 tw-cursor-pointer"  style="border: 5px solid red">
+                  <EditIcon />
+                </button>
+
+                <button
+                  v-if="props.onDelete"
+                  @click="deleteItem(rowData.id)"
+                  class="border tw-justify-center hover:tw-bg-red-200 tw-border-[#F2F2F2] tw-rounded-[10px] tw-p-2 tw-cursor-pointer"
+                >
+                  <DeleteIcon />
+                </button>
+              </div>
+
+              <!--  Enable/Disable Toggle -->
+              <div v-else-if="column.key === 'isDisabled'" class="tw-flex tw-items-center tw-gap-2">
+                <v-switch
+                  :model-value="rowData.isDisabled"
+                  hide-details
+                  inset
+                  :color="rowData.isDisabled ? 'success' : 'success'"
+                  @change="toggleUserStatus(rowData)"
+                />
+              </div>
+
+              <!--  Enable/Disable Toggle -->
+              <div v-else-if="column.key === 'deleteProduct'" class="tw-flex tw-items-center tw-gap-2 ">
+                <button
+                    class="tw-bg-[#FA3D34] hover:tw-bg-[#d92f2d] tw-text-white tw-text-sm tw-px-4 tw-py-2 tw-rounded tw-font-medium"
+                    @click="deleteItem(index)"
+                  >
+                    Eliminar
+                  </button>
+              </div>
+
+              <!--  Default Cell Rendering -->
+              <div v-else>{{ renderCell(rowData, column.key) }}</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div class="tw-flex tw-justify-between tw-items-center tw-mt-9">
       <span>Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage, props.rowData.length) }} Items</span>
 

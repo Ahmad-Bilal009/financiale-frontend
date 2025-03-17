@@ -36,27 +36,29 @@ const goToPage = (page: number) => {
 </script>
 
 <template>
-  <div class="tw-overflow-x-auto">
-    <table class="tw-table-auto tw-w-full">
-      <thead>
-        <tr class="tw-border-b tw-border-[#F1F1F5] tw-text-base tw-font-medium tw-text-[#8D98AF]">
-          <th class="tw-px-4 tw-py-6 tw-cursor-pointer" @click="handleSort('id')">
-            <div class="tw-flex tw-items-center tw-gap-3.5"> ID <ArrowDownIcon /> </div>
-          </th>
-          <th v-for="column in props.columns" :key="column.key" class="tw-px-4 tw-py-6 tw-cursor-pointer" @click="handleSort(column.key)">
-            <div class="tw-flex tw-items-center tw-gap-3.5"> {{ column.label }} <ArrowDownIcon /> </div>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(row, index) in paginatedData" :key="index" class="tw-border-b tw-border-[#F1F1F5]">
-          <td class="tw-px-4 tw-py-[27px]">{{ index + 1 }}</td>
-          <td v-for="column in props.columns" :key="column.key" class="tw-px-4 tw-py-[27px]">
-            {{ renderCell(row, column.key) }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div >
+    <div class="tw-overflow-x-auto">
+      <table class="tw-table-auto tw-w-full">
+        <thead>
+          <tr class="tw-border-b tw-border-[#F1F1F5] tw-text-base tw-font-medium tw-text-[#8D98AF]">
+            <th class="tw-px-4 tw-py-6 tw-cursor-pointer" @click="handleSort('id')">
+              <div class="tw-flex tw-items-center tw-gap-3.5"> ID <ArrowDownIcon /> </div>
+            </th>
+            <th v-for="column in props.columns" :key="column.key" class="tw-px-4 tw-py-6 tw-cursor-pointer" @click="handleSort(column.key)">
+              <div class="tw-flex tw-items-center tw-gap-3.5"> {{ column.label }} <ArrowDownIcon /> </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, index) in paginatedData" :key="index" class="tw-border-b tw-border-[#F1F1F5]">
+            <td class="tw-px-4 tw-py-[27px]">{{ index + 1 }}</td>
+            <td v-for="column in props.columns" :key="column.key" class="tw-px-4 tw-py-[27px]">
+              {{ renderCell(row, column.key) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div class="tw-flex tw-justify-between tw-mt-9">
       <span>Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage, props.rowData.length) }} Items</span>
       <div class="tw-flex tw-gap-2">

@@ -14,37 +14,36 @@ const toast = useToast()
 
 // State Management
 const isModalOpen = ref(false)
-const selectedProductId = ref<number | null>(null) // Store selected product ID
+const selectedProductId = ref<number | null>(null)
 const products = ref([])
 
 // Get Logged-In User ID
 const user = JSON.parse(localStorage.getItem('user') || '{}')
-const userId = user?.id || null  // Ensure we have the user's ID
+const userId = user?.id || null
 
 // Fetch Products
 const fetchProducts = async () => {
   try {
-    const response = await productService.getProducts()
-    console.log("API Response:", response)  // Debugging
+    const response = await productService.getProducts(userId) // Pass userId
+    console.log("API Response:", response)
 
-    products.value = response
-      .filter((product: any) => product.userId === userId)
-      .map((product: any) => ({
-        id: product.id,
-        title: product.title,
-        organization: product.User?.name || "Unknown Organization",
-        location: product.contactDetail?.address || "N/A",
-        stage: product.stageOfEntrepreneurship || "N/A",
-        status: product.status || "N/A",
-        visitorCount: typeof product.visitorCount === 'object'
-        ? Object.values(product.visitorCount || {}).reduce((acc: number, count: unknown) => acc + (Number(count) || 0), 0) // Sum visitor count
+    products.value = response.map((product: any) => ({
+      id: product.id,
+      title: product.title,
+      organization: product.User?.name || "Unknown Organization",
+      location: product.contactDetail?.address || "N/A",
+      stage: product.stageOfEntrepreneurship || "N/A",
+      status: product.status || "N/A",
+      visitorCount: typeof product.visitorCount === 'object'
+        ? Object.values(product.visitorCount || {}).reduce((acc: number, count: unknown) => acc + (Number(count) || 0), 0)
         : product.visitorCount || 0,
-      }))
+    }))
   } catch (error) {
     console.error("Error fetching products:", error)
     toast.error("Failed to fetch products")
   }
 }
+
 
 // Computed Property to Check If User Has Products
 const hasProducts = computed(() => products.value.length > 0)
@@ -78,19 +77,19 @@ const handleSort = (key: string) => {
   console.log(`Sorting by: ${key}`)
 }
 
-// **Open Delete Modal**
+// Open Delete Modal
 const openModal = (productId: number) => {
   selectedProductId.value = productId
   isModalOpen.value = true
 }
 
-// **Close Delete Modal**
+// Close Delete Modal
 const handleClose = () => {
   isModalOpen.value = false
   selectedProductId.value = null
 }
 
-// **Delete Product**
+// Delete Product
 const deleteProduct = async () => {
   if (!selectedProductId.value) {
     toast.error("No product selected!")
@@ -100,8 +99,8 @@ const deleteProduct = async () => {
   try {
     await productService.deleteProduct(selectedProductId.value)
     toast.success("Product deleted successfully!")
-    handleClose() // Close modal after deleting
-    fetchProducts() // Refresh after delete
+    handleClose()
+    fetchProducts()
   } catch (error) {
     console.error("Error deleting product:", error)
     toast.error("Failed to delete product")

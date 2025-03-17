@@ -6,26 +6,24 @@ import { onMounted, ref, computed } from 'vue'
 import userService from '@/services/userService'
 import productService from '@/services/productServices'
 import { useToast } from "vue-toastification"
-import visitorService from '@/services/visitorServices'
-import { watch } from 'vue'
-
+import DeleteModel from '@/components/UI/Delete-Model/DeleteModel.vue'
 const toast = useToast()
 const selectedProductId = ref<number | null>(null)
 
-// ** State Management **
-const selectVisitors = ref('all') // Default visitor filter
+//  State Management
+const isModalOpen = ref(false)
 const selectedOrganization = ref('all') // Default organization filter
 const products = ref<Product[]>([])
-const activeFilter = ref('all') // Default: Show all products
+const activeFilter = ref('approved') // Default: Show all products
 
 
 
 
 const availableOrganizations = ref<{ key: string; label: string }[]>([
-  { key: 'all', label: 'Todas' }
+  { key: 'approved', label: 'Aprobados' }
 ])
 
-// ** Table Headers **
+//  Table Headers
 const tableheading = computed(() => {
   const columns = [
     { key: 'title', label: 'Título', align: 'center' },
@@ -41,10 +39,13 @@ const tableheading = computed(() => {
     columns.push({ key: 'visitorCount', label: 'Visitantes', align: 'center' })
   }
 
+  if (activeFilter.value === 'rejected') {
+    columns.push({ key: 'delete', label: 'Eliminar', align: 'center' });
+  }
   return columns
 })
 
-// ** Types **
+//  Types
 interface User {
   id: number;
   name: string;
@@ -64,7 +65,7 @@ interface Product {
   visitorCount?: number;
 }
 
-// ** Fetch Products **
+//  Fetch Products
 const fetchProducts = async () => {
   try {
     const userResponse = await userService.getUsers()
@@ -104,7 +105,7 @@ const fetchProducts = async () => {
   }
 }
 
-// ** Computed: Filtered Products **
+//  Computed: Filtered Products
 const filteredProducts = computed(() => {
   return products.value
     .filter(product => {
@@ -131,12 +132,12 @@ const filteredProducts = computed(() => {
 });
 
 
-// ** Handle Filter Change (Approved/Rejection) **
+//  Handle Filter Change (Approved/Rejection)
 const handleFilterChange = (filter: string) => {
   activeFilter.value = filter
 }
 
-// ** Approve Product Function **
+//  Approve Product Function
 const approveProduct = async (productId: number) => {
   console.log("Approving Product ID:", productId); // Debugging Log
 
@@ -154,7 +155,7 @@ const approveProduct = async (productId: number) => {
   }
 }
 
-// ** Reject Product Function **
+//  Reject Product Function
 const rejectProduct = async (productId: number) => {
   console.log("Rejecting Product ID:", productId); // Debugging Log
 
@@ -172,12 +173,12 @@ const rejectProduct = async (productId: number) => {
   }
 }
 
-// ** Search Functionality **
+//  Search Functionality
 const search = (query: string) => {
   console.log("Searching for:", query);
 }
 
-// ** Lifecycle Hook **
+//  Lifecycle Hook
 onMounted(fetchProducts)
 
 // Define the handleSort method
@@ -185,6 +186,35 @@ const handleSort = (sortKey: string) => {
   console.log("Sorting by:", sortKey); // Log the sortKey instead of query
   // Add your sorting logic here
 };
+
+const openModal = (productId: number) => {
+  selectedProductId.value = productId
+  isModalOpen.value = true
+}
+
+// Close Delete Modal
+const handleClose = () => {
+  isModalOpen.value = false
+  selectedProductId.value = null
+}
+
+// Delete Product
+const deleteProduct = async () => {
+  if (!selectedProductId.value) {
+    toast.error("No product selected!")
+    return
+  }
+
+  try {
+    await productService.deleteProduct(selectedProductId.value)
+    toast.success("Product deleted successfully!")
+    handleClose()
+    fetchProducts()
+  } catch (error) {
+    console.error("Error deleting product:", error)
+    toast.error("Failed to delete product")
+  }
+}
 </script>
 
 <template>
@@ -198,7 +228,6 @@ const handleSort = (sortKey: string) => {
       </div>
     </div>
 
-    <!-- Filters (Only Show When Approved is Selected) -->
     <div v-if="activeFilter === 'approved'" class="tw-gap-[18px] tw-flex tw-justify-end">
 
       <div class="tw-flex tw-flex-col tw-gap-2 tw-w-full md:tw-w-auto">
@@ -224,8 +253,10 @@ const handleSort = (sortKey: string) => {
         :activeFilter="activeFilter"
         @approve="approveProduct"
         @reject="rejectProduct"
+        @delete="openModal"
     />
       <p v-else class="tw-text-center tw-text-gray-500 tw-font-medium">No hay productos disponibles</p>
     </div>
+    <DeleteModel :isOpen="isModalOpen" @close="handleClose" @delete="deleteProduct" />
   </div>
 </template>

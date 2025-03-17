@@ -137,7 +137,7 @@ onMounted(fetchProductDetails);
             'Etapa del Emprendimiento': product.stageOfEntrepreneurship,
             'Objetivo del Crédito': product.objectiveOfCredit,
             'Beneficios para Emprendedores y MIPYMEs': product.benefitsOfEntrepreneurship
-          }" :key="key" class="tw-flex tw-flex-col tw-gap-[13px]">
+          }" :key="key" class="tw-flex tw-flex-col tw-gap-[1px]">
             <h4 class="tw-text-[20px] tw-text-[#070707] tw-font-[500]">{{ key }}</h4>
             <p class="tw-text-[16px] tw-leading-[32px] tw-text-[#515151] tw-font-[350]">
               {{ value || "Not specified" }}

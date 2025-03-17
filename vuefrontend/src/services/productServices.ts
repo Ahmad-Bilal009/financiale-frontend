@@ -17,9 +17,10 @@ const getAuthHeaders = () => {
 
 export default {
   //  Fetch all products
-  async getProducts() {
+  async getProducts(userId?: number) {
     try {
-      const response = await axios.get(API_URL, getAuthHeaders())
+      const queryParams = userId ? `?userId=${userId}` : '' // Append userId if available
+      const response = await axios.get(`${API_URL}${queryParams}`, getAuthHeaders())
       return response.data
     } catch (error: any) {
       throw error.response?.data?.message || 'Failed to fetch products'
