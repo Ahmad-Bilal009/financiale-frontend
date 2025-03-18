@@ -53,13 +53,13 @@ onMounted(fetchProducts)
 
 // Table Headings
 const tableheading = ref([
-  { key: 'title', label: 'Title', align: 'center' },
-  { key: 'organization', label: 'Organization', align: 'center' },
-  { key: 'location', label: 'Location', align: 'center' },
-  { key: 'stage', label: 'Stage', align: 'center' },
-  { key: 'status', label: 'Status', align: 'center' },
+  { key: 'title', label: 'Título', align: 'center' },
+  { key: 'organization', label: 'Organización', align: 'center' },
+  { key: 'location', label: 'Ubicación', align: 'center' },
+  { key: 'stage', label: 'Etapa', align: 'center' },
+  { key: 'status', label: 'Estado', align: 'center' },
   { key: 'visitorCount', label: 'Visitantes', align: 'center' },
-  { key: 'action', label: 'Action', align: 'center' },
+  { key: 'action', label: 'Acción', align: 'center' },
 ])
 
 // Navigation
@@ -112,11 +112,11 @@ const deleteProduct = async () => {
   <div class="tw-flex tw-flex-col tw-mb-12 tw-mt-12 tw-gap-12">
     <!-- Header -->
     <div class="md:tw-flex tw-justify-between md:tw-items-center">
-      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Product Listings</div>
+      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Listado de Productos</div>
       <div class="md:tw-flex tw-gap-5 tw-items-start md:tw-items-center">
-        <SearchBar :onSearch="search" placeholder="Search here..." />
+        <SearchBar :onSearch="search" placeholder="Buscar aquí..." />
         <div class="tw-flex tw-mt-2 md:tw-mt-0 tw-justify-end tw-items-end">
-          <ButtonComp text="+ Add Product" @click="addProduct" />
+          <ButtonComp text="+ Agregar Producto" @click="addProduct" />
         </div>
       </div>
     </div>

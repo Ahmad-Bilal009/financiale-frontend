@@ -109,8 +109,11 @@ const fetchProducts = async () => {
 const filteredProducts = computed(() => {
   return products.value
     .filter(product => {
-      // Ensure filters work properly
-      const matchesStatus = activeFilter.value === 'all' || product.status?.toLowerCase() === activeFilter.value.toLowerCase();
+      // If 'all' is selected, show only pending products
+      const matchesStatus = activeFilter.value === 'all'
+        ? product.status?.toLowerCase() === 'pending'
+        : product.status?.toLowerCase() === activeFilter.value.toLowerCase();
+
       const matchesOrganization = selectedOrganization.value === 'all' || product.organization?.toLowerCase() === selectedOrganization.value.toLowerCase();
 
       return matchesStatus && matchesOrganization;
@@ -130,6 +133,7 @@ const filteredProducts = computed(() => {
       organization: product.organization || "N/A",
     }));
 });
+
 
 
 //  Handle Filter Change (Approved/Rejection)
@@ -221,7 +225,7 @@ const deleteProduct = async () => {
   <div class="tw-flex tw-flex-col tw-mb-12 tw-mt-12 tw-gap-12">
     <!-- Header -->
     <div class="md:tw-flex tw-justify-between md:tw-items-center">
-      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Aprobaciones de Productos</div>
+      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Manejo de Productos</div>
       <div class="md:tw-flex tw-gap-5 tw-items-start md:tw-items-center">
         <SearchBar :onSearch="search" placeholder="Buscar aquí..." />
         <ToggleComp class="tw-mt-2 md:tw-mt-0" @filterChange="handleFilterChange"/>

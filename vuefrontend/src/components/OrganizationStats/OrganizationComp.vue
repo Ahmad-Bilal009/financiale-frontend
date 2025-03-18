@@ -165,19 +165,19 @@ watch(visitorData, () => {
 
 //  Table Headings
 const tableheading = ref([
-  { key: 'organization', label: 'Organization', align: 'center' },
-  { key: 'visitorToday', label: 'Today', align: 'center' },
-  { key: 'visitorWeek', label: 'This Week', align: 'center' },
-  { key: 'visitorMonth', label: 'This Month', align: 'center' },
-  { key: 'visitorCount', label: 'Total Visitors', align: 'center' },
+  { key: 'organization', label: 'Organización', align: 'center' },
+  { key: 'visitorToday', label: 'Hoy', align: 'center' },
+  { key: 'visitorWeek', label: 'Esta Semana', align: 'center' },
+  { key: 'visitorMonth', label: 'Este Mes', align: 'center' },
+  { key: 'visitorCount', label: 'Total de Visitantes', align: 'center' },
 ])
 
 //  Stats Heading (Total Website Visitors)
 const statsheading = ref([
-  { key: 'visitorToday', label: 'Today', align: 'center' },
-  { key: 'weekVisitors', label: 'This Week', align: 'center' },
-  { key: 'monthVisitors', label: 'This Month', align: 'center' },
-  { key: 'visitorCount', label: 'Total Visitors', align: 'center' },
+  { key: 'visitorToday', label: 'Hoy', align: 'center' },
+  { key: 'weekVisitors', label: 'Esta Semana', align: 'center' },
+  { key: 'monthVisitors', label: 'Este Mes', align: 'center' },
+  { key: 'visitorCount', label: 'Total de Visitantes', align: 'center' },
 ])
 
 //  Sorting Function
@@ -189,7 +189,7 @@ const handleSort = (key: string) => {
 <template>
   <div class="tw-flex tw-flex-col tw-mb-12 tw-mt-12 tw-gap-12">
     <!--  Website Visitors -->
-    <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Website Visitors</div>
+    <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Visitantes del Sitio Web</div>
     <DashboardComp
       :columns="statsheading"
       :rowData="[ { visitorToday: todayVisitors, weekVisitors: weekVisitors, monthVisitors: monthVisitors, visitorCount: totalVisitors } ]"
@@ -199,7 +199,7 @@ const handleSort = (key: string) => {
 
     <!--  Organization Visitors -->
     <div>
-      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Organization Visitors</div>
+      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Visitantes de la Organización</div>
       <DashboardComp
         :columns="tableheading"
         :rowData="products"

@@ -122,21 +122,22 @@ const handleContinue = () => {
       </div>
 
       <!-- Title -->
-      <h2 class="tw-text-xl tw-font-bold tw-text-[#192854] tw-mb-2">Reset your password</h2>
+      <h2 class="tw-text-xl tw-font-bold tw-text-[#192854] tw-mb-2">Restablecer tu contraseña</h2>
 
       <!-- Subtitle -->
       <p class="tw-text-gray-500 tw-text-[16px] tw-mb-6">
-        Forget your password? Please enter your <br /> email and we will send you a 4-digit code.
+        ¿Olvidaste tu contraseña? Por favor, ingresa tu <br /> correo electrónico y te enviaremos un código de 4 dígitos.
       </p>
+
 
       <!-- Email Input -->
       <div class="tw-w-full tw-mb-4">
-        <label for="email" class="tw-block tw-text-left tw-font-medium tw-text-gray-700 tw-text-[16px] tw-mb-2">Email</label>
+        <label for="email" class="tw-block tw-text-left tw-font-medium tw-text-gray-700 tw-text-[16px] tw-mb-2">Correo Electrónico</label>
         <input
           id="email"
           v-model="email"
           type="email"
-          placeholder="Enter your email"
+          placeholder="Ingresa tu correo electrónico"
           class="tw-w-full tw-px-4 tw-py-2 tw-bg-white border border-gray-300 tw-rounded-lg tw-outline-none tw-focus:ring-2 tw-focus:ring-blue-200"
         />
       </div>
@@ -146,7 +147,7 @@ const handleContinue = () => {
         @click="sendCode"
         class="tw-bg-[#192854] tw-text-white tw-font-semibold tw-py-3 tw-w-full tw-rounded-lg tw-shadow-md hover:tw-bg-[#1b2964]"
       >
-        Get 4-digit code
+      Obtener código de 4 dígitos
       </button>
     </div>
 
@@ -161,7 +162,7 @@ const handleContinue = () => {
       </div>
 
       <!-- Title -->
-      <h2 class="tw-text-xl tw-font-bold tw-mb-2">Enter confirmation code</h2>
+      <h2 class="tw-text-xl tw-font-bold tw-mb-2">Ingresar código de confirmación</h2>
 
       <!-- Subtitle -->
       <p class="tw-text-gray-500 tw-mb-6">

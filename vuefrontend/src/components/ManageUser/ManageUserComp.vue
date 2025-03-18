@@ -176,13 +176,13 @@ onMounted(fetchUsers);
   <div class="tw-flex tw-flex-col tw-mb-12 tw-mt-12 tw-gap-12">
     <!-- Header -->
     <div class="md:tw-flex tw-justify-between md:tw-items-center">
-      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Manage Users</div>
+      <div class="tw-text-[24px] md:tw-text-3xl tw-font-medium">Gestionar Usuarios</div>
       <div class="md:tw-flex tw-gap-5 tw-items-start md:tw-items-center">
         <SearchBar :onSearch="search" placeholder="Search here..." />
         <div class="md:tw-flex tw-mt-2 md:tw-mt-0 tw-gap-4 tw-items-center">
           <!-- Toggle for filtering users -->
           <UserToggle @toggleStatus="handleToggleStatus" />
-          <AddUserButton text="+ Add User" @click="openAddUserModal" />
+          <AddUserButton text="+ Agregar Usuario" @click="openAddUserModal" />
         </div>
       </div>
     </div>
@@ -191,13 +191,13 @@ onMounted(fetchUsers);
     <div class="tw-flex tw-flex-col tw-gap-6 tw-p-5 tw-bg-white tw-rounded-[20px]">
       <TableComp
         :columns="[
-          { key: 'name', label: 'Name', align: 'left' },
-          { key: 'email', label: 'Email', align: 'left' },
-          { key: 'password', label: 'Password', align: 'center' },
-          { key: 'totalVisitors', label: 'Total Visitors', align: 'center' },
-          { key: 'action', label: 'Actions', align: 'center' },
-          { key: 'isDisabled', label: 'Status', align: 'center' },
-          { key: 'deleteProduct', label: 'Delete Products', align: 'center' },
+          { key: 'name', label: 'Nombre', align: 'left' },
+          { key: 'email', label: 'Correo Electrónico', align: 'left' },
+          { key: 'password', label: 'Contraseña', align: 'center' },
+          { key: 'totalVisitors', label: 'Total de Visitantes', align: 'center' },
+          { key: 'action', label: 'Acciones', align: 'center' },
+          { key: 'isDisabled', label: 'Estado', align: 'center' },
+          { key: 'deleteProduct', label: 'Eliminar Productos', align: 'center' },
         ]"
         :rowData="filteredUsers"
         @sort="handleSort"

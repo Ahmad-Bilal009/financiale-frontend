@@ -25,7 +25,7 @@ const toggleSetting = (state: boolean) => {
       ]"
       @click="toggleSetting(true)"
     >
-      Change Password
+    Cambiar Contraseña
     </button>
 
     <!-- Button Links -->
@@ -36,7 +36,7 @@ const toggleSetting = (state: boolean) => {
       ]"
       @click="toggleSetting(false)"
     >
-      Button Links
+    Enlaces de Botón
     </button>
   </div>
 </template>

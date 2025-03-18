@@ -130,7 +130,7 @@ const handleClose = () => {
       <!-- Modal Header -->
       <div class="tw-flex tw-justify-between tw-items-center">
         <h2 class="tw-text-xl tw-font-medium tw-text-[#171725]">
-          {{ mode === 'add' ? 'Add User' : mode === 'view' ? 'View User' : 'Edit User' }}
+          {{ mode === 'add' ? 'Agregar Usuario' : mode === 'view' ? 'Ver Usuario' : 'Editar Usuario' }}
         </h2>
         <div @click="handleClose" class="tw-cursor-pointer">
           <closeIcon />
@@ -139,7 +139,7 @@ const handleClose = () => {
 
       <!-- User Image Display (Top Center) -->
       <div class="tw-flex tw-justify-center tw-items-center tw-mb-4">
-        <img :src="imagePreview || defaultUserImage" alt="User Image"
+        <img :src="imagePreview || defaultUserImage" alt="Imagen de Usuario"
              class="tw-w-32 tw-h-32 tw-rounded-full tw-border tw-border-gray-300"/>
       </div>
 
@@ -148,37 +148,37 @@ const handleClose = () => {
 
         <!-- Image Upload (ONLY in Add/Edit Mode) -->
         <div class="tw-flex tw-flex-col tw-gap-2" v-if="mode !== 'view'">
-          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Upload Image</label>
+          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Subir Imagen</label>
           <input type="file" @change="handleImageChange" accept="image/*"
                  class="tw-w-full border tw-border-gray-300 tw-rounded-[8px]"/>
         </div>
 
         <!-- Name -->
         <div class="tw-flex tw-flex-col tw-gap-2">
-          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Organization Name</label>
-          <input v-model="form.name" type="text" placeholder="Enter Name" required
+          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Nombre de la Organización</label>
+          <input v-model="form.name" type="text" placeholder="Ingresar Nombre" required
                  class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2"
                  :disabled="mode === 'view'"/>
         </div>
 
         <!-- Email -->
         <div class="tw-flex tw-flex-col tw-gap-2">
-          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Email</label>
-          <input v-model="form.email" type="email" placeholder="Enter Email" required
+          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Correo Electrónico</label>
+          <input v-model="form.email" type="email" placeholder="Correo Electrónico" required
                  class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2"
                  :disabled="mode === 'view'"/>
         </div>
 
         <!-- Password (Only in Add Mode) -->
         <div class="tw-flex tw-flex-col tw-gap-2" >
-          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Password</label>
-          <input v-model="form.password" type="password" placeholder="Enter Password" required
+          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Contraseña</label>
+          <input v-model="form.password" type="password" placeholder="Contraseña" required
                  class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2" :disabled="mode === 'view'"/>
         </div>
 
         <!-- Role Selection (Only for Superadmin) -->
         <div class="tw-flex tw-flex-col tw-gap-2">
-          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Role</label>
+          <label class="tw-text-[14px] tw-font-400 tw-text-gray-600">Rol</label>
           <select v-model="form.role"
                   class="tw-w-full border tw-border-gray-300 tw-rounded-md tw-p-2"
                   :disabled="mode === 'view' || UserRole !== 'superadmin'">
@@ -192,7 +192,7 @@ const handleClose = () => {
         <div class="tw-flex tw-justify-end">
           <button v-if="mode !== 'view'" type="submit"
                   class="tw-bg-[#24B2E3] tw-text-[16px] text-white tw-px-[28px] tw-py-[12px] tw-rounded-[13px] tw-font-medium">
-            {{ mode === 'add' ? '+ Create User' : 'Update' }}
+            {{ mode === 'add' ? '+ Crear Usuario' : 'Actualizar' }}
           </button>
           <button v-else @click="handleClose"
                   class="tw-bg-[#24B2E3] tw-text-[16px] tw-text-white tw-px-[28px] tw-py-[12px] tw-rounded-[13px] tw-font-medium">

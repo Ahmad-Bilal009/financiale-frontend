@@ -90,12 +90,12 @@ onMounted(fetchContactInfo);
 
 <template>
   <div class="tw-p-6 tw-bg-white tw-shadow-md tw-rounded-[20px] tw-mt-10">
-    <h2 class="tw-text-2xl tw-font-semibold tw-mb-4">Contact Information</h2>
+    <h2 class="tw-text-2xl tw-font-semibold tw-mb-4">Información de Contacto</h2>
 
     <!-- Display Contact Info -->
     <div v-if="!isEditing">
       <div class="tw-mb-4">
-        <label class="tw-font-medium tw-text-gray-700">WhatsApp Group:</label>
+        <label class="tw-font-medium tw-text-gray-700">Grupo de WhatsApp:</label>
         <p class="tw-text-gray-900">{{ contactInfo.whatsapp || "Not Provided" }}</p>
       </div>
 

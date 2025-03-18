@@ -17,7 +17,7 @@ const handleToggleChange = (status: boolean) => {
 <template>
   <div class="tw-p-6">
     <div class="tw-flex tw-justify-between">
-      <h2 class="tw-text-2xl tw-font-semibold tw-mb-4">Settings</h2>
+      <h2 class="tw-text-2xl tw-font-semibold tw-mb-4">Configuración</h2>
 
       <!-- Toggle Component (Switch between Change Password & Button Links) -->
       <SettingToggle :activeFilter="activeFilter" @update:activeFilter="handleToggleChange" />

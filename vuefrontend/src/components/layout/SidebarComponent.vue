@@ -29,7 +29,7 @@ const routes = [
   { path: '/product-approval', name: 'Manejo de Productos', icon: Approval, roles: ['admin'] },
   { path: '/manage-users', name: 'Gestionar Usuarios', icon: User, roles: ['admin'] },
   { path: '/super-admin-manage-users', name: 'Gestionar Usuarios', icon: User, roles: ['superadmin'] },
-  { path: '/organization-stats', name: 'Organization Stats', icon: Settings, roles: ['admin'] },
+  { path: '/organization-stats', name: 'Estadísticas de la Organización', icon: Settings, roles: ['admin'] },
 ]
 
 // 🔥 Filter routes dynamically based on user role

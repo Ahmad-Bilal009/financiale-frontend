@@ -60,7 +60,7 @@ const goToPage = (page: number) => {
       </table>
     </div>
     <div class="tw-flex tw-justify-between tw-mt-9">
-      <span>Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage, props.rowData.length) }} Items</span>
+      <span>Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} a {{ Math.min(currentPage * itemsPerPage, props.rowData.length) }} elementos</span>
       <div class="tw-flex tw-gap-2">
         <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1" class="tw-p-2 tw-border tw-rounded">&lt;</button>
         <button v-for="page in totalPages" :key="page" @click="goToPage(page)" :class="['tw-px-3 tw-py-1 tw-rounded', currentPage === page ? 'tw-bg-[#192854] tw-text-white' : 'tw-text-[#8D98AF]']">
