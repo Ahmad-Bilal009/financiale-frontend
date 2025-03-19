@@ -9,12 +9,11 @@ interface Option {
 }
 
 // ** State Variables **
-const selectedProductType = ref<Option>({ key: 'all', label: 'All' })
-const selectedStage = ref<Option>({ key: 'all', label: 'All' })
-const selectedOrganization = ref<Option>({ key: 'all', label: 'All' })
-const selectedLocation = ref<Option>({ key: 'all', label: 'All' })
+const selectedProductType = ref<string>('all')
+const selectedStage = ref<string>('all')
+const selectedOrganization = ref<string>('all')
+const selectedLocation = ref<string>('all')
 const products = ref<any[]>([]) // Holds all products from API
-const userOrganizations = ref<Record<string, string>>({}) // Store userId to organization mapping
 
 // ** Fetch Products from API **
 const fetchProducts = async () => {
@@ -22,10 +21,6 @@ const fetchProducts = async () => {
     const response = await productService.getProducts()
     products.value = response || []
 
-    // Extract userId to organization mapping directly from products
-    products.value.forEach(product => {
-      userOrganizations.value[product.userId] = product.organization || 'Unknown'
-    })
   } catch (error) {
     console.error('Error fetching products:', error)
   }
@@ -51,7 +46,7 @@ const locationOptions = computed(() => {
   const cities = new Set(
     products.value
       .map(product => {
-        const addressParts = product.contactDetail?.address.split(',')
+        const addressParts = product.contactDetail?.address?.split(',')
         return addressParts && addressParts.length > 1 ? addressParts[1].trim() : ''
       })
       .filter(city => city !== '') // Remove empty values
@@ -59,20 +54,29 @@ const locationOptions = computed(() => {
   return [{ key: 'all', label: 'All' }, ...Array.from(cities).map(city => ({ key: city, label: city }))]
 })
 
-
-// ** Compute Filtered Products **
+// ** Compute Filtered and Mapped Products **
 const filteredProducts = computed(() => {
-  return products.value.filter(product => {
-    const productOrg = userOrganizations.value[product.userId] || 'Unknown'
-    const city = product.address?.split(',')[1]?.trim() || ''
+  return products.value
+    .filter(product => {
+      const type = product.productType || 'unknown'
+      const stage = product.stageOfEntrepreneurship || 'unknown'
+      const productOrg = product.User?.name || 'Unknown'
+      const city = product.contactDetail?.address?.split(',')[1]?.trim() || ''
 
-    return (
-      (selectedProductType.value.key === 'all' || product.productType === selectedProductType.value.key) &&
-      (selectedStage.value.key === 'all' || product.stageOfEntrepreneurship === selectedStage.value.key) &&
-      (selectedOrganization.value.key === 'all' || productOrg === selectedOrganization.value.key) &&
-      (selectedLocation.value.key === 'all' || city === selectedLocation.value.key)
-    )
-  })
+      return (
+        (selectedProductType.value === 'all' || type === selectedProductType.value) &&
+        (selectedStage.value === 'all' || stage === selectedStage.value) &&
+        (selectedOrganization.value === 'all' || productOrg === selectedOrganization.value) &&
+        (selectedLocation.value === 'all' || city === selectedLocation.value)
+      )
+    })
+    .map(product => ({
+      location: product.location || "N/A",
+      contactDetail: product.contactDetail?.address || "N/A",
+      stage: product.stageOfEntrepreneurship || "N/A",
+      status: product.status || "N/A",
+      organization: product.organization || "N/A",
+    }))
 })
 
 // ** Fetch Data on Mount **
@@ -99,7 +103,7 @@ onMounted(fetchProducts)
             Tipo de Producto
           </label>
           <select v-model="selectedProductType" class="tw-w-full md:tw-min-w-[150px] lg:tw-min-w-[180px] tw-bg-white tw-shadow tw-rounded-[8px] tw-p-2">
-            <option v-for="option in productTypeOptions" :key="option.key" :value="option">
+            <option v-for="option in productTypeOptions" :key="option.key" :value="option.key">
               {{ option.label }}
             </option>
           </select>
@@ -111,7 +115,7 @@ onMounted(fetchProducts)
             Etapa
           </label>
           <select v-model="selectedStage" class="tw-w-full md:tw-min-w-[150px] lg:tw-min-w-[180px] tw-bg-white tw-shadow tw-rounded-[8px] tw-p-2">
-            <option v-for="option in stageOptions" :key="option.key" :value="option">
+            <option v-for="option in stageOptions" :key="option.key" :value="option.key">
               {{ option.label }}
             </option>
           </select>
@@ -123,7 +127,7 @@ onMounted(fetchProducts)
             Organización
           </label>
           <select v-model="selectedOrganization" class="tw-w-full md:tw-min-w-[150px] lg:tw-min-w-[180px] tw-bg-white tw-shadow tw-rounded-[8px] tw-p-2">
-            <option v-for="option in organizationOptions" :key="option.key" :value="option">
+            <option v-for="option in organizationOptions" :key="option.key" :value="option.key">
               {{ option.label }}
             </option>
           </select>
@@ -135,7 +139,7 @@ onMounted(fetchProducts)
             Ubicación
           </label>
           <select v-model="selectedLocation" class="tw-w-full md:tw-min-w-[150px] lg:tw-min-w-[180px] tw-bg-white tw-shadow tw-rounded-[8px] tw-p-2">
-            <option v-for="option in locationOptions" :key="option.key" :value="option">
+            <option v-for="option in locationOptions" :key="option.key" :value="option.key">
               {{ option.label }}
             </option>
           </select>
@@ -145,7 +149,8 @@ onMounted(fetchProducts)
 
     <!-- Cards Section -->
     <div class="tw-mt-6">
-      <CardsComponent :products="filteredProducts" />
+      <CardsComponent v-if="filteredProducts.length > 2" :products="filteredProducts" />
+      <p v-else class="tw-text-center tw-text-gray-500 tw-text-lg">No products found for the selected filters.</p>
     </div>
   </div>
 </template>

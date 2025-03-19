@@ -4,7 +4,6 @@ import Logo from '@/assets/svg/logogo.svg'
 import { useRouter } from 'vue-router'
 
 const isAuthenticated = ref(false)
-const activeLink = ref('Inicio') // Default active link
 const router = useRouter();
 
 // Check authentication
@@ -22,11 +21,6 @@ const handleLogoClick = () => {
     router.push('/login')
   }
 }
-
-// Set the active link when clicked
-const setActiveLink = (link: string) => {
-  activeLink.value = link
-}
 </script>
 
 <template>
@@ -42,64 +36,24 @@ const setActiveLink = (link: string) => {
 
         <!-- Navigation Menu -->
         <div class="tw-hidden md:tw-flex tw-space-x-8 tw-text-white">
-          <a
-            href="https://www.mineco.gob.gt/"
-            @click.prevent="setActiveLink('Inicio')"
-            :class="[
-              'tw-font-medium tw-text-lg tw-relative tw-pb-2',
-              activeLink === 'Inicio' ? 'tw-text-white' : 'tw-text-white hover:tw-text-white'
-            ]"
-          >
+          <a href="https://www.mineco.gob.gt/" class="tw-font-medium tw-text-lg tw-text-white hover:tw-text-white">
             Inicio
-            <span v-if="activeLink === 'Inicio'" class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-h-[3px] tw-bg-blue-500 tw-rounded-md"></span>
           </a>
 
-          <a
-            href="https://www.mineco.gob.gt/autoridades"
-            @click.prevent="setActiveLink('Autoridades')"
-            :class="[
-              'tw-font-medium tw-text-lg tw-relative tw-pb-2',
-              activeLink === 'Autoridades' ? 'tw-text-white' : 'tw-text-white hover:tw-text-white'
-            ]"
-          >
+          <a href="https://www.mineco.gob.gt/autoridades" class="tw-font-medium tw-text-lg tw-text-white hover:tw-text-white">
             Autoridades
-            <span v-if="activeLink === 'Autoridades'" class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-h-[3px] tw-bg-blue-500 tw-rounded-md"></span>
           </a>
 
-          <a
-            href="#"
-            @click.prevent="setActiveLink('Institución')"
-            :class="[
-              'tw-font-medium tw-text-lg tw-relative tw-pb-2',
-              activeLink === 'Institución' ? 'tw-text-white' : 'tw-text-white hover:tw-text-white'
-            ]"
-          >
+          <a href="#" class="tw-font-medium tw-text-lg tw-text-white hover:tw-text-white">
             Institución
-            <span v-if="activeLink === 'Institución'" class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-h-[3px] tw-bg-blue-500 tw-rounded-md"></span>
           </a>
 
-          <a
-            href="#"
-            @click.prevent="setActiveLink('Información Pública')"
-            :class="[
-              'tw-font-medium tw-text-lg tw-relative tw-pb-2',
-              activeLink === 'Información Pública' ? 'tw-text-white' : 'tw-text-white hover:tw-text-white'
-            ]"
-          >
+          <a href="#" class="tw-font-medium tw-text-lg tw-text-white hover:tw-text-white">
             Información Pública
-            <span v-if="activeLink === 'Información Pública'" class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-h-[3px] tw-bg-blue-500 tw-rounded-md"></span>
           </a>
 
-          <a
-            href="https://www.mineco.gob.gt/contactanos"
-            @click.prevent="setActiveLink('Contáctanos')"
-            :class="[
-              'tw-font-medium tw-text-lg tw-relative tw-pb-2',
-              activeLink === 'Contáctanos' ? 'tw-text-white' : 'tw-text-white hover:tw-text-white'
-            ]"
-          >
+          <a href="https://www.mineco.gob.gt/contactanos" class="tw-font-medium tw-text-lg tw-text-white hover:tw-text-white">
             Contáctanos
-            <span v-if="activeLink === 'Contáctanos'" class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-h-[3px] tw-bg-blue-500 tw-rounded-md"></span>
           </a>
         </div>
       </div>
