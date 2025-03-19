@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import Logo from '@/assets/svg/logogo.svg'
+import { useRouter } from 'vue-router'
 
 const isAuthenticated = ref(false)
 const activeLink = ref('Inicio') // Default active link
+const router = useRouter();
 
 // Check authentication
 const checkAuth = () => {
@@ -15,9 +17,9 @@ onMounted(checkAuth)
 
 const handleLogoClick = () => {
   if (isAuthenticated.value) {
-    window.location.href = '/dashboard'
+    router.push('/dashboard')
   } else {
-    window.location.href = '/login'
+    router.push('/login')
   }
 }
 

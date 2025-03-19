@@ -37,7 +37,10 @@ const fetchProductDetails = async () => {
     const productIdNumber = parseInt(productIdArray[0], 10);
 
     const response = await productService.getProductById(productIdNumber);
-    product.value = response;
+    product.value = {
+      ...response,
+      organization: response.User?.name || "Unknown Organization",
+    };
   } catch (error) {
     console.error("Failed to fetch product details:", error);
   }
@@ -95,7 +98,7 @@ onMounted(fetchProductDetails);
 
       <!-- Title & Description -->
       <div class="tw-flex tw-flex-col tw-text-center">
-        <span class="tw-text-[#070707] tw-text-[16px]">{{ product.organization || "Unknown Organization" }}</span>
+        <span class="tw-text-[#070707] tw-text-[16px]">{{ product.User.name || "Unknown Organization" }}</span>
         <h1 class="tw-text-[#192854] tw-text-[32px] sm:tw-text-[40px] tw-font-bold">
           {{ product.title || "No Title Available" }}
         </h1>
