@@ -56,7 +56,7 @@ exports.getProducts = async (req, res) => {
     const { status, userId } = req.query // Get userId and status from query params
 
     let filter = {
-      include: [{ model: User, attributes: ['id', 'name'] }]
+      include: [{ model: User, attributes: ['id', 'name', 'image'] }]
     }
 
     // Add filtering conditions dynamically
@@ -86,7 +86,7 @@ exports.getProductById = async (req, res) => {
 
     let filter = {
       where: { id },
-      include: [{ model: User, attributes: ['id', 'name'] }]
+      include: [{ model: User, attributes: ['id', 'name', 'image'] }]
     }
 
     // If userId is provided, filter by userId
