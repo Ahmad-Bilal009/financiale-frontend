@@ -28,9 +28,10 @@ export default {
   },
 
   //  Fetch a single product by ID
-  async getProductById(productId: number) {
+  async getProductById(productId: number, userId?: number) {
     try {
-      const response = await axios.get(`${API_URL}/${productId}`, getAuthHeaders())
+      const queryParams = userId ? `?userId=${userId}` : '' // Append userId if available
+      const response = await axios.get(`${API_URL}/${productId}${queryParams}`, getAuthHeaders())
       return response.data
     } catch (error: any) {
       throw error.response?.data?.message || 'Failed to fetch product details'

@@ -82,8 +82,20 @@ exports.getProducts = async (req, res) => {
 exports.getProductById = async (req, res) => {
   try {
     const { id } = req.params
+    const { userId } = req.query // Get userId from query params
 
-    const product = await Product.findByPk(id)
+    let filter = {
+      where: { id },
+      include: [{ model: User, attributes: ['id', 'name'] }]
+    }
+
+    // If userId is provided, filter by userId
+    if (userId) {
+      filter.where.userId = userId
+    }
+
+    const product = await Product.findOne(filter)
+
     if (!product) {
       return res.status(404).json({ message: 'Product not found' })
     }

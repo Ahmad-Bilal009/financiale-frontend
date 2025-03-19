@@ -5,11 +5,8 @@ import productService from "@/services/productServices";
 import visitorServices from "@/services/visitorServices";
 import AppBreadcrumb from "../UI/Breadcrumb.vue"
 import ConnectModal from "../UI/Connect-Model/ConnectModel.vue";
-
-
-
-
-
+import BASE_URL from '@/config/config';
+import defaultuser from '@/assets/img/no-user-image.png';
 
 const getIcon = (key: string) => {
   const iconMap: Record<string, string> = {
@@ -37,8 +34,11 @@ const fetchProductDetails = async () => {
     const productIdNumber = parseInt(productIdArray[0], 10);
 
     const response = await productService.getProductById(productIdNumber);
-    product.value = response;
-
+    product.value = {
+      ...response,
+      organization: response.User?.name || "Unknown Organization",
+      userImage: response.User?.image ? `${BASE_URL}${response.User.image}` : defaultuser,
+    };
   } catch (error) {
     console.error("Failed to fetch product details:", error);
   }
@@ -72,7 +72,6 @@ const closeModal = () => {
 // ** Fetch Data When Component Mounts **
 onMounted(fetchProductDetails);
 
-
 </script>
 
 <template>
@@ -89,7 +88,7 @@ onMounted(fetchProductDetails);
       <div class="tw-border-[1.5px] tw-border-gray-200 tw-rounded-[21px]">
         <img
           class="tw-w-[120px] sm:tw-w-[140px] tw-h-[140px] tw-rounded-[21px] tw-object-contain"
-          src="../../assets/img/no-user-image.png"
+          :src="product.userImage"
           alt="Product Logo"
         />
       </div>
