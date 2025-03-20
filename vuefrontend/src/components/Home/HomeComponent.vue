@@ -8,7 +8,7 @@ interface Option {
   label: string
 }
 
-// ** State Variables **
+//  State Variables 
 const selectedProductType = ref<Option>({ key: 'all', label: 'All' })
 const selectedStage = ref<Option>({ key: 'all', label: 'All' })
 const selectedOrganization = ref<Option>({ key: 'all', label: 'All' })
@@ -16,7 +16,7 @@ const selectedLocation = ref<Option>({ key: 'all', label: 'All' })
 const products = ref<any[]>([]) // Holds all products from API
 const userOrganizations = ref<Record<string, string>>({}) // Store userId to organization mapping
 
-// ** Fetch Products from API **
+//  Fetch Products from API
 const fetchProducts = async () => {
   try {
     const response = await productService.getProducts()
@@ -31,7 +31,7 @@ const fetchProducts = async () => {
   }
 }
 
-// ** Compute Unique Options for Filters **
+//  Compute Unique Options for Filters
 const productTypeOptions = computed(() => {
   const types = new Set(products.value.map(product => product.productType))
   return [{ key: 'all', label: 'All' }, ...Array.from(types).map(type => ({ key: type, label: type }))]
@@ -60,7 +60,7 @@ const locationOptions = computed(() => {
 })
 
 
-// ** Compute Filtered Products **
+//  Compute Filtered Products
 const filteredProducts = computed(() => {
   return products.value.filter(product => {
     const productOrg = userOrganizations.value[product.userId] || 'Unknown'
@@ -75,7 +75,7 @@ const filteredProducts = computed(() => {
   })
 })
 
-// ** Fetch Data on Mount **
+//  Fetch Data on Mount
 onMounted(fetchProducts)
 </script>
 
