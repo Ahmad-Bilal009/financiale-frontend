@@ -8,13 +8,14 @@ interface Option {
   label: string
 }
 
-//  State Variables 
+//  State Variables
 const selectedProductType = ref<Option>({ key: 'all', label: 'All' })
 const selectedStage = ref<Option>({ key: 'all', label: 'All' })
 const selectedOrganization = ref<Option>({ key: 'all', label: 'All' })
 const selectedLocation = ref<Option>({ key: 'all', label: 'All' })
 const products = ref<any[]>([]) // Holds all products from API
-const userOrganizations = ref<Record<string, string>>({}) // Store userId to organization mapping
+const userOrganizations = ref<Record<string, string>>({})
+
 
 //  Fetch Products from API
 const fetchProducts = async () => {
